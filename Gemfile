@@ -36,6 +36,8 @@ gem 'newrelic_rpm'
 gem 'airbrake'
 gem 'kaminari'
 
+# Excel Read
+gem 'roo'
 # Excel Write
 gem 'roo-google'
 gem 'caxlsx'

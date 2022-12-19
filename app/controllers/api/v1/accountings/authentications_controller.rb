@@ -17,7 +17,7 @@ module Api
             }, status: :ok
           end
 
-          render json: { 
+          render json: {
             url: register_sia_url(token: generated_token)
           }, status: :ok
         end
@@ -31,7 +31,7 @@ module Api
             end
           end
 
-          @user ||= new_user_service.user 
+          @user ||= new_user_service.user
           sign_in(@user)
           redirect_to root_path, notice: "Akun berhasil dibuat."
         end

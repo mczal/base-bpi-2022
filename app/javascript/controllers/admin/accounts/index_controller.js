@@ -26,7 +26,7 @@ export default class extends DatatablesController {
       {
         field: 'name',
         title: 'Nama Akun',
-        width: 300,
+        width: 150,
         template: function(data) {
           return `<span class="font-weight-bolder">${data.name}</span>`;
         }
@@ -41,31 +41,37 @@ export default class extends DatatablesController {
         }
       },
       {
-        field: 'account_type',
-        title: 'Tipe Akun',
+        field: 'report_category',
+        width: 180,
+        title: 'Kategori Laporan',
         textAlign: 'center',
-        width: 200,
-        autoHide: true,
         template: function(data) {
-          return `<span class="font-weight-bolder">${data.account_type}</span>`;
+          let result = '';
+          for(let i=0; i<data.report_categories.length; i++){
+            result += `
+              <span
+                class="switch switch-outline switch-icon switch-success flex-column"
+                data-controller="admin--accounts--report-category-updater"
+                data-admin--accounts--report-category-updater-path="#"
+              >
+                ${data.report_categories[i]}
+              </span>
+            `;
+          }
+
+          return `
+            <div class="d-flex">
+              ${result}
+            </div>
+          `;
         }
       },
       {
-        field: 'subclassification',
-        title: 'Subclassification',
-        textAlign: 'center',
-        autoHide: true,
+        field: 'account_category',
+        title: 'Kategori',
+        sortable: false,
         template: function(data) {
-          return `<span class="font-weight-bolder">${data.subclassification}</span>`;
-        }
-      },
-      {
-        field: 'subclassification_en',
-        title: 'Subclassification EN',
-        textAlign: 'center',
-        autoHide: true,
-        template: function(data) {
-          return `<span class="font-weight-bolder">${data.subclassification_en}</span>`;
+          return `<span class="font-weight-bolder">${data.account_category}</span>`;
         }
       },
       {
@@ -77,9 +83,11 @@ export default class extends DatatablesController {
         autoHide: false,
         template: function(data) {
           return `
+            <!--
             <a href="${data.edit_partial_path}" class="btn btn-sm btn-clean btn-icon">
               <i class="la la-edit"></i>
             </a>
+            -->
             <a href="${data.delete_path}" data-method="delete" data-confirm="Apakah anda yakin ingin menghapus akun ini?" class="btn btn-sm btn-clean btn-icon" title="Delete">
               <i class="la la-trash text-danger"></i>
             </a>

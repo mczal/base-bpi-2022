@@ -536,6 +536,7 @@ DEPENDENCIES
   rails (~> 6.1.4, >= 6.1.4.1)
   redis
   rolify
+  roo
   roo-google
   rubocop (~> 1.22)
   rubocop-rails

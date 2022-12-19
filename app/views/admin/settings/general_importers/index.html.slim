@@ -1,0 +1,33 @@
+#kt_subheader.subheader.py-2.py-lg-6.subheader-solid
+  .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+    .d-flex.align-items-center.flex-wrap.mr-2
+      .d-flex.align-items-baseline.flex-wrap.mr-5
+        a.font-size-h5.d-flex.align-items-center.text-dark.font-weight-bold.my-1.mr-3 [href="#"]
+          | General Importer
+        / ul.breadcrumb.breadcrumb-transparent.breadcrumb-dot.font-weight-bold.my-2.p-0
+          li.breadcrumb-item.text-muted
+            a.text-muted[href=""]
+              | Total User = 2
+
+.d-flex.flex-column-fluid.mt-5
+  .container
+    = form_with url: admin_settings_general_importers_path,
+      method: :post, multipart: true,
+      class: 'card card-custom' do |f|
+      .card-body.row
+        .col-lg-6.col-sm-12
+          .form-group
+            label
+              | File
+              i.ml-1.fas.fa-info-circle
+            div
+            .custom-file
+              input#customFile.custom-file-input[
+                type="file"
+                name="file"
+              ]
+              label.custom-file-label for="customFile"  Choose file
+      .card-footer
+        button.btn.btn-primary.mr-2 type="submit"  Submit
+        button.btn.btn-secondary type="reset"  Cancel
+

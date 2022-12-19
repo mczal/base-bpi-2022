@@ -10,22 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_08_26_031633) do
+ActiveRecord::Schema.define(version: 2022_12_14_070952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
+  create_table "account_categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "code"
+    t.string "description"
+    t.integer "bottom_treshold"
+    t.integer "upper_treshold"
+  end
+
+  create_table "account_master_business_units", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "account_id"
+    t.uuid "master_business_unit_id"
+    t.index ["account_id"], name: "index_account_master_business_units_on_account_id"
+    t.index ["master_business_unit_id"], name: "index_account_master_business_units_on_master_business_unit_id"
+  end
+
   create_table "accounts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "code"
     t.string "name"
-    t.string "account_type"
     t.uuid "company_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.string "subclassification"
-    t.string "subclassification_en"
     t.string "balance_type"
+    t.uuid "account_category_id"
+    t.boolean "isak_16", default: false
+    t.boolean "non_isak", default: false
+    t.boolean "fiskal", default: false
+    t.index ["account_category_id"], name: "index_accounts_on_account_category_id"
     t.index ["company_id"], name: "index_accounts_on_company_id"
   end
 
@@ -137,6 +157,14 @@ ActiveRecord::Schema.define(version: 2022_08_26_031633) do
     t.index ["journalable_type", "journalable_id"], name: "index_journals_on_journalable"
   end
 
+  create_table "master_business_units", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "code"
+    t.text "description"
+    t.string "group"
+  end
+
   create_table "report_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.integer "order"
@@ -162,9 +190,11 @@ ActiveRecord::Schema.define(version: 2022_08_26_031633) do
   create_table "roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
+    t.uuid "resource_id"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.uuid "resource_id", default: -> { "gen_random_uuid()" }
+    t.index ["name", "resource_type", "resource_id"], name: "index_roles_on_name_and_resource_type_and_resource_id"
+    t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -181,10 +211,16 @@ ActiveRecord::Schema.define(version: 2022_08_26_031633) do
   end
 
   create_table "users_roles", id: false, force: :cascade do |t|
-    t.uuid "user_id", default: -> { "gen_random_uuid()" }, null: false
-    t.uuid "role_id", default: -> { "gen_random_uuid()" }, null: false
+    t.uuid "user_id"
+    t.uuid "role_id"
+    t.index ["role_id"], name: "index_users_roles_on_role_id"
+    t.index ["user_id", "role_id"], name: "index_users_roles_on_user_id_and_role_id"
+    t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "account_master_business_units", "accounts"
+  add_foreign_key "account_master_business_units", "master_business_units"
+  add_foreign_key "accounts", "account_categories"
   add_foreign_key "accounts", "companies"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"

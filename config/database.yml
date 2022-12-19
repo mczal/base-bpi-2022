@@ -1,7 +1,7 @@
 development:
   adapter: postgresql
   encoding: unicode
-  database: taxsam_sia_db-dev
+  database: bpi-base-2022-db-dev
   pool: 5
   username: postgres
   password: postgres
@@ -9,7 +9,7 @@ development:
 test:
   adapter: postgresql
   encoding: unicode
-  database: taxsam_sia_db-test
+  database: bpi-base-2022-db-test
   pool: 5
   username: postgres
   password: postgres

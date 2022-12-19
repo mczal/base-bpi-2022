@@ -29,7 +29,7 @@ module Accounts
     end
 
     def parse_and_save row, i
-      @raw_row = { index: i,row: row }        
+      @raw_row = { index: i,row: row }
       @row = OpenStruct.new(
         FIELD_MAP.map {|key,val| [key, row[val]]}.to_h
       )
@@ -37,7 +37,7 @@ module Accounts
       new_account = Account.find_or_initialize_by(
         code: @row.code,
         name: @row.name,
-        company_id: @company_id          
+        company_id: @company_id
       )
 
       new_account.subclassification = @row.subclassification

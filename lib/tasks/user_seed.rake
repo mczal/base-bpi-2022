@@ -3,38 +3,20 @@
 namespace :user do
   desc 'User and Roles'
   task seed: :environment do
-    Company.destroy_all
-    User.destroy_all
-
     company = Company.find_or_initialize_by(
-      name: "Taxsam",
-      codename: 'TXSM',
-      slug: "txsm",
-      address: "Sudirman Park"
+      name: "PT Bukit Pembangkit Innovative",
+      codename: 'BPI',
+      slug: "bpi",
     )
-    company.save!
-
-    user = User.find_or_initialize_by(email: "admin@taxsam.co")
-    user.password = "password"
-    user.company = company
-    user.save!
-    user.add_role :admin
-    user.add_role :super_admin
-
-
-    company = Company.find_or_initialize_by(
-      name: "Wellcode",
-      codename: 'WG',
-      slug: "wellcode",
-      address: "Sudirman Park"
+    company.assign_attributes(
+      address: "Surveyor Indonesia Lt 17 Suite 1703, Jl. Jend. Gatot Subroto Kav. 56, Jakarta 12950, Indonesia"
     )
     company.save!
 
     user = User.find_or_initialize_by(email: "admin@wellcode.io")
-    user.password = "password"
+    user.password = "admin123"
     user.company = company
     user.save!
-    user.add_role :admin
     user.add_role :super_admin
   end
 end

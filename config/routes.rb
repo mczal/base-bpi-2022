@@ -1,7 +1,7 @@
 require 'sidekiq/web'
 require 'sidekiq-scheduler/web'
 
-Rails.application.routes.draw do  
+Rails.application.routes.draw do
   get 'home', to: "homes#index"
   get 'err_page', to: "homes#err_page"
 
@@ -9,7 +9,7 @@ Rails.application.routes.draw do
   get 'login_sia', to: "authentication_users#login_sia"
 
   constraints Clearance::Constraints::SignedIn.new do
-    mount Sidekiq::Web, at: '/sidekiq'    
+    mount Sidekiq::Web, at: '/sidekiq'
     root to: "homes#index", as: :signed_in_root
   end
 
@@ -18,22 +18,26 @@ Rails.application.routes.draw do
   end
 
   namespace :admin, path: ":slug" do
-    resources :users    
+    resources :users
     resources :general_transactions
 
-    resources :accounts    
-    namespace :accounts do      
-      get "actions/download_template", 
-        to: "actions#download_template", 
+    resources :accounts
+    namespace :accounts do
+      get "actions/download_template",
+        to: "actions#download_template",
         as: :download_template
-
       post 'actions/import',
           to: 'actions#import',
           as: :action_import
     end
-    
+
+    resources :master_business_units, only: %i[index show update destroy create]
+    post 'master_business_units/:id/edit',
+      to: 'master_business_units#edit',
+      as: :edit_master_business_unit
+
     resources :journals
-    namespace :journals do        
+    namespace :journals do
       post 'actions/export',
           to: 'actions#export',
           as: :action_export
@@ -41,18 +45,18 @@ Rails.application.routes.draw do
       post 'actions/import',
           to: 'actions#import',
           as: :action_import
-          
-      get "actions/download_template", 
-          to: "actions#download_template", 
-          as: :download_template      
-    end    
-    
+
+      get "actions/download_template",
+          to: "actions#download_template",
+          as: :download_template
+    end
+
     resources :reports
-    namespace :reports do    
-      get "actions/download_template", 
-        to: "actions#download_template", 
+    namespace :reports do
+      get "actions/download_template",
+        to: "actions#download_template",
         as: :download_template
-            
+
       post 'actions/export_pdf',
           to: 'actions#export_pdf',
           as: :action_export_pdf
@@ -79,6 +83,7 @@ Rails.application.routes.draw do
     namespace :settings do
       resources :company_profiles, only: [:index, :create]
       resources :closed_journals, only: [:index, :create, :destroy]
+      resources :general_importers, only: %i[index create]
     end
   end
 
@@ -88,7 +93,7 @@ Rails.application.routes.draw do
         post "authentication", to: "authentications#get_account", as: :authentication
         post "create_user", to: "authentications#create_user", as: :create_user
         post "signed_in_user", to: "authentications#signed_in_user", as: :signed_in_user
-      end  
+      end
     end
 
     namespace :admin do
@@ -101,9 +106,12 @@ Rails.application.routes.draw do
       namespace :accounts do
         post 'get-all', to: 'index#show', as: :index
       end
+      namespace :master_business_units do
+        post 'get-all', to: 'index#show', as: :index
+      end
       namespace :companies do
         post 'get-all', to: 'index#show', as: :index
       end
     end
-  end  
+  end
 end

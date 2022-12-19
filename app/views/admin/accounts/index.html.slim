@@ -29,8 +29,7 @@
               br
               span.font-size-sm.text-dark-50.font-weight-bold
                 | Total #{@total_account} Akun
-
-          .card-toolbar.justify-content-end
+          / .card-toolbar.justify-content-end
             .dropdown.dropdown-inline.mr-2.mb-2
               button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
                 aria-expanded="false"
@@ -48,7 +47,6 @@
                     a.nav-link href="#{admin_accounts_download_template_path(slug: current_company.slug)}" target="_blank"
                       i.nav-icon.la.la-file-excel-o
                       span.nav-text.ml-2 Download Template Import
-
                   li.nav-item
                     = form_with method: :post,
                       url: admin_accounts_action_import_path(slug: current_company.slug),
@@ -64,11 +62,10 @@
                         i.nav-icon.la.la-file-excel-o
                         span.nav-text.ml-2 Import Data Akun Excel
 
-            button.btn.btn-primary.font-weight-bolder.mb-2 data-target="#add" data-toggle="modal" type="button"
+            / button.btn.btn-primary.font-weight-bolder.mb-2 data-target="#add" data-toggle="modal" type="button"
               i.la.la-plus
               | Tambah Akun
-
-            = render "admin/accounts/add_account", new_account: @new_account
+            / = render "admin/accounts/add_account", new_account: @new_account
 
         .card-body
           #kt_datatable.datatable.datatable-bordered.datatable-head-custom[

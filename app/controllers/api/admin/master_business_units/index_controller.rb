@@ -2,7 +2,7 @@
 
 module Api
   module Admin
-    module Accounts
+    module MasterBusinessUnits
       class IndexController < Api::ApplicationController
         def show
           render json: result
@@ -16,28 +16,28 @@ module Api
           }
         end
 
-        def accounts
-          return @accounts if @accounts.present?
+        def master_business_units
+          return @master_business_units if @master_business_units.present?
 
-          @accounts = Account
-            .where(company_id: current_company.id)
-            .order(code: :asc)
+          @master_business_units = MasterBusinessUnit
+            # .where(company_id: current_company.id)
+            .order(group: :asc, code: :asc)
 
           if sort.present?
-            @accounts = @accounts
+            @master_business_units = @master_business_units
               .reorder("#{sort[:field]}": sort[:sort])
           end
 
           if query.present? && query.dig(:search).present?
-            @accounts = @accounts
+            @master_business_units = @master_business_units
               .search(query[:search])
           end
 
-          @accounts
+          @master_business_units
         end
 
-        def paginated_accounts
-          @paginated_accounts ||= accounts
+        def paginated_master_business_units
+          @paginated_master_business_units ||= master_business_units
             .page(page[:page])
             .per(page[:perpage])
         end
@@ -57,9 +57,9 @@ module Api
         def meta
           {
             page: page[:page],
-            pages: paginated_accounts.total_pages,
+            pages: paginated_master_business_units.total_pages,
             perpage: page[:perpage],
-            total: accounts.count
+            total: master_business_units.count
           }
         end
 
@@ -67,22 +67,16 @@ module Api
           return @data if @data.present?
 
           @data = {}
-          paginated_accounts.each_with_index do |account, index|
+          paginated_master_business_units.each_with_index do |master_business_unit, index|
             i = index + start_index
             @data[i] = {
               index: i,
-              id: account.id,
-              code: account.code,
-              name: account.name,
-              company_name: account.company.name,
-              balance_type: account.balance_type,
-              report_categories: account.report_categories_for_checkbox,
-              account_category: account.account_category.description,
-              # account_type: account.account_type,
-              # subclassification: account.subclassification,
-              # subclassification_en: account.subclassification_en,
-              edit_partial_path: edit_admin_account_path(id: account.id,slug: current_company.slug),
-              delete_path: admin_account_path(id: account.id, slug: current_company.slug)
+              id: master_business_unit.id,
+              code: master_business_unit.code,
+              description: master_business_unit.description,
+              group: master_business_unit.group.titlecase,
+              edit_path: admin_edit_master_business_unit_path(id: master_business_unit.id,slug: current_company.slug),
+              delete_path: admin_master_business_unit_path(id: master_business_unit.id, slug: current_company.slug)
             }
           end
 

@@ -24,3 +24,11 @@
                       .fas.fa-book style="font-size:50px;color: #af3e05;"
                       .text-primary.font-size-lg.font-weight-bold.mt-2
                         | Tutup Buku
+              - if current_user.has_role?(:super_admin)
+                .col-3
+                  = link_to admin_settings_general_importers_path(slug: params[:slug]) do
+                    .card.card-custom
+                      .card-body.text-center.border
+                        .fas.fa-book style="font-size:50px;color: #af3e05;"
+                        .text-primary.font-size-lg.font-weight-bold.mt-2
+                          | General Importer
