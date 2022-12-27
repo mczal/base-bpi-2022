@@ -2,6 +2,11 @@ import { Controller } from 'stimulus';
 
 export default class extends Controller {
   connect(){
+    this.element.addEventListener('input-price:re-init', () => {
+      this.replaceDotToComma();
+      this.addThousandSeparator();
+    });
+
     // this.addCommaIfNotExist();
     this.replaceDotToComma();
     this.addThousandSeparator();

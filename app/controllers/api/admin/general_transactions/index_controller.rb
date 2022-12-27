@@ -72,8 +72,11 @@ module Api
             @data[i] = {
               index: i,
               id: general_transaction.id,
+              created_at: helpers.readable_timestamp_2(general_transaction.created_at.localtime),
+              updated_at: helpers.readable_timestamp_2(general_transaction.updated_at.localtime),
+              status_html: general_transaction.status_for_html,
               date: general_transaction.date.strftime("%d %b %Y"),
-              number_evidence: general_transaction.number_evidence,              
+              number_evidence: general_transaction.number_evidence,
               show_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug),
               delete_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug)
             }

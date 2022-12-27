@@ -1,5 +1,6 @@
 class MasterBusinessUnit < ApplicationRecord
   include PgSearch::Model
+
   has_many :account_master_business_units
   has_many :accounts, through: :account_master_business_units
 
@@ -15,4 +16,8 @@ class MasterBusinessUnit < ApplicationRecord
     using: {
       tsearch: { prefix: true, any_word: true, negation: true }
     }
+
+  def readable_name
+    "#{code} - #{description}"
+  end
 end

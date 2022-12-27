@@ -22,6 +22,11 @@
       button.close aria-label="Close" data-dismiss="alert" type="button" 
         span aria-hidden="true"  &times;
       = flash[:alert].html_safe
+  - if flash[:danger].present?
+    .alert.alert-danger.alert-dismissible.fade.show role="alert" 
+      button.close aria-label="Close" data-dismiss="alert" type="button" 
+        span aria-hidden="true"  &times;
+      = flash[:danger].html_safe
 
   - if flash[:warning].present?
     .alert.alert-warning.alert-dismissible.fade.show role="alert" 

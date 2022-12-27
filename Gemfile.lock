@@ -302,8 +302,6 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (8.0.0)
     nio4r (2.5.8)
-    nokogiri (1.12.5-x86_64-darwin)
-      racc (~> 1.4)
     nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
     oauth (0.5.8)
@@ -514,7 +512,7 @@ DEPENDENCIES
   capistrano-rails-logs-tail
   capistrano-rbenv
   capistrano3-puma
-  capybara (>= 3.26)
+  capybara (>= 2.15)
   caxlsx
   caxlsx_rails
   clearance
@@ -528,6 +526,7 @@ DEPENDENCIES
   listen (~> 3.3)
   money-rails
   newrelic_rpm
+  nokogiri
   pg
   pg_search
   pry

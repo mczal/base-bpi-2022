@@ -25,7 +25,9 @@ html lang="en"
     link href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" rel="stylesheet"
     = render "layouts/stylesheet/css"
 
-  body#kt_body.header-fixed.header-mobile-fixed.subheader-enabled.subheader-fixed.page-loading data-turbolinks='false'
+  body#kt_body.header-fixed.header-mobile-fixed.subheader-enabled.subheader-fixed.page-loading[
+    data-turbolinks='false'
+  ]
     - if flash.present?
       = render 'shared/flash'
 

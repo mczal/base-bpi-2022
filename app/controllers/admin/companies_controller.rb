@@ -6,7 +6,7 @@ class Admin::CompaniesController < AdminController
   end
 
   def edit
-    @company = Company.find_by(id: params[:id])    
+    @company = Company.find_by(id: params[:id])
   end
 
   def update
@@ -18,7 +18,7 @@ class Admin::CompaniesController < AdminController
     redirect_to admin_companies_path(slug: current_company.slug), alert: @company_service.full_error_messages
   end
 
-  def create        
+  def create
     @company_service = Companies::CreateService.new(params)
     if @company_service.run
       return redirect_to admin_companies_path(slug: current_company.slug), notice: "Perusahaan berhasil di buat"

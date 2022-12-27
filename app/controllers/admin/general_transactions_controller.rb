@@ -1,68 +1,78 @@
-class Admin::GeneralTransactionsController < AdminController
-  before_action :general_transaction, only: [:show, :update, :destroy]
-  before_action :closed_journals, only: [:destroy, :create]
+module Admin
+  class GeneralTransactionsController < ::AdminController
+    before_action :general_transaction, only: %i[show edit]
+    before_action :closed_journals, only: %i[destroy create]
 
-  def index
-    @total_general_transactions = GeneralTransaction.where(company: current_company).count
-    @general_transactions = GeneralTransaction.where(company: current_company)
-      .order(date: :desc)
-      .page(params[:page])
-      .per(10)
-    
-  end
-
-  def create
-    service = ::GeneralTransactions::CreateService.new(
-      params, current_company.id
-    )
-
-    unless service.run
-      return redirect_to new_admin_general_transaction_path, 
-        alert: "Transaksi gagal di simpan, #{service.error_messages.to_sentence}"
+    def index
+      @general_transaction = GeneralTransaction.new(company: current_company)
     end
 
-    redirect_to admin_general_transactions_path, 
-      notice: 'Transaksi berhasil di simpan'
-  end
+    def create
+      service = ::GeneralTransactions::CreateService.new(params, current_company)
+      if !service.run
+        flash[:danger] = "Gagal. #{service.error_messages.to_sentence}"
+        return redirect_to admin_general_transactions_path
+      end
 
-  def new
-    @transaction = GeneralTransaction.new    
-    @accounts = current_company.accounts
-  end
-
-  def show
-  end
-
-  def destroy
-    if general_transaction.destroy
-      return redirect_to admin_general_transactions_path, 
-        notice: "General Transaction deleted"
-    end
-      
-    redirect_to admin_general_transactions_path, 
-      alert: general_transaction.errors.full_messages.join(", ")
-  end
-
-  private
-  def general_transaction
-    @general_transaction = GeneralTransaction.find(params[:id])
-  end
-
-  def closed_journals
-    closed_journals = false
-    if params[:transaction].present? && params[:transaction][:date].present?
-      date = params[:transaction][:date].to_date
-      closed_journals = ClosedJournal.where("date >= ?", date)
+      flash[:success] = "Berhasil!"
+      redirect_to admin_general_transaction_path(id: service.general_transaction.id)
     end
 
-    if params[:id].present? && general_transaction.present?
-      date = general_transaction.date
-      closed_journals = ClosedJournal.where("date >= ?", general_transaction.date)
+    def update
+      service = ::GeneralTransactions::UpdateService.new(params, current_company)
+      if !service.run
+        flash[:danger] = "Gagal. #{service.error_messages.to_sentence}"
+        return redirect_to admin_general_transaction_path(id: params[:id])
+      end
+
+      flash[:success] = "Berhasil!"
+      redirect_to admin_general_transaction_path(id: params[:id])
     end
 
-    if closed_journals.present?
-      return redirect_to admin_general_transactions_path, 
-        alert: "Transaksi sudah di tutup di Tutup Buku dan tidak dapat hapus atau di tambah pada bulan #{date.strftime("%m %Y")}."
-    end 
+    def new
+      @transaction = GeneralTransaction.new
+      @accounts = current_company.accounts
+    end
+
+    def show; end
+
+    def edit
+      render partial: 'form'
+    end
+
+    def destroy
+      ActiveRecord::Base.transaction do
+        if general_transaction.destroy
+          flash[:success] = "Berhasil!"
+          return redirect_to admin_general_transactions_path
+        end
+
+        flash[:danger] = "Gagal. #{general_transaction.errors.full_messages.join(", ")}"
+        return redirect_back fallback_location: admin_general_transactions_path
+      end
+    end
+
+    private
+      def general_transaction
+        @general_transaction = GeneralTransaction.find(params[:id])
+      end
+
+      def closed_journals
+        closed_journals = false
+        if params[:transaction].present? && params[:transaction][:date].present?
+          date = params[:transaction][:date].to_date
+          closed_journals = ClosedJournal.where("date >= ?", date)
+        end
+
+        if params[:id].present? && general_transaction.present?
+          date = general_transaction.date
+          closed_journals = ClosedJournal.where("date >= ?", general_transaction.date)
+        end
+
+        if closed_journals.present?
+          return redirect_to admin_general_transactions_path,
+            alert: "Transaksi sudah di tutup di Tutup Buku dan tidak dapat hapus atau di tambah pada bulan #{date.strftime("%m %Y")}."
+        end
+      end
   end
 end

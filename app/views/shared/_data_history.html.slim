@@ -1,0 +1,12 @@
+.row.mt-5
+  .col-12
+    .card.card-custom.card-stretch.gutter-b
+      .card-header.border-0.py-5
+        h3.card-title.align-items-start.flex-column
+          span.card-label.font-weight-bolder.text-dark Rekap Perubahan Data
+      .card-body.pt-0.pb-3
+        #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
+          data-controller="admin--data-histories--index"
+          data-admin--data-histories--index-data-path=api_admin_data_histories_index_path(auditable_id: auditable_id, auditable_type: auditable_type)
+        ]
+

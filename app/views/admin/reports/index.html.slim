@@ -27,7 +27,7 @@
             h3.card-label
               | List Laporan
               
-          .card-toolbar.justify-content-end.d-none
+          .card-toolbar.justify-content-end
             = link_to admin_reports_action_import_path(slug: current_company.slug),\
               method: :get, class: "btn btn-primary" do
               i.nav-icon.la.la-upload

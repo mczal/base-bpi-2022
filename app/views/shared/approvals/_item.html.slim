@@ -1,0 +1,36 @@
+.d-flex.align-items-start.flex-lg-fill.mr-5.mb-5
+  span.mr-4
+    i.flaticon2-file.icon-3x.font-weight-bold[
+      class="text-#{approval.status_label}"
+    ]
+  .d-flex.flex-column.text-dark-75
+    span.font-weight-bolder.font-size-sm
+      | #{approval.order}. #{approval.name}
+    span.font-weight-bolder.font-size-h5
+      - if approval.accepted? || approval.rejected?
+        = approval.last_log.user&.email
+      span.text-dark-50.font-weight-bold.font-size-sm
+        | &nbsp;(#{approval.role})
+    span.font-weight-bolder.font-size-sm
+      = t(approval.status).titlecase
+      - if !approval.waiting?
+        span style="margin-left:5px;" 
+          = readable_timestamp_2 approval.updated_at.localtime
+        span style="margin-left:5px;" 
+          | oleh: #{approval.last_log.user&.email}
+        .text-muted.my-3[
+          title="Komentar #{approval.last_log.user&.email}"
+          data-controller="tooltip"
+        ]
+          | | #{approval.last_log.comment}
+    span.font-weight-bolder.font-size-sm
+      - if current_user.has_role?(approval.role)
+        = render partial: 'shared/approvals/edit',
+          locals: {approval: approval, status: 'accepted', text: 'Setujui'}
+        = render partial: 'shared/approvals/edit',
+          locals: {approval: approval, status: 'rejected', text: 'Tolak'}
+      / - if !approval.accepted?
+        = render partial: 'shared/approvals/send_notification',
+          locals: {approval: approval}
+
+

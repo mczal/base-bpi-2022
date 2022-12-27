@@ -1,0 +1,73 @@
+- label = 'success'
+- label = 'danger' if status == 'rejected'
+
+- icon = 'check-mark'
+- icon = 'cross' if status == 'rejected'
+
+/! Button trigger modal
+button.btn.btn-sm.mr-2[
+  class="btn-#{label}"
+  data-target="#ModalApproval-#{status}-#{approval.id}"
+  data-toggle="modal"
+  type="button"
+]
+  i.text-white.font-size-sm[
+    class="flaticon2-#{icon}"
+    style="font-size:.8rem;"
+  ]
+  = text
+/! Modal
+.modal.fade[
+  id="ModalApproval-#{status}-#{approval.id}"
+  aria-hidden="true"
+  aria-labelledby="ModalApproval-#{status}-#{approval.id}Label"
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1"
+]
+  .modal-dialog.modal-dialog-centered[role="document"]
+    form[
+      class="modal-content"
+      action="#{admin_approval_path(id: approval.id)}"
+      accept-charset="UTF-8"
+      method="post"
+    ]
+      input[
+        type="hidden"
+        name="_method"
+        value="put"
+      ]
+      input[
+        type="hidden"
+        name="authenticity_token"
+        value=""
+        data-controller="forms--csrf"
+      ]
+
+      .modal-header
+        h5#exampleModalLabel.modal-title
+          | #{text.titlecase} - #{approval.name.titlecase}
+          br
+          span.font-size-sm.text-muted
+            | (#{approval.role.titlecase}: #{current_user.email})
+        button.close aria-label="Close" data-dismiss="modal" type="button"
+          i.ki.ki-close aria-hidden="true"
+      .modal-body
+        = hidden_field_tag 'approval[status]', status
+        = text_area_tag 'approval[audit_comment]', '',
+          class: 'form-control',
+          style: 'height:120px;',
+          placeholder: 'Komentar'
+      .modal-footer
+        button.btn.font-weight-bold[
+          class="btn-light-#{label}"
+          data-dismiss="modal"
+          type="button"
+        ]
+          |  Tutup
+        button.btn.font-weight-bold[
+          class="btn-#{label}"
+        ]
+          |  #{text}
+
+

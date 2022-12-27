@@ -1,0 +1,99 @@
+- if file.is_a? ActiveStorage::Attached::One
+  - is_checked = checked if local_assigns[:checked].present?
+  - is_checked = file.attached? if !local_assigns[:checked].present?
+  .d-flex.align-items-center.my-5
+    span.bullet.bullet-bar.bg-success.align-self-stretch
+    label.checkbox.checkbox-lg.checkbox-light-success.checkbox-inline.flex-shrink-0.m-0.mx-4
+      input[
+        type="checkbox"
+        name="select"
+        disabled="disabled"
+        readonly="readonly"
+        checked=is_checked
+      ]
+      span
+    .d-flex.flex-column.flex-grow-1[
+      style="overflow-wrap:anywhere;"
+    ]
+      a.text-dark-75.text-hover-primary.font-weight-bold.font-size-lg.mb-1[
+        href="#{file.attached? ? url_for(file) : 'javascript:void(0);'}"
+        target="#{'_blank' if file.attached?}"
+        title="#{file.blob.filename if file.attached?}"
+        data-controller="tooltip"
+      ]
+        = file_name
+      span.text-muted.font-weight-bold
+        = readable_date_4 file.created_at.localtime if file.attached?
+    .dropdown.dropdown-inline data-placement="left" data-toggle="tooltip" title=("Quick actions") 
+      a.btn.btn-clean.btn-hover-light-primary.btn-sm.btn-icon aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#" 
+        i.ki.ki-bold-more-hor
+      .dropdown-menu.dropdown-menu-md.dropdown-menu-right
+        ul.navi.navi-hover.py-5
+          li.navi-item
+            a.navi-link[
+              href="#{file.attached? ? url_for(file) : 'javascript:void(0);'}"
+              target="#{'_blank' if file.attached?}"
+            ]
+              span.navi-icon
+                i.flaticon-download
+              span.navi-text Download
+          li.navi-item
+            - if file.attached?
+              = form_with url: admin_active_storages_remove_document_path(attachment_id: file.id),
+                method: :post do |f|
+                button.navi-link[
+                  style="display:block;border:none;background:none;width:100%;padding:0.75rem 1.5rem;text-align:left;"
+                ]
+                  span.navi-icon
+                    i.flaticon2-trash[style="margin-right:11px;"]
+                  span.navi-text
+                    | Remove
+
+- if file.is_a? ActiveStorage::Attachment
+  .d-flex.align-items-center.my-5
+    span.bullet.bullet-bar.bg-warning.align-self-stretch
+    label.checkbox.checkbox-lg.checkbox-light-warning.checkbox-inline.flex-shrink-0.m-0.mx-4
+      input[
+        type="checkbox"
+        name="select"
+        disabled="disabled"
+        readonly="readonly"
+        checked=(true)
+      ]
+      span
+    .d-flex.flex-column.flex-grow-1[
+      style="overflow-wrap:anywhere;"
+    ]
+      a.text-dark-75.text-hover-primary.font-weight-bold.font-size-lg.mb-1[
+        href="#{url_for(file)}"
+        target="_blank"
+        title="#{file_name}"
+        data-controller="tooltip"
+      ]
+        = file.blob.filename
+      span.text-muted.font-weight-bold
+        = readable_date_4 file.created_at.localtime
+    .dropdown.dropdown-inline data-placement="left" data-toggle="tooltip" title=("Quick actions") 
+      a.btn.btn-clean.btn-hover-light-primary.btn-sm.btn-icon aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#" 
+        i.ki.ki-bold-more-hor
+      .dropdown-menu.dropdown-menu-md.dropdown-menu-right
+        ul.navi.navi-hover.py-5
+          li.navi-item
+            a.navi-link[
+              href="#{url_for file}"
+              target="_blank"
+            ]
+              span.navi-icon
+                i.flaticon-download
+              span.navi-text Download
+          li.navi-item
+            = form_with url: admin_active_storages_remove_document_path(attachment_id: file.id),
+              method: :post do |f|
+              button.navi-link[
+                style="display:block;border:none;background:none;width:100%;padding:0.75rem 1.5rem;text-align:left;"
+              ]
+                span.navi-icon
+                  i.flaticon2-trash[style="margin-right:11px;"]
+                span.navi-text
+                  | Remove
+

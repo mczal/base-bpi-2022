@@ -19,7 +19,11 @@ Rails.application.routes.draw do
 
   namespace :admin, path: ":slug" do
     resources :users
-    resources :general_transactions
+
+    resources :general_transactions, only: %i[index show update destroy create]
+    post 'general_transactions/:id/edit',
+      to: 'general_transactions#edit',
+      as: :edit_general_transaction
 
     resources :accounts
     namespace :accounts do
@@ -85,6 +89,25 @@ Rails.application.routes.draw do
       resources :closed_journals, only: [:index, :create, :destroy]
       resources :general_importers, only: %i[index create]
     end
+
+    # resources :rates, only: %i[index]
+    namespace :rates do
+      post 'actions/get_select_options',
+        to: 'actions#get_select_options',
+        as: :get_select_options
+    end
+
+    resources :approvals, only: %i[index show update]
+    post 'approvals/:id/send_notification/:approver_id',
+      to: 'approvals#send_notification',
+      as: :approval_send_notification
+
+    post 'active_storages/:resource_id/:resource_type/:registered_name/upload_document',
+      to: 'active_storages#upload_document',
+      as: :active_storages_upload_document
+    post 'active_storages/remove_document/:attachment_id',
+      to: 'active_storages#remove_document',
+      as: :active_storages_remove_document
   end
 
   namespace :api do
@@ -98,6 +121,9 @@ Rails.application.routes.draw do
 
     namespace :admin do
       namespace :general_transactions do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :journals do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :users do

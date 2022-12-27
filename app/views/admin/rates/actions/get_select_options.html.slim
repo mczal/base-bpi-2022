@@ -1,0 +1,13 @@
+/ = select_tag 'general_transaction[fixed_rates_options][id]',
+  options_from_collection_for_select(@rates, :id, :readable_name),
+  include_blank: '== Pilih ==',
+  class: 'form-control',
+  data: {\
+    controller: 'select2'\
+  }
+- @rates.each do |rate|
+  option[
+    value="#{rate.id}"
+    data-rate-value="#{rate.middle.amount}"
+  ]
+    = rate.readable_name

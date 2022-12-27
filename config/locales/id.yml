@@ -76,7 +76,7 @@ id:
     - Jum
     - Sab
     abbr_month_names:
-    - 
+    -
     - Jan
     - Feb
     - Mar
@@ -102,7 +102,7 @@ id:
       long: "%A, %d %B %Y"
       short: "%d.%m.%Y"
     month_names:
-    - 
+    -
     - Januari
     - Februari
     - Maret
@@ -269,3 +269,10 @@ id:
       long: "%d %B %Y %H.%M"
       short: "%d %b %H.%M"
     pm: pm
+  waiting: menunggu
+  waiting_for_approval: menunggu persetujuan  (approval)
+  accepted: disetujui
+  rejected: ditolak
+  pending: pending
+  in_progress: dalam_proses
+  finished: selesai

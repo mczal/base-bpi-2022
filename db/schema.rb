@@ -10,11 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_14_070952) do
+ActiveRecord::Schema.define(version: 2022_12_27_024214) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
+
+  create_table "account_beginning_balances", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "code"
+    t.decimal "price_idr_cents", default: "0.0", null: false
+    t.string "price_idr_currency", default: "IDR", null: false
+    t.decimal "price_usd_cents", default: "0.0", null: false
+    t.string "price_usd_currency", default: "USD", null: false
+    t.integer "year"
+  end
 
   create_table "account_categories", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
@@ -46,6 +57,7 @@ ActiveRecord::Schema.define(version: 2022_12_14_070952) do
     t.boolean "non_isak", default: false
     t.boolean "fiskal", default: false
     t.index ["account_category_id"], name: "index_accounts_on_account_category_id"
+    t.index ["code"], name: "index_accounts_on_code"
     t.index ["company_id"], name: "index_accounts_on_company_id"
   end
 
@@ -75,6 +87,21 @@ ActiveRecord::Schema.define(version: 2022_12_14_070952) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "approvals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "status"
+    t.uuid "user_id"
+    t.string "role"
+    t.integer "order"
+    t.string "name"
+    t.string "approvable_type", null: false
+    t.uuid "approvable_id", null: false
+    t.index ["approvable_type", "approvable_id"], name: "index_approvals_on_approvable"
+    t.index ["order"], name: "index_approvals_on_order"
+    t.index ["user_id"], name: "index_approvals_on_user_id"
   end
 
   create_table "audits", force: :cascade do |t|
@@ -117,17 +144,25 @@ ActiveRecord::Schema.define(version: 2022_12_14_070952) do
 
   create_table "general_transaction_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "code"
-    t.decimal "debit_idr_cents", default: "0.0", null: false
-    t.string "debit_idr_currency", default: "IDR", null: false
-    t.decimal "credit_idr_cents", default: "0.0", null: false
-    t.string "credit_idr_currency", default: "IDR", null: false
     t.string "description"
     t.uuid "general_transaction_id", null: false
-    t.uuid "company_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["company_id"], name: "index_general_transaction_lines_on_company_id"
+    t.decimal "price_idr_cents", default: "0.0", null: false
+    t.string "price_idr_currency", default: "IDR", null: false
+    t.decimal "price_usd_cents", default: "0.0", null: false
+    t.string "price_usd_currency", default: "USD", null: false
+    t.string "group"
+    t.boolean "is_master_business_units_enabled", default: false
+    t.uuid "master_business_unit_id"
+    t.uuid "master_business_unit_location_id"
+    t.uuid "master_business_unit_area_id"
+    t.uuid "master_business_unit_activity_id"
     t.index ["general_transaction_id"], name: "index_general_transaction_lines_on_general_transaction_id"
+    t.index ["master_business_unit_activity_id"], name: "gtl_mbuact"
+    t.index ["master_business_unit_area_id"], name: "gtl_mbuare"
+    t.index ["master_business_unit_id"], name: "gtl_mbu"
+    t.index ["master_business_unit_location_id"], name: "gtl_mbul"
   end
 
   create_table "general_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -136,6 +171,12 @@ ActiveRecord::Schema.define(version: 2022_12_14_070952) do
     t.uuid "company_id", null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.string "rates_source"
+    t.string "rates_group"
+    t.string "input_option"
+    t.json "end_of_period_rates_options", default: {}
+    t.json "fixed_rates_options", default: {}
+    t.string "status"
     t.index ["company_id"], name: "index_general_transactions_on_company_id"
   end
 
@@ -153,6 +194,11 @@ ActiveRecord::Schema.define(version: 2022_12_14_070952) do
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "company_id"
     t.string "number_evidence"
+    t.decimal "debit_usd_cents", default: "0.0", null: false
+    t.string "debit_usd_currency", default: "USD", null: false
+    t.decimal "credit_usd_cents", default: "0.0", null: false
+    t.string "credit_usd_currency", default: "USD", null: false
+    t.json "rates_options", default: {}
     t.index ["company_id"], name: "index_journals_on_company_id"
     t.index ["journalable_type", "journalable_id"], name: "index_journals_on_journalable"
   end
@@ -163,6 +209,17 @@ ActiveRecord::Schema.define(version: 2022_12_14_070952) do
     t.string "code"
     t.text "description"
     t.string "group"
+  end
+
+  create_table "rates", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.decimal "buying_cents", default: "0.0", null: false
+    t.string "buying_currency", default: "IDR", null: false
+    t.decimal "selling_cents", default: "0.0", null: false
+    t.string "selling_currency", default: "IDR", null: false
+    t.string "origin"
+    t.date "published_date"
   end
 
   create_table "report_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -224,8 +281,12 @@ ActiveRecord::Schema.define(version: 2022_12_14_070952) do
   add_foreign_key "accounts", "companies"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
-  add_foreign_key "general_transaction_lines", "companies"
+  add_foreign_key "approvals", "users"
   add_foreign_key "general_transaction_lines", "general_transactions"
+  add_foreign_key "general_transaction_lines", "master_business_units"
+  add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_activity_id"
+  add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_area_id"
+  add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_location_id"
   add_foreign_key "general_transactions", "companies"
   add_foreign_key "journals", "companies"
   add_foreign_key "report_lines", "reports"

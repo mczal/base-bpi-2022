@@ -20,7 +20,19 @@ export default class extends DatatablesController {
         title: 'Tanggal',
         width: 100,
         template: function(data) {
-          return `<span class="font-weight-bolder">${data.date}</span>`;
+          return `
+            <span data-controller="base--popover" data-base--popover-html="1" data-base--popover-trigger="hover" data-content="Dibuat: ${data.created_at} <br/> Diubah: ${data.updated_at}" data-title="Dibuat/Diubah" class="svg-icon svg-icon-light-dark" style="cursor:pointer;">
+              <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                      <rect x="0" y="0" width="24" height="24"/>
+                      <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10"/>
+                      <rect fill="#000000" x="11" y="10" width="2" height="7" rx="1"/>
+                      <rect fill="#000000" x="11" y="7" width="2" height="2" rx="1"/>
+                  </g>
+              </svg>
+            </span>
+            <span class="font-weight-bolder">${data.date}</span>
+            `;
         }
       },
       {
@@ -28,6 +40,13 @@ export default class extends DatatablesController {
         title: 'Nomor Bukti',
         template: function(data) {
           return `<span class="font-weight-bolder">${data.number_evidence}</span>`;
+        }
+      },
+      {
+        field: 'status',
+        title: 'Status',
+        template: function(data) {
+          return `${data.status_html}`;
         }
       },
       {

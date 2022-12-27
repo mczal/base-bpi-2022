@@ -5,47 +5,43 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.0.0'
 
-gem 'bootsnap', '>= 1.4.4', require: false
-gem 'jbuilder', '~> 2.7'
-gem 'puma', '~> 5.0'
-gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
-gem 'sass-rails', '>= 6'
-gem 'turbolinks', '~> 5'
-gem 'webpacker', '~> 5.0'
-
-gem 'pg'
-gem 'pg_search'
-gem 'rolify'
-gem 'redis'
-gem 'sidekiq'
-gem 'sidekiq-scheduler'
-# gem 'mongoid', '~> 7.0.5'
-
-gem 'clearance'
-gem 'money-rails'
-gem 'slim-rails'
-gem 'twilio-ruby'
-
+gem 'audited', '~> 5.0'
+gem 'airbrake'
 gem 'asset_sync'
 gem 'aws-sdk-s3', require: false
-gem 'fog-aws'
-gem 'image_processing', '>= 1.2'
-
-gem 'google-analytics-rails', '1.1.1'
-gem 'newrelic_rpm'
-gem 'airbrake'
-gem 'kaminari'
-
-# Excel Read
-gem 'roo'
-# Excel Write
-gem 'roo-google'
+gem 'bootsnap', '>= 1.4.4', require: false
 gem 'caxlsx'
 gem 'caxlsx_rails'
-
+gem 'clearance'
+gem 'fog-aws'
+gem 'google-analytics-rails', '1.1.1'
+gem 'image_processing', '>= 1.2'
+gem 'jbuilder', '~> 2.7'
+gem 'kaminari'
+gem 'money-rails'
+gem 'newrelic_rpm'
+gem 'pg'
+gem 'pg_search'
+gem 'puma', '~> 5.0'
+gem 'rails', '~> 6.1.4', '>= 6.1.4.1'
+gem 'redis'
+gem 'rolify'
+gem 'roo'
+gem 'roo-google'
+gem 'sass-rails', '>= 6'
+gem 'sidekiq'
+gem 'sidekiq-scheduler'
+gem 'slim-rails'
+gem 'turbolinks', '~> 5'
+gem 'twilio-ruby'
+gem 'webpacker', '~> 5.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
-gem "audited", "~> 5.0"
+
+gem 'capybara', '>= 2.15'
+gem 'nokogiri'
+gem 'selenium-webdriver'
+gem 'webdrivers'
 
 group :development, :test do
   gem 'break'
@@ -77,9 +73,6 @@ group :development do
 end
 
 group :test do
-  gem 'capybara', '>= 3.26'
-  gem 'selenium-webdriver'
-  gem 'webdrivers'
 end
 
 gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]

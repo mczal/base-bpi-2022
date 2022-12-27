@@ -4,7 +4,7 @@ MoneyRails.configure do |config|
   config.default_currency = :idr
   Money.locale_backend = :i18n
 
-  
+
   config.register_currency = {
     id: :idr,
     priority: 1,
@@ -13,7 +13,7 @@ MoneyRails.configure do |config|
     symbol: 'Rp',
     symbol_first: true,
     subunit: 'rupiah',
-    subunit_to_unit: 100,
+    subunit_to_unit: 10000000000000000000000,
     thousands_separator: '.',
     decimal_mark: ','
   }
@@ -25,7 +25,7 @@ MoneyRails.configure do |config|
     symbol: '$',
     symbol_first: true,
     subunit: 'cents',
-    subunit_to_unit: 100,
+    subunit_to_unit: 10000000000000000000000,
     thousands_separator: '.',
     decimal_mark: ','
   }
@@ -61,7 +61,7 @@ MoneyRails.configure do |config|
                            null: false,          # other options will be treated as column options
                            default: 0
                          }
-  
+
   # config.currency_column = { prefix: '',
   #                            postfix: '_currency',
   #                            column_name: nil,
@@ -110,6 +110,9 @@ MoneyRails.configure do |config|
   #   symbol: nil,
   #   sign_before_symbol: nil
   # }
+  config.default_format = {
+    no_cents_if_whole: true,
+  }
 
   # If you would like to use I18n localization (formatting depends on the
   # locale):

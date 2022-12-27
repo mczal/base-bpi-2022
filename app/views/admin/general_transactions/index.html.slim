@@ -43,15 +43,20 @@
               | List Transaksi
               br
               span.font-size-sm.text-dark-50.font-weight-bold
-                | Total #{@total_general_transactions} transaksi
+                | Total #{GeneralTransaction.count} transaksi
 
           .card-toolbar.justify-content-end
-            a.btn.btn-primary.font-weight-bolder.mb-2 type="button" href="#{new_admin_general_transaction_path(slug: current_company.slug)}"
+            button.btn.btn-primary.font-weight-bolder.mb-2[
+              data-target="#add"
+              data-toggle="modal"
+              type="button"
+            ]
               i.la.la-plus
               | Tambah Transaksi
+            = render partial: 'new'
 
         .card-body
           #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
-            data-admin--general-transactions--index-data-path=api_admin_general_transactions_index_path(slug: current_company.slug, start_date: params[:start_date], end_date: params[:end_date])
+            data-admin--general-transactions--index-data-path="#{api_admin_general_transactions_index_path(slug: current_company.slug, start_date: params[:start_date], end_date: params[:end_date])}"
             data-controller="admin--general-transactions--index"
           ]

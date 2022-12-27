@@ -1,25 +1,33 @@
-# == Schema Information
-#
-# Table name: general_transaction_lines
-#
-#  id                     :uuid             not null, primary key
-#  code                   :string
-#  debit_idr_cents        :decimal(, )      default(0.0), not null
-#  debit_idr_currency     :string           default("IDR"), not null
-#  credit_idr_cents       :decimal(, )      default(0.0), not null
-#  credit_idr_currency    :string           default("IDR"), not null
-#  description            :string
-#  general_transaction_id :uuid             not null
-#  company_id             :uuid             not null
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#
 class GeneralTransactionLine < ApplicationRecord
-  include GeneralTransactionLines::SetupJournal
+  include GeneralTransactionLines::AssignDefaultValues
+  include GeneralTransactionLines::MasterBusinessUnits
+  include GeneralTransactionLines::Price
+  include GeneralTransactionLines::Accounts
+  include GeneralTransactionLines::SetupJournals
+
   belongs_to :general_transaction
-  belongs_to :company
+
+  belongs_to :master_business_unit, optional: true
+  belongs_to :master_business_unit_location,
+    foreign_key: 'master_business_unit_location_id',
+    class_name: 'MasterBusinessUnit',
+    optional: true
+  belongs_to :master_business_unit_area,
+    foreign_key: 'master_business_unit_area_id',
+    class_name: 'MasterBusinessUnit',
+    optional: true
+  belongs_to :master_business_unit_activity,
+    foreign_key: 'master_business_unit_activity_id',
+    class_name: 'MasterBusinessUnit',
+    optional: true
+
   has_many :journals, as: :journalable, dependent: :destroy
-  
-  monetize :debit_idr_cents, with_currency: :idr
-  monetize :credit_idr_cents, with_currency: :idr
+
+  monetize :price_idr_cents, with_currency: :idr
+  monetize :price_usd_cents, with_currency: :usd
+
+  enum group: {
+    debit: 'debit',
+    credit: 'credit',
+  }
 end

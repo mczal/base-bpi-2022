@@ -5,7 +5,7 @@ module Admin
     class ActionsController < Admin::AccountsController
       def import
         if !parser_service.run
-          return redirect_to admin_accounts_path, 
+          return redirect_to admin_accounts_path,
             alert: parser_service.error_messages.join('<br/>')
         end
 
@@ -21,12 +21,12 @@ module Admin
       end
 
       private
-      def parser_service        
-        @parser_service ||= ::Accounts::ParserService.new(
-          params[:file],
-          current_user.company.id
-        )
-      end
+        def parser_service
+          @parser_service ||= ::Accounts::ParserService.new(
+            params[:file],
+            current_user.company.id
+          )
+        end
 
     end
   end
