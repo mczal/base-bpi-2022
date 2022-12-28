@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_27_024214) do
+ActiveRecord::Schema.define(version: 2022_12_27_141805) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -158,6 +158,8 @@ ActiveRecord::Schema.define(version: 2022_12_27_024214) do
     t.uuid "master_business_unit_location_id"
     t.uuid "master_business_unit_area_id"
     t.uuid "master_business_unit_activity_id"
+    t.decimal "rate_cents", default: "0.0", null: false
+    t.string "rate_currency", default: "IDR", null: false
     t.index ["general_transaction_id"], name: "index_general_transaction_lines_on_general_transaction_id"
     t.index ["master_business_unit_activity_id"], name: "gtl_mbuact"
     t.index ["master_business_unit_area_id"], name: "gtl_mbuare"

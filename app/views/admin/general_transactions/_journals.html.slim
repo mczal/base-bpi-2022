@@ -1,5 +1,7 @@
 .card-body
-  .table-responsive
+  .table-responsive[
+    style="max-height:50vh;"
+  ]
     table.table.table-head-custom.table-head-bg.table-borderless.table-vertical-center[
       style="overflow-x:scroll;"
     ]
@@ -11,7 +13,7 @@
           th[style="width: 100px;"]
             span
               | Tanggal
-          th[style="width: 110px;"]
+          th.vertical-sticky[style="width: 110px;"]
             span
               | Akun
           th[style="width: 110px;"]
@@ -53,7 +55,7 @@
                       rect[fill="#000000" x="11" y="7" width="2" height="2" rx="1"]
                 span.font-weight-bolder
                   | #{readable_date_3 journal.date}
-            td
+            td.vertical-sticky
               span[style="overflow: visible; position: relative; width: 110px;"]
                 div
                   b
@@ -63,20 +65,20 @@
             td
               span[style="overflow: visible; position: relative; width: 110px;"]
                 span.font-weight-bolder
-                  = (journal.debit_idr != 0 ? journal.debit_idr.format : '-')
+                  = (journal.debit_idr != 0 ? print_money(journal.debit_idr) : '-')
             td
               span[style="overflow: visible; position: relative; width: 110px;"]
                 span.font-weight-bolder
-                  = (journal.credit_idr != 0 ? journal.credit_idr.format : '-')
+                  = (journal.credit_idr != 0 ? print_money(journal.credit_idr) : '-')
             td
               span[style="overflow: visible; position: relative; width: 110px;"]
                 span.font-weight-bolder
-                  = journal.rate_money.format
+                  = print_money journal.rate_money
             td
               span[style="overflow: visible; position: relative; width: 110px;"]
                 span.font-weight-bolder
-                  = (journal.debit_usd != 0 ? journal.debit_usd.format : '-')
+                  = (journal.debit_usd != 0 ? print_money(journal.debit_usd) : '-')
             td
               span[style="overflow: visible; position: relative; width: 110px;"]
                 span.font-weight-bolder
-                  = (journal.credit_usd != 0 ? journal.credit_usd.format : '-')
+                  = (journal.credit_usd != 0 ? print_money(journal.credit_usd) : '-')

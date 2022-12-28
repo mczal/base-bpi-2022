@@ -2,7 +2,13 @@
 
 module GeneralTransactionLines
   module SetupJournals extend ActiveSupport::Concern
+    included do
+      after_create :setup_journals
+    end
+
     def setup_journals
+      return unless self.general_transaction.accepted?
+
       journal = Journal.find_or_initialize_by(
         journalable_type: self.class.to_s,
         journalable_id: self.id,
@@ -17,7 +23,10 @@ module GeneralTransactionLines
         credit_idr: (self.credit? ? self.idr : 0),
         debit_usd: (self.debit? ? self.usd : 0),
         credit_usd: (self.credit? ? self.usd : 0),
-        rates_options: self.general_transaction.fixed_rates_options,
+        rates_options: {
+          id: self.general_transaction.fixed_rates_options['id'],
+          price: self.rate.amount
+        },
       )
       journal.save! if journal.new_record? || journal.changed?
     end

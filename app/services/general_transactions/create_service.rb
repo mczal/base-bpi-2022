@@ -17,7 +17,7 @@ module GeneralTransactions
       def attributes
         @attributes ||= @params.require(:general_transaction).permit(
           :date, :number_evidence, :input_option,
-          :rates_source, :rates_group,
+          :rates_source, :rates_group, :status,
           fixed_rates_options: %i[id],
           end_of_period_rates_options: %i[month year],
           files: [],
@@ -25,7 +25,7 @@ module GeneralTransactions
             :group, :code, :is_master_business_units_enabled,
             :master_business_unit_id, :master_business_unit_location_id,
             :master_business_unit_area_id, :master_business_unit_activity_id,
-            :description, :price_idr, :price_usd
+            :description, :price_idr, :price_usd, :rate
           ]
         ).merge({company: @company})
       end

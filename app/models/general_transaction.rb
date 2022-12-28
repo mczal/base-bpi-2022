@@ -1,5 +1,6 @@
 class GeneralTransaction < ApplicationRecord
   audited
+  include PgSearch::Model
   include Approvable::AfterHooks
   include GeneralTransactions::Approvals
   include GeneralTransactions::AssignDefaultValues
@@ -33,6 +34,12 @@ class GeneralTransaction < ApplicationRecord
 
   accepts_nested_attributes_for :general_transaction_lines
 
+  pg_search_scope :search,
+    against: %i[number_evidence],
+    using: {
+      tsearch: { prefix: true, any_word: true, negation: true }
+    }
+
   def closed_book
     closed_journals = ClosedJournal.where("date >= ?", self.date)
     if closed_journals.present?
@@ -47,7 +54,7 @@ class GeneralTransaction < ApplicationRecord
     @rate_instance ||= Rate.find_by(id: self.fixed_rates_options['id'])
   end
   def rate_money
-    @rate_money ||= rate_instance.middle.to_money
+    @rate_money ||= rate_instance&.middle.to_money
   end
   def journals
     @journals ||= Journal.where(

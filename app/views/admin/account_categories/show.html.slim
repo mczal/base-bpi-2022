@@ -1,0 +1,71 @@
+#kt_content.content.d-flex.flex-column.flex-column-fluid
+  #kt_subheader.subheader.py-2.py-lg-6.subheader-solid
+    .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+      .d-flex.align-items-center.flex-wrap.mr-1
+        button#kt_subheader_mobile_toggle.burger-icon.burger-icon-left.mr-4.d-inline-block.d-lg-none[data-controller="base--mobile-mode"]
+          span
+        .d-flex.align-items-baseline.flex-wrap.mr-5
+          h5.text-dark.font-weight-bold.my-1.mr-5
+            | Kategori Akun
+            span.mx-2
+              | |
+            span.font-weight-normal #{@account_category.code}
+            / span.ml-2
+              span.text-success.font-size-sm.font-weight-bold.text-hover-primary[style="width:inherit;"]
+                i.far.fa-check-circle.text-success
+                |  Disetujui 
+      #kt_subheader_search.d-flex.align-items-center
+        .ml-0.ml-sm-2
+          a.btn.btn-light-primary.font-weight-bold.ml-2[data-action="click->admin--edit#handleClick" data-admin--edit-path="/bpi/general_transactions/1374ecec-2c63-42ec-b649-9eb7b93e365d/edit" data-controller="admin--edit" data-target="#Edit" data-toggle="modal" href="javascript:void(0);"]
+            i.la.la-pencil-alt
+            |  Ubah 
+  .d-flex.flex-column-fluid.mb-3
+    .container
+      .d-flex.flex-row
+        #kt_profile_aside.flex-row-auto.offcanvas-mobile.w-300px.w-xl-400px
+          .fixed_position_card.card.card-custom
+            .card-header
+              .card-title
+                | Informasi Umum
+            .card-body.pt-4
+              .pt-2.pb-1
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2
+                    | Dibuat:
+                  .text-right
+                    | #{readable_timestamp_3 @account_category.created_at.localtime}
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2
+                    | Diubah:
+                  .text-right
+                    | #{readable_timestamp_3 @account_category.updated_at.localtime}
+              .pt-3.pb-3
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2
+                    | Range Kode:
+                  b.text-right
+                    | #{@account_category.code}
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2
+                    | Deskripsi:
+                  b.text-right
+                    | #{@account_category.description}
+        .flex-row-fluid.ml-lg-8
+          .card.card-custom.card-stretch.gutter-b
+            .card-header.border-0.pt-5
+              .card-title.font-weight-bolder
+                .card-label
+                  ul#myTab.nav.nav-tabs[role="tablist"]
+                    li.nav-item
+                      a#home-tab12a.nav-link.active[data-toggle="tab" href="#documents"]
+                        span.nav-icon
+                          i.flaticon2-layers-1
+                        span.nav-text
+                          | Daftar Akun
+            #myTabContent.tab-content.mt-5
+              #documents.tab-pane.fade.active.show[aria-labelledby="documents" role="tabpanel"]
+                .card-body.pt-0
+                  #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
+                    data-admin--accounts--index-data-path="#{api_admin_accounts_index_path(slug: current_company.slug, account_category_id: @account_category.id)}"
+                    data-controller="admin--accounts--index"
+                  ]

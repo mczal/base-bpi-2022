@@ -40,6 +40,11 @@ Rails.application.routes.draw do
       to: 'master_business_units#edit',
       as: :edit_master_business_unit
 
+    resources :account_categories, only: %i[index show update destroy create]
+    post 'account_categories/:id/edit',
+      to: 'account_categories#edit',
+      as: :edit_account_category
+
     resources :journals
     namespace :journals do
       post 'actions/export',
@@ -133,6 +138,9 @@ Rails.application.routes.draw do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :master_business_units do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :account_categories do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :companies do

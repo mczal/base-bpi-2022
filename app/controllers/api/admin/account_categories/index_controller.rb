@@ -2,7 +2,7 @@
 
 module Api
   module Admin
-    module MasterBusinessUnits
+    module AccountCategories
       class IndexController < Api::ApplicationController
         def show
           render json: result
@@ -16,28 +16,28 @@ module Api
           }
         end
 
-        def master_business_units
-          return @master_business_units if @master_business_units.present?
+        def account_categories
+          return @account_categories if @account_categories.present?
 
-          @master_business_units = MasterBusinessUnit
+          @account_categories = AccountCategory
             # .where(company_id: current_company.id)
-            .order(group: :asc, code: :asc)
+            .order(code: :asc)
 
           if sort.present?
-            @master_business_units = @master_business_units
+            @account_categories = @account_categories
               .reorder("#{sort[:field]}": sort[:sort])
           end
 
           if query.present? && query.dig(:search).present?
-            @master_business_units = @master_business_units
+            @account_categories = @account_categories
               .search(query[:search])
           end
 
-          @master_business_units
+          @account_categories
         end
 
-        def paginated_master_business_units
-          @paginated_master_business_units ||= master_business_units
+        def paginated_account_categories
+          @paginated_account_categories ||= account_categories
             .page(page[:page])
             .per(page[:perpage])
         end
@@ -57,9 +57,9 @@ module Api
         def meta
           {
             page: page[:page],
-            pages: paginated_master_business_units.total_pages,
+            pages: paginated_account_categories.total_pages,
             perpage: page[:perpage],
-            total: paginated_master_business_units.total_count
+            total: paginated_account_categories.total_count
           }
         end
 
@@ -67,16 +67,17 @@ module Api
           return @data if @data.present?
 
           @data = {}
-          paginated_master_business_units.each_with_index do |master_business_unit, index|
+          paginated_account_categories.each_with_index do |account_category, index|
             i = index + start_index
             @data[i] = {
               index: i,
-              id: master_business_unit.id,
-              code: master_business_unit.code,
-              description: master_business_unit.description,
-              group: master_business_unit.group.titlecase,
-              edit_path: admin_edit_master_business_unit_path(id: master_business_unit.id,slug: current_company.slug),
-              delete_path: admin_master_business_unit_path(id: master_business_unit.id, slug: current_company.slug)
+              id: account_category.id,
+              code: account_category.code,
+              description: account_category.description,
+              accounts_count: account_category.accounts.count,
+              show_path: admin_account_category_path(id: account_category.id,slug: current_company.slug),
+              edit_path: admin_edit_account_category_path(id: account_category.id,slug: current_company.slug),
+              delete_path: admin_account_category_path(id: account_category.id, slug: current_company.slug)
             }
           end
 

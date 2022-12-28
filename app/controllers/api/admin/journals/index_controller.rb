@@ -73,13 +73,13 @@ module Api
             paginated_journals.each_with_index do |journal, index|
               i = index + start_index
 
-              if !@number_evidence.present? || @number_evidence != journal.number_evidence
+              # if !@number_evidence.present? || @number_evidence != journal.number_evidence
                 number_evidence = journal.number_evidence
                 date = helpers.readable_date_3(journal.date)
-              else
-                number_evidence = ''
-                date = ''
-              end
+              # else
+                # number_evidence = ''
+                # date = ''
+              # end
 
               @data[i] = {
                 index: i,
@@ -89,13 +89,15 @@ module Api
                 date: date,
                 code: journal.code,
                 account_name: journal.account.name,
+                account_category_description: journal.account.account_category.description,
+                account_category_range: journal.account.account_category.code,
                 number_evidence: number_evidence,
                 description: journal.description,
-                debit_idr: (journal.debit_idr != 0 ? journal.debit_idr.format : '-'),
-                credit_idr: (journal.credit_idr != 0 ? journal.credit_idr.format : '-'),
-                debit_usd: (journal.debit_usd != 0 ? journal.debit_usd.format : '-'),
-                credit_usd: (journal.credit_usd != 0 ? journal.credit_usd.format : '-'),
-                rates_value: journal.rate_money.format,
+                debit_idr: (journal.debit_idr != 0 ? helpers.print_money(journal.debit_idr) : '-'),
+                credit_idr: (journal.credit_idr != 0 ? helpers.print_money(journal.credit_idr) : '-'),
+                debit_usd: (journal.debit_usd != 0 ? helpers.print_money(journal.debit_usd) : '-'),
+                credit_usd: (journal.credit_usd != 0 ? helpers.print_money(journal.credit_usd) : '-'),
+                rates_value: helpers.print_money(journal.rate_money),
                 source_path: journal.source_path,
                 delete_path: admin_journal_path(id: journal.id, slug: current_company.slug)
               }

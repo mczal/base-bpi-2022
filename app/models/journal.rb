@@ -23,7 +23,7 @@ class Journal < ApplicationRecord
     @rate_instance ||= Rate.find_by(id: self.rates_options['id'])
   end
   def rate_money
-    @rate_money ||= rate_instance.middle.to_money
+    @rate_money ||= self.rates_options['price'].to_money
   end
 
   def account

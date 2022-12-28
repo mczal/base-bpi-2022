@@ -1,3 +1,16 @@
+scss:
+  table thead tr {
+    & th {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index:10;
+    }
+    &:nth-child(2) th {
+      top: 47px;
+    }
+  }
+
 #kt_content.content.d-flex.flex-column.flex-column-fluid
   #kt_subheader.subheader.py-2.py-lg-6.subheader-solid
     .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
@@ -66,15 +79,16 @@
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Nilai:
                     b.text-right
-                      | #{@general_transaction.rate_money.format}
+                      | #{print_money @general_transaction.rate_money}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Sumber:
                     b.text-right
-                      | #{@general_transaction.rates_source.titlecase}
+                      | #{@general_transaction.rates_source.to_s.titlecase}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Tanggal:
                     b.text-right
-                      | #{readable_date_2 @general_transaction.rate_instance.published_date}
+                      - if @general_transaction.rate_instance.present?
+                        | #{readable_date_2 @general_transaction.rate_instance.published_date}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2.text-hover-primary[
                       data-title="Tipe KURS"

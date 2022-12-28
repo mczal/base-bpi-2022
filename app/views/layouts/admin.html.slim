@@ -24,7 +24,6 @@ html lang="en"
     = render "layouts/stylesheet/css"
 
   body#kt_body.header-fixed.header-mobile-fixed.subheader-enabled.subheader-fixed.aside-enabled.aside-fixed.aside-minimize-hoverable.page-loading[
-    data-turbolinks='false'
     class="#{'aside-minimize' if request.original_fullpath.match(/^\/#{current_company.slug}\/journals\/?/)}"
   ]
     - if flash.present?

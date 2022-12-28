@@ -61,6 +61,7 @@ export default class extends DatatablesController {
         title: 'Nomor Bukti',
         autoHide: false,
         overflow: 'visible',
+        sortable: false,
         template: function(data) {
           if(!data.number_evidence){
             return '';
@@ -80,9 +81,21 @@ export default class extends DatatablesController {
         title: 'Akun',
         autoHide: false,
         overflow: 'visible',
+        sortable: false,
+        width: '150',
         template: function(data) {
           return `
             <div>
+              <span data-controller="base--popover" data-base--popover-html="1" data-base--popover-trigger="hover" data-content="<div><b>${data.account_category_description}</b></div><div>${data.account_category_range}</div>" class="svg-icon svg-icon-light-dark" style="cursor:pointer;">
+                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                    <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                        <rect x="0" y="0" width="24" height="24"/>
+                        <circle fill="#000000" opacity="0.3" cx="12" cy="12" r="10"/>
+                        <rect fill="#000000" x="11" y="10" width="2" height="7" rx="1"/>
+                        <rect fill="#000000" x="11" y="7" width="2" height="2" rx="1"/>
+                    </g>
+                </svg>
+              </span>
               <b>${data.code}</b>
             </div>
             <div>
@@ -96,6 +109,8 @@ export default class extends DatatablesController {
         title: 'Deskripsi',
         autoHide: false,
         overflow: 'visible',
+        sortable: false,
+        width: '350',
         template: function(data) {
           return `${data.description}`;
         }
@@ -105,6 +120,7 @@ export default class extends DatatablesController {
         title: 'Debit (IDR)',
         autoHide: false,
         overflow: 'visible',
+        sortable: false,
         template: function(data) {
           return `<span class="font-weight-bolder">${data.debit_idr}</span>`;
         }
@@ -113,6 +129,7 @@ export default class extends DatatablesController {
         field: 'credit_idr',
         title: 'Kredit (IDR)',
         autoHide: false,
+        sortable: false,
         overflow: 'visible',
         template: function(data) {
           return `<span class="font-weight-bolder">${data.credit_idr}</span>`;
@@ -123,6 +140,7 @@ export default class extends DatatablesController {
         title: 'Kurs',
         autoHide: false,
         sortable: false,
+        sortable: false,
         overflow: 'visible',
         template: function(data) {
           return `<span class="font-weight-bolder">${data.rates_value}</span>`;
@@ -132,6 +150,7 @@ export default class extends DatatablesController {
         field: 'debit_usd',
         title: 'Debit (USD)',
         autoHide: false,
+        sortable: false,
         overflow: 'visible',
         template: function(data) {
           return `<span class="font-weight-bolder">${data.debit_usd}</span>`;
@@ -141,6 +160,7 @@ export default class extends DatatablesController {
         field: 'credit_usd',
         title: 'Kredit (USD)',
         autoHide: false,
+        sortable: false,
         overflow: 'visible',
         template: function(data) {
           return `<span class="font-weight-bolder">${data.credit_usd}</span>`;
