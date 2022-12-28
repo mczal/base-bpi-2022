@@ -15,6 +15,7 @@ module Accounts
               type="checkbox" #{checked}
               name="select"
               data-toggle-report-category-path="#"
+              disabled="disabled"
             >
             <span></span>
           </label>

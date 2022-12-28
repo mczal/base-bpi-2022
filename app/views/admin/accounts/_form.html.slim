@@ -1,64 +1,86 @@
-.modal-body
-  .form-group
-    label Kode Akun
-    .input-group
-      input.form-control[
-        name="account[code]"
-        placeholder=("Kode Akun")
-        type="text"
-        value="#{@account&.code}"
+= form_for [:admin,@account] do |f|
+  .modal-header
+    h5#exampleModalLabel.modal-title
+      span
+        - if @account.new_record?
+          | New
+        - else
+          | Edit
+      span.mx-2
+        | |
+      span.font-weight-normal
+        | Akun
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      i.ki.ki-close aria-hidden="true"
+  .modal-body
+    .row.mb-5
+      .col-lg-6.form-group[
+        style="margin-bottom:5px;"
       ]
-  .form-group
-    label Nama Akun
-    .input-group
-      input.form-control[
-        name="account[name]"
-        placeholder=("Nama Akun")
-        type="text"
-        value="#{@account&.name}"
+        label
+          | Kode
+          span.text-danger.ml-1 *
+        = f.text_field :code,
+          placeholder: 'Kode',
+          class: 'form-control',
+          required:1, required: 1
+      .col-lg-6.form-group[
+        style="margin-bottom:5px;"
       ]
-
-  .form-group
-    label Tipe Saldo
-    .col-12.px-0
-      = select_tag 'account[group]',
-        options_for_select(["DEBET", "KREDIT"], @account&.balance_type),
-        include_blank: '== Pilih ==',
-        class: 'form-control font-size-sm',
-        style: 'width: 100%;',
-        data: { controller: 'select2' }
-
-  .form-group
-    label Tipe Akun
-    .col-12.px-0
-      = select_tag 'account[group]',
-        options_for_select(["AKTIVA/ASET", "KEWAJIBAN", "MODAL", "PENDAPATAN ", "BIAYA/BEBAN"], @account&.account_type),
-        include_blank: '== Pilih ==',
-        class: 'form-control font-size-sm',
-        style: 'width: 100%;',
-        data: { controller: 'select2' }
-
-  .form-group
-    label Subklasifikasi
-    .col-12.px-0
-      input.form-control[
-        name="account[name]"
-        placeholder=("Subclassification")
-        type="text"
-        value="#{@account&.subclassification}"
-      ]
-
-  .form-group
-    label Subklasifikasi EN
-    .col-12.px-0
-      input.form-control[
-        name="account[name]"
-        placeholder=("Subclassification EN")
-        type="text"
-        value="#{@account&.subclassification_en}"
-      ]
-
-
-.modal-footer
-  a.btn.btn-light-primary.font-weight-bold href="#{admin_accounts_path(slug: current_company.slug)}" data-dismiss="modal" type="button"  Batal
-  = f.submit "Simpan", class: "btn btn-primary"
+        label
+          | Nama
+          span.text-danger.ml-1 *
+        = f.text_field :name,
+          placeholder: 'Nama',
+          class: 'form-control',
+          required:1, required: 1
+    .row
+      .col-lg-6.form-group
+        label
+          | Debit / Kredit
+          span.text-danger.ml-1 *
+        .checkbox-inline
+          label.checkbox
+            = f.radio_button :balance_type, 'debit', required: 1
+            span
+            | Debit
+          label.checkbox
+            = f.radio_button :balance_type, 'kredit', required: 1
+            span
+            | Kredit
+      .col-lg-6.form-group
+        label
+          | Tipe Laporan
+        .checkbox-inline
+          label.checkbox
+            = f.check_box :isak_16
+            span
+            | ISAK-16
+          label.checkbox
+            = f.check_box :non_isak
+            span
+            | Non-ISAK
+          label.checkbox
+            = f.check_box :fiskal
+            span
+            | FISKAL
+    .form-group[
+      style="margin-bottom:5px;"
+    ]
+      label
+        | Kategori
+        span.text-danger.ml-1 *
+      = f.select :account_category_id,
+        options_from_collection_for_select(AccountCategory.select(:id, :code, :description), :id, :readable_name, @account.account_category_id),
+        {include_blank: '== Pilih =='},
+        placeholder: 'Tipe',
+        class: 'form-control',
+        data: { controller: 'select2' },
+        id: "a-#{SecureRandom.uuid}",
+        required: 1
+  .modal-footer
+    button.btn.btn-light-primary.font-weight-bold[
+      data-dismiss="modal"
+      type="button"
+    ] Batal
+    = f.submit "Simpan", class: "btn btn-outline-success"

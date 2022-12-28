@@ -20,4 +20,12 @@ class Account < ApplicationRecord
     using: {
       tsearch: { prefix: true, any_word: true, negation: true }
     }
+
+  def journals
+    @journals ||= Journal.where(code: self.code)
+  end
+
+  def general_transaction_lines
+    @general_transaction_lines ||= GeneralTransactionLine.where(code: self.code)
+  end
 end

@@ -1,53 +1,51 @@
 class Admin::AccountsController < AdminController
-  before_action :account, only: [:edit, :update, :destroy]
+  before_action :account, only: %i[edit]
 
   def index
-    @new_account = Account.new
-    @total_account = Account.where(company: current_company).count
-    @accounts = Account
-      .where(company: current_company)
-      .order(code: :asc)
-      .page(params[:page])
-      .per(10) 
+    @account = Account.new
   end
 
   def create
-    new_account = Account.new(account_params)
-    new_account.company = current_company 
-
-    if new_account.save      
-      return redirect_to admin_accounts_path, notice: "Account created"
+    service = ::Accounts::CreateService.new(params, current_company)
+    if !service.run
+      flash[:danger] = "Gagal. #{service.full_error_messages_html}"
+      return redirect_to admin_accounts_path(slug: params[:slug])
     end
 
-    redirect_to admin_accounts_path, alert: new_account.errors.full_messages.join(", ")
+    flash[:success] = "Berhasil!"
+    redirect_to admin_accounts_path(slug: params[:slug])
   end
 
-  def update    
-    if account.update(account_params)      
-      return redirect_to admin_accounts_path, notice: "Account updated"
+  def edit
+    render partial: 'form'
+  end
+
+  def update
+    service = ::Accounts::UpdateService.new(params)
+    if !service.run
+      flash[:danger] = "Gagal. #{service.full_error_messages_html}"
+      return redirect_to admin_accounts_path(slug: params[:slug])
     end
-    
-    redirect_to admin_accounts_path, alert: account.errors.full_messages.join(", ")    
+
+    flash[:success] = "Berhasil!"
+    redirect_to admin_accounts_path(slug: params[:slug])
   end
 
   def destroy
-    if @account.destroy
-      flash[:success] = "Account deleted"
-      redirect_to admin_accounts_path
-    else
-      flash[:error] = "Account not deleted"
-      redirect_to admin_accounts_path
+    ActiveRecord::Base.transaction do
+      if account.general_transaction_lines.present? || account.journals.present?
+        flash[:danger] = "Gagal. Akun tidak bisa dihapus, masih ada data transaksi yang berhubungan dengan akun ini."
+        return redirect_back fallback_location: admin_accounts_path(slug: params[:slug])
+      end
+
+      account.destroy!
+      flash[:success] = "Berhasil!"
+      return redirect_to admin_accounts_path(slug: params[:slug])
     end
   end
 
   private
-  def account
-    @account = Account.find(params[:id])
-  end
-  
-  def account_params
-    params.require(:account).permit(:code, :name, :balance_type, 
-      :account_type, :subclassification, :subclassification_en
-    )
-  end
+    def account
+      @account = Account.find(params[:id])
+    end
 end

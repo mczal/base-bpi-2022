@@ -9,4 +9,8 @@ class AccountCategory < ApplicationRecord
     using: {
       tsearch: { prefix: true, any_word: true, negation: true }
     }
+
+  def readable_name
+    "#{code} | #{description}"
+  end
 end

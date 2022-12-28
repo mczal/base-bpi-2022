@@ -3,7 +3,6 @@
     .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
       .d-flex.align-items-center.flex-wrap.mr-2
         h5.text-dark.font-weight-bold.mt-2.mb-2.mr-2 Daftar Akun
-
       #kt_subheader_search.d-flex.align-items-center
         .ml-0.ml-sm-2
           .input-group.input-group-sm.input-group-solid style=("max-width: 250px")
@@ -28,8 +27,8 @@
               | List Akun
               br
               span.font-size-sm.text-dark-50.font-weight-bold
-                | Total #{@total_account} Akun
-          / .card-toolbar.justify-content-end
+                | Total #{Account.count} Akun
+          .card-toolbar.justify-content-end
             .dropdown.dropdown-inline.mr-2.mb-2
               button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
                 aria-expanded="false"
@@ -61,13 +60,17 @@
                         ]
                         i.nav-icon.la.la-file-excel-o
                         span.nav-text.ml-2 Import Data Akun Excel
-
-            / button.btn.btn-primary.font-weight-bolder.mb-2 data-target="#add" data-toggle="modal" type="button"
+            button.btn.btn-primary.font-weight-bolder.mb-2[
+              data-target="#add"
+              data-toggle="modal"
+              type="button"
+            ]
               i.la.la-plus
-              | Tambah Akun
-            / = render "admin/accounts/add_account", new_account: @new_account
+              | Tambah Master Business Unit
+            = render partial: 'new'
 
         .card-body
+          = render partial: 'edit'
           #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
             data-admin--accounts--index-data-path=api_admin_accounts_index_path(slug: current_company.slug)
             data-controller="admin--accounts--index"

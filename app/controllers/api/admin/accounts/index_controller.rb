@@ -82,10 +82,7 @@ module Api
                 balance_type: account.balance_type,
                 report_categories: account.report_categories_for_checkbox,
                 account_category: account.account_category.description,
-                # account_type: account.account_type,
-                # subclassification: account.subclassification,
-                # subclassification_en: account.subclassification_en,
-                edit_partial_path: edit_admin_account_path(id: account.id,slug: current_company.slug),
+                edit_path: admin_edit_account_path(id: account.id,slug: current_company.slug),
                 delete_path: admin_account_path(id: account.id, slug: current_company.slug)
               }
             end

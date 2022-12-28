@@ -25,7 +25,10 @@ Rails.application.routes.draw do
       to: 'general_transactions#edit',
       as: :edit_general_transaction
 
-    resources :accounts
+    resources :accounts, only: %i[index show update destroy create]
+    post 'accounts/:id/edit',
+      to: 'accounts#edit',
+      as: :edit_account
     namespace :accounts do
       get "actions/download_template",
         to: "actions#download_template",

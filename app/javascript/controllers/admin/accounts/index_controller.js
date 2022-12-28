@@ -83,11 +83,15 @@ export default class extends DatatablesController {
         autoHide: false,
         template: function(data) {
           return `
-            <!--
-            <a href="${data.edit_partial_path}" class="btn btn-sm btn-clean btn-icon">
-              <i class="la la-edit"></i>
+            <a href="javascript:void(0);" class="btn btn-sm btn-clean btn-icon"
+              data-toggle="modal"
+              data-target="#Edit"
+              data-controller="admin--edit"
+              data-action="click->admin--edit#handleClick"
+              data-admin--edit-path="${data.edit_path}"
+            >
+              <i class="la la-edit text-warning"></i>
             </a>
-            -->
             <a href="${data.delete_path}" data-method="delete" data-confirm="Apakah anda yakin ingin menghapus akun ini?" class="btn btn-sm btn-clean btn-icon" title="Delete">
               <i class="la la-trash text-danger"></i>
             </a>
