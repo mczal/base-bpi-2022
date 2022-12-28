@@ -40,6 +40,11 @@ Rails.application.routes.draw do
       to: 'master_business_units#edit',
       as: :edit_master_business_unit
 
+    resources :clients, only: %i[index show update destroy create]
+    post 'clients/:id/edit',
+      to: 'clients#edit',
+      as: :edit_client
+
     resources :account_categories, only: %i[index show update destroy create]
     post 'account_categories/:id/edit',
       to: 'account_categories#edit',
@@ -144,6 +149,9 @@ Rails.application.routes.draw do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :companies do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :clients do
         post 'get-all', to: 'index#show', as: :index
       end
     end

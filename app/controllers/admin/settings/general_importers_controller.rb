@@ -27,12 +27,13 @@ module Admin
       private
         def services
           @services ||= [
-            # master_business_units_service,
-            # account_categories_service,
-            # accounts_service,
-            # account_master_business_units_service,
-            # account_beginning_balances_service,
+            master_business_units_service,
+            account_categories_service,
+            accounts_service,
+            account_master_business_units_service,
+            account_beginning_balances_service,
             journals_service,
+            clients_service,
           ]
         end
 
@@ -53,6 +54,9 @@ module Admin
         end
         def journals_service
           @journals_service = ::Journals::ImporterService.new(params[:file])
+        end
+        def clients_service
+          @clients_service = ::Clients::ImporterService.new(params[:file])
         end
     end
   end

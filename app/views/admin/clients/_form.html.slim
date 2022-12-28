@@ -1,0 +1,90 @@
+= form_for [:admin,@client] do |f|
+  .modal-header
+    h5#exampleModalLabel.modal-title
+      span
+        - if @client.new_record?
+          | New
+        - else
+          | Edit
+      span.mx-2
+        | |
+      span.font-weight-normal
+        | Client
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      i.ki.ki-close aria-hidden="true"
+  .modal-body
+    .row
+      .form-group.col-lg-6
+        label
+          | Nama
+          span.text-danger.ml-1 *
+        = f.text_field :name,
+          placeholder: 'Nama',
+          class: 'form-control',
+          required: 1
+      .form-group.col-lg-6
+        label NPWP
+        = f.text_field :npwp,
+          placeholder: 'Kode',
+          class: 'form-control'
+    .row.mb-5
+      .col-lg-6.form-group[
+        style="margin-bottom:5px;"
+      ]
+        label
+          | Tipe PKP
+        .checkbox-inline
+          label.checkbox
+            = f.radio_button :pkp_group, 'pkp'
+            span
+            | PKP
+          label.checkbox
+            = f.radio_button :pkp_group, 'non_pkp'
+            span
+            | NON PKP
+      .col-lg-6.form-group[
+        style="margin-bottom:5px;"
+      ]
+        label
+          | Tipe Client
+        .checkbox-inline
+          label.checkbox
+            = f.radio_button :group, 'vendor'
+            span
+            | Vendor
+          label.checkbox
+            = f.radio_button :group, 'customer'
+            span
+            | Customer
+          label.checkbox
+            = f.radio_button :group, 'other'
+            span
+            | Lainnya
+    .row
+      .form-group.col-lg-6
+        label
+          | No. HP
+        = f.text_field :phone_number,
+          placeholder: 'No. HP',
+          class: 'form-control'
+      .form-group.col-lg-6
+        label
+          | Email
+        = f.email_field :email,
+          placeholder: 'Email',
+          class: 'form-control'
+    .form-group
+      label
+        | Alamat
+      = f.text_area :address,
+        placeholder: 'Alamat',
+        class: 'form-control',
+        style: 'height:75px;'
+  .modal-footer
+    button.btn.btn-light-primary.font-weight-bold[
+      data-dismiss="modal"
+      type="button"
+    ] Batal
+    = f.submit "Simpan", class: "btn btn-outline-success"
+
+

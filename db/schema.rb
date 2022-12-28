@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_27_141805) do
+ActiveRecord::Schema.define(version: 2022_12_28_062731) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -124,6 +124,32 @@ ActiveRecord::Schema.define(version: 2022_12_27_141805) do
     t.index ["created_at"], name: "index_audits_on_created_at"
     t.index ["request_uuid"], name: "index_audits_on_request_uuid"
     t.index ["user_id", "user_type"], name: "user_index"
+  end
+
+  create_table "banks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.string "code"
+  end
+
+  create_table "clients", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "name"
+    t.string "email"
+    t.string "phone_number"
+    t.text "address"
+    t.string "npwp"
+    t.string "account_bank"
+    t.string "account_number"
+    t.string "account_name"
+    t.string "group"
+    t.string "pkp_group"
+    t.uuid "bank_id"
+    t.uuid "company_id"
+    t.index ["bank_id"], name: "index_clients_on_bank_id"
+    t.index ["company_id"], name: "index_clients_on_company_id"
   end
 
   create_table "closed_journals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -284,6 +310,8 @@ ActiveRecord::Schema.define(version: 2022_12_27_141805) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "approvals", "users"
+  add_foreign_key "clients", "banks"
+  add_foreign_key "clients", "companies"
   add_foreign_key "general_transaction_lines", "general_transactions"
   add_foreign_key "general_transaction_lines", "master_business_units"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_activity_id"

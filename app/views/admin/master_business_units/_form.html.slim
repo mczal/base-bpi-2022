@@ -1,6 +1,15 @@
 = form_for [:admin,@master_business_unit] do |f|
   .modal-header
-    h5#exampleModalLabel.modal-title Master Business Unit
+    h5#exampleModalLabel.modal-title
+      span
+        - if @master_business_unit.new_record?
+          | New
+        - else
+          | Edit
+      span.mx-2
+        | |
+      span.font-weight-normal
+        | Master Business Unit
     button.close aria-label="Close" data-dismiss="modal" type="button" 
       i.ki.ki-close aria-hidden="true"
   .modal-body
@@ -9,7 +18,9 @@
         .form-group[
           style="margin-bottom:5px;"
         ]
-          label Kode
+          label
+            | Kode
+            span.text-danger.ml-1 *
           = f.text_field :code,
             placeholder: 'Kode',
             class: 'form-control',
@@ -18,7 +29,9 @@
         .form-group[
           style="margin-bottom:5px;"
         ]
-          label Tipe
+          label
+            | Tipe
+            span.text-danger.ml-1 *
           = f.select :group,
             options_for_select(MasterBusinessUnit.groups.keys.map{|x| [x.titlecase,x]}, @master_business_unit.group),
             {include_blank: '== Pilih =='},
@@ -26,11 +39,14 @@
             class: 'form-control',
             required:1, required: 1,
             data: { controller: 'select2' },
-            id: "a-#{SecureRandom.uuid}"
+            id: "a-#{SecureRandom.uuid}",
+            required: 1
     .form-group[
       style="margin-bottom:5px;"
     ]
-      label Deksripsi
+      label
+        | Deksripsi
+        span.text-danger.ml-1 *
       = f.text_area :description,
         placeholder: 'Deskripsi',
         class: 'form-control',

@@ -18,7 +18,9 @@
         .form-group[
           style="margin-bottom:5px;"
         ]
-          label Batas Bawah
+          label
+            | Batas Bawah
+            span.text-danger.ml-1 *
           = f.number_field :bottom_treshold,
             placeholder: 'Batas bawah',
             class: 'form-control',
@@ -27,7 +29,9 @@
         .form-group[
           style="margin-bottom:5px;"
         ]
-          label Batas Atas
+          label
+            | Batas Atas
+            span.text-danger.ml-1 *
           = f.number_field :upper_treshold,
             placeholder: 'Batas bawah',
             class: 'form-control',
@@ -35,7 +39,9 @@
     .form-group[
       style="margin-bottom:5px;"
     ]
-      label Deksripsi
+      label
+        | Deksripsi
+        span.text-danger.ml-1 *
       = f.text_area :description,
         placeholder: 'Deskripsi',
         class: 'form-control',
