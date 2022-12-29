@@ -127,146 +127,37 @@
         i.flaticon2-arrow-down.text-success.mr-1
         | DEBIT
       - if @general_transaction.new_record?
-        div[
-          data-controller=""
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
         ]
-        .js-item-container
-          = hidden_field_tag 'general_transaction[general_transaction_lines_attributes][0][group]', 'debit'
-          .row.mb-2
-            .col-lg-6.form-group[style="margin-bottom:5px;"]
-              label
-                | Kode Akun 
-                span.text-danger.ml-1 *
-              = select_tag 'general_transaction[general_transaction_lines_attributes][0][code]',
-                options_for_select(select_account_options),
-                include_blank: '== Pilih ==',
-                class: 'form-control',
-                placeholder: 'Kode Akun',
-                data: { target: 'base--dynamic-input.input', controller: "select2" },
-                id: "a#{SecureRandom.uuid}", required: 1
-            .col-lg-6.form-group[style="margin-bottom:5px;"]
-              label
-                b Kode Karyawan/Business-Unit?
-              .d-flex.align-items-center.justify-content-start
-                span.switch.switch-icon
-                  label
-                    = check_box_tag 'general_transaction[general_transaction_lines_attributes][0][is_master_business_units_enabled]',
-                      true, false, data: {\
-                        controller: 'admin--general-transactions--master-business-unit-activated',\
-                        action: 'change->admin--general-transactions--master-business-unit-activated#handleChange',\
-                      }
-                    span
-                h6
-                  span.mbu
-                    | _
-                  span.mbul
-                    |  _ _
-                  span.mbuar
-                    |  _ _ _ _ _
-                  span.mbuact
-                    |  _ _ _ _
-                  span.mbuaccount
-                    |  _ _ _ _
-              .mt-5.d-none.js-business-unit
-                .row.mb-3
-                  .col-6.form-group.mb-1
-                    label
-                      | Business Unit
-                      span.text-danger.ml-1 *
-                    .checkbox-list
-                      - MasterBusinessUnit.business_unit.each do |mbu|
-                        label.checkbox
-                          = radio_button_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_id]',
-                            mbu.id, false,
-                            data: {\
-                              controller: 'admin--general-transactions--master-business-unit-change',\
-                              action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
-                              code: mbu.code\
-                            }, required: 1, readonly: 1
-                          span
-                          | #{mbu.readable_name}
-                  .col-6.form-group.mb-1
-                    label
-                      | Business Unit Location
-                      span.text-danger.ml-1 *
-                    .checkbox-list
-                      - MasterBusinessUnit.business_unit_location.each do |mbu|
-                        label.checkbox
-                          = radio_button_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_location_id]',
-                            mbu.id, false,
-                            data: {\
-                              controller: 'admin--general-transactions--master-business-unit-location-change',\
-                              action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
-                              code: mbu.code\
-                            }, required: 1, readonly: 1
-                          span
-                          | #{mbu.readable_name}
-                .form-group[style="margin-bottom:5px;"]
-                  label
-                    | Business Unit Area
-                    span.text-danger.ml-1 *
-                  = select_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_area_id]',
-                    options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
-                    include_blank: '== Pilih ==',
-                    class: 'form-control',
-                    placeholder: 'Business Unit Area',
-                    data: {\
-                      controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
-                    },
-                    id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-                .form-group[style="margin-bottom:5px;"]
-                  label
-                    | Business Unit Activity
-                    span.text-danger.ml-1 *
-                  = select_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_activity_id]',
-                    options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
-                    include_blank: '== Pilih ==',
-                    class: 'form-control',
-                    placeholder: 'Business Unit Activity',
-                    data: {\
-                      controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
-                    },
-                    id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-          .form-group[style="margin-bottom:15px;position:relative;"]
-            label
-              | Deskripsi
-              span.text-danger.ml-1 *
-            = text_area_tag 'general_transaction[general_transaction_lines_attributes][0][description]', '',
-              class: 'form-control',
-              data: {\
-                target: 'base--dynamic-input.input'\
-              }, required: 1
-          .form-group[style="margin-bottom:5px;position:relative;"]
-            label
-              | Nominal
-              span.text-danger.ml-1 *
-          .row.js-general-transactions-nominal-idr-usd
-            .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-              .position-absolute.p-3 IDR
-              = text_field_tag 'general_transaction[general_transaction_lines_attributes][0][price_idr]', nil,
-              class: 'form-control pl-10 js-nominal',
-              data: {\
-                controller: "base--input-price admin--general-transactions--idr-to-usd"\
-              }, required: 1
-            .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-              .position-absolute.p-3 USD
-              = text_field_tag 'general_transaction[general_transaction_lines_attributes][0][price_usd]', nil,
-              class: 'form-control form-control-solid pl-12 js-nominal',
-              data: {\
-                controller: "base--input-price admin--general-transactions--usd-to-idr"\
-              }, readonly: 1, required: 1
-      - else
-        - @general_transaction.general_transaction_lines.debit.each_with_index do |line,i|
-          .js-item-container
-            = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][group]", 'debit'
-            = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][id]", line.id
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          .js-item-container.pl-5.position-relative.mb-4.pb-4[
+            style="border-bottom:1px solid #e8e8e8;"
+          ]
+            .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+              | 1.
+            .position-absolute.right-0.top-0[
+              style="z-index:10;"
+            ]
+              button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                type="button"
+                data-action="click->base--dynamic-input-v2#remove"
+              ]
+                i.fas.fa-times
+            = hidden_field_tag 'general_transaction[general_transaction_lines_attributes][0][group]', 'debit'
             .row.mb-2
               .col-lg-6.form-group[style="margin-bottom:5px;"]
                 label
                   | Kode Akun 
                   span.text-danger.ml-1 *
-                = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][code]",
-                  options_for_select(select_account_options, line.code),
+                = select_tag 'general_transaction[general_transaction_lines_attributes][0][code]',
+                  options_for_select(select_account_options),
                   include_blank: '== Pilih ==',
                   class: 'form-control',
                   placeholder: 'Kode Akun',
@@ -278,315 +169,23 @@
                 .d-flex.align-items-center.justify-content-start
                   span.switch.switch-icon
                     label
-                      = check_box_tag "general_transaction[general_transaction_lines_attributes][#{i}][is_master_business_units_enabled]",
-                        true, line.is_master_business_units_enabled?, data: {\
+                      = check_box_tag 'general_transaction[general_transaction_lines_attributes][0][is_master_business_units_enabled]',
+                        true, false, data: {\
                           controller: 'admin--general-transactions--master-business-unit-activated',\
                           action: 'change->admin--general-transactions--master-business-unit-activated#handleChange',\
                         }
                       span
                   h6
                     span.mbu
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit.code}
-                      - else
-                        | _
+                      | _
                     span.mbul
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit_location.code}
-                      - else
-                        |  _ _
+                      |  _ _
                     span.mbuar
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit_area.code}
-                      - else
-                        |  _ _ _ _ _
+                      |  _ _ _ _ _
                     span.mbuact
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit_activity.code}
-                      - else
-                        |  _ _ _ _
+                      |  _ _ _ _
                     span.mbuaccount
-                      - if line.is_master_business_units_enabled?
-                        | #{line.code}
-                      - else
-                        |  _ _ _ _
-                .mt-5.js-business-unit[
-                  class="#{line.is_master_business_units_enabled? ? '':'d-none'}"
-                ]
-                  .row.mb-3
-                    .col-6.form-group.mb-1
-                      label
-                        | Business Unit
-                        span.text-danger.ml-1 *
-                      .checkbox-list
-                        - MasterBusinessUnit.business_unit.each do |mbu|
-                          label.checkbox
-                            = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_id]",
-                              mbu.id, line.master_business_unit_id.to_s == mbu.id,
-                              data: {\
-                                controller: 'admin--general-transactions--master-business-unit-change',\
-                                action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
-                                code: mbu.code\
-                              }, required: 1, readonly: 1
-                            span
-                            | #{mbu.readable_name}
-                    .col-6.form-group.mb-1
-                      label
-                        | Business Unit Location
-                        span.text-danger.ml-1 *
-                      .checkbox-list
-                        - MasterBusinessUnit.business_unit_location.each do |mbu|
-                          label.checkbox
-                            = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_location_id]",
-                              mbu.id, line.master_business_unit_location_id.to_s == mbu.id,
-                              data: {\
-                                controller: 'admin--general-transactions--master-business-unit-location-change',\
-                                action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
-                                code: mbu.code\
-                              }, required: 1, readonly: 1
-                            span
-                            | #{mbu.readable_name}
-                  .form-group[style="margin-bottom:5px;"]
-                    label
-                      | Business Unit Area
-                      span.text-danger.ml-1 *
-                    = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_area_id]",
-                      options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_area_id),
-                      include_blank: '== Pilih ==',
-                      class: 'form-control',
-                      placeholder: 'Business Unit Area',
-                      data: {\
-                        controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
-                      },
-                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-                  .form-group[style="margin-bottom:5px;"]
-                    label
-                      | Business Unit Activity
-                      span.text-danger.ml-1 *
-                    = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_activity_id]",
-                      options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_activity_id),
-                      include_blank: '== Pilih ==',
-                      class: 'form-control',
-                      placeholder: 'Business Unit Activity',
-                      data: {\
-                        controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
-                      },
-                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-            .form-group[style="margin-bottom:15px;position:relative;"]
-              label
-                | Deskripsi
-                span.text-danger.ml-1 *
-              = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
-                class: 'form-control',
-                data: {\
-                  target: 'base--dynamic-input.input'\
-                }, required: 1
-            .form-group[style="margin-bottom:5px;position:relative;"]
-              label
-                | Nominal
-                span.text-danger.ml-1 *
-            .row.js-general-transactions-nominal-idr-usd
-              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-                .position-absolute.p-3 IDR
-                = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_idr]", line.idr.amount,
-                class: 'form-control pl-10 js-nominal',
-                data: {\
-                  controller: "base--input-price admin--general-transactions--idr-to-usd"\
-                }, required: 1
-              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-                .position-absolute.p-3 USD
-                = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_usd]", line.usd.amount,
-                class: 'form-control form-control-solid pl-12 js-nominal',
-                data: {\
-                  controller: "base--input-price admin--general-transactions--usd-to-idr"\
-                }, readonly: 1, required: 1
-    fieldset
-      legend
-        i.flaticon2-arrow-up.text-danger.mr-1
-        | KREDIT
-      - if @general_transaction.new_record?
-        .js-item-container
-          = hidden_field_tag 'general_transaction[general_transaction_lines_attributes][1][group]', 'credit'
-          .row.mb-2
-            .col-lg-6.form-group[style="margin-bottom:5px;"]
-              label
-                | Kode Akun 
-                span.text-danger.ml-1 *
-              = select_tag 'general_transaction[general_transaction_lines_attributes][1][code]',
-                options_for_select(select_account_options),
-                include_blank: '== Pilih ==',
-                class: 'form-control',
-                placeholder: 'Kode Akun',
-                data: { target: 'base--dynamic-input.input', controller: "select2" },
-                id: "a#{SecureRandom.uuid}", required: 1
-            .col-lg-6.form-group[style="margin-bottom:5px;"]
-              label
-                b Kode Karyawan/Business-Unit?
-              .d-flex.align-items-center.justify-content-start
-                span.switch.switch-icon
-                  label
-                    = check_box_tag 'general_transaction[general_transaction_lines_attributes][1][is_master_business_units_enabled]',
-                      true, false, data: {\
-                        controller: 'admin--general-transactions--master-business-unit-activated',\
-                        action: 'change->admin--general-transactions--master-business-unit-activated#handleChange',\
-                      }
-                    span
-                h6
-                  span.mbu
-                    | _
-                  span.mbul
-                    |  _ _
-                  span.mbuar
-                    |  _ _ _ _ _
-                  span.mbuact
-                    |  _ _ _ _
-                  span.mbuaccount
-                    |  _ _ _ _
-              .mt-5.d-none.js-business-unit
-                .row.mb-3
-                  .col-6.form-group.mb-1
-                    label
-                      | Business Unit
-                      span.text-danger.ml-1 *
-                    .checkbox-list
-                      - MasterBusinessUnit.business_unit.each do |mbu|
-                        label.checkbox
-                          = radio_button_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_id]',
-                            mbu.id, false,
-                            data: {\
-                              controller: 'admin--general-transactions--master-business-unit-change',\
-                              action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
-                              code: mbu.code\
-                            }, required: 1, readonly: 1
-                          span
-                          | #{mbu.readable_name}
-                  .col-6.form-group.mb-1
-                    label
-                      | Business Unit Location
-                      span.text-danger.ml-1 *
-                    .checkbox-list
-                      - MasterBusinessUnit.business_unit_location.each do |mbu|
-                        label.checkbox
-                          = radio_button_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_location_id]',
-                            mbu.id, false,
-                            data: {\
-                              controller: 'admin--general-transactions--master-business-unit-location-change',\
-                              action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
-                              code: mbu.code\
-                            }, required: 1, readonly: 1
-                          span
-                          | #{mbu.readable_name}
-                .form-group[style="margin-bottom:5px;"]
-                  label
-                    | Business Unit Area
-                    span.text-danger.ml-1 *
-                  = select_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_area_id]',
-                    options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
-                    include_blank: '== Pilih ==',
-                    class: 'form-control',
-                    placeholder: 'Business Unit Area',
-                    data: {\
-                      controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
-                    },
-                    id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-                .form-group[style="margin-bottom:5px;"]
-                  label
-                    | Business Unit Activity
-                    span.text-danger.ml-1 *
-                  = select_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_activity_id]',
-                    options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
-                    include_blank: '== Pilih ==',
-                    class: 'form-control',
-                    placeholder: 'Business Unit Activity',
-                    data: {\
-                      controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
-                    },
-                    id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-          .form-group[style="margin-bottom:15px;position:relative;"]
-            label
-              | Deskripsi
-              span.text-danger.ml-1 *
-            = text_area_tag 'general_transaction[general_transaction_lines_attributes][1][description]', '',
-              class: 'form-control',
-              data: {\
-                target: 'base--dynamic-input.input'\
-              }, required: 1
-          .form-group[style="margin-bottom:5px;position:relative;"]
-            label
-              | Nominal
-              span.text-danger.ml-1 *
-          .row.js-general-transactions-nominal-idr-usd
-            .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-              .position-absolute.p-3 IDR
-              = text_field_tag 'general_transaction[general_transaction_lines_attributes][1][price_idr]', nil,
-                class: 'form-control pl-10 js-nominal',
-                data: {\
-                  controller: "base--input-price admin--general-transactions--idr-to-usd"\
-                }, required: 1
-            .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-              .position-absolute.p-3 USD
-              = text_field_tag 'general_transaction[general_transaction_lines_attributes][1][price_usd]', nil,
-                class: 'form-control form-control-solid pl-12 js-nominal',
-                data: {\
-                  controller: "base--input-price admin--general-transactions--usd-to-idr"\
-                }, readonly: 1, required: 1
-      - else
-        - start = @general_transaction.general_transaction_lines.debit.count
-        - @general_transaction.general_transaction_lines.credit.each_with_index do |line,j|
-          - i = start + j
-          .js-item-container
-            = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][group]", 'credit'
-            = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][id]", line.id
-            .row.mb-2
-              .col-lg-6.form-group[style="margin-bottom:5px;"]
-                label
-                  | Kode Akun 
-                  span.text-danger.ml-1 *
-                = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][code]",
-                  options_for_select(select_account_options, line.code),
-                  include_blank: '== Pilih ==',
-                  class: 'form-control',
-                  placeholder: 'Kode Akun',
-                  data: { target: 'base--dynamic-input.input', controller: "select2" },
-                  id: "a#{SecureRandom.uuid}", required: 1
-              .col-lg-6.form-group[style="margin-bottom:5px;"]
-                label
-                  b Kode Karyawan/Business-Unit?
-                .d-flex.align-items-center.justify-content-start
-                  span.switch.switch-icon
-                    label
-                      = check_box_tag "general_transaction[general_transaction_lines_attributes][#{i}][is_master_business_units_enabled]",
-                        true, line.is_master_business_units_enabled?, data: {\
-                          controller: 'admin--general-transactions--master-business-unit-activated',\
-                          action: 'change->admin--general-transactions--master-business-unit-activated#handleChange',\
-                        }
-                      span
-                  h6
-                    span.mbu
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit.code}
-                      - else
-                        | _
-                    span.mbul
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit_location.code}
-                      - else
-                        |  _ _
-                    span.mbuar
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit_area.code}
-                      - else
-                        |  _ _ _ _ _
-                    span.mbuact
-                      - if line.is_master_business_units_enabled?
-                        | #{line.master_business_unit_activity.code}
-                      - else
-                        |  _ _ _ _
-                    span.mbuaccount
-                      - if line.is_master_business_units_enabled?
-                        | #{line.code}
-                      - else
-                        |  _ _ _ _
+                      |  _ _ _ _
                 .mt-5.d-none.js-business-unit
                   .row.mb-3
                     .col-6.form-group.mb-1
@@ -596,8 +195,8 @@
                       .checkbox-list
                         - MasterBusinessUnit.business_unit.each do |mbu|
                           label.checkbox
-                            = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_id]",
-                              mbu.id, line.master_business_unit_id.to_s == mbu.id,
+                            = radio_button_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_id]',
+                              mbu.id, false,
                               data: {\
                                 controller: 'admin--general-transactions--master-business-unit-change',\
                                 action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
@@ -612,8 +211,8 @@
                       .checkbox-list
                         - MasterBusinessUnit.business_unit_location.each do |mbu|
                           label.checkbox
-                            = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_location_id]",
-                              mbu.id, line.master_business_unit_location_id.to_s == mbu.id,
+                            = radio_button_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_location_id]',
+                              mbu.id, false,
                               data: {\
                                 controller: 'admin--general-transactions--master-business-unit-location-change',\
                                 action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
@@ -625,8 +224,8 @@
                     label
                       | Business Unit Area
                       span.text-danger.ml-1 *
-                    = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_area_id]",
-                      options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_area_id),
+                    = select_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_area_id]',
+                      options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
                       include_blank: '== Pilih ==',
                       class: 'form-control',
                       placeholder: 'Business Unit Area',
@@ -638,8 +237,8 @@
                     label
                       | Business Unit Activity
                       span.text-danger.ml-1 *
-                    = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_activity_id]",
-                      options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_activity_id),
+                    = select_tag 'general_transaction[general_transaction_lines_attributes][0][master_business_unit_activity_id]',
+                      options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
                       include_blank: '== Pilih ==',
                       class: 'form-control',
                       placeholder: 'Business Unit Activity',
@@ -651,7 +250,7 @@
               label
                 | Deskripsi
                 span.text-danger.ml-1 *
-              = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
+              = text_area_tag 'general_transaction[general_transaction_lines_attributes][0][description]', '',
                 class: 'form-control',
                 data: {\
                   target: 'base--dynamic-input.input'\
@@ -663,18 +262,504 @@
             .row.js-general-transactions-nominal-idr-usd
               .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                 .position-absolute.p-3 IDR
-                = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_idr]", line.idr.amount,
+                = text_field_tag 'general_transaction[general_transaction_lines_attributes][0][price_idr]', nil,
+                class: 'form-control pl-10 js-nominal',
+                data: {\
+                  controller: "base--input-price admin--general-transactions--idr-to-usd"\
+                }, required: 1
+              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                .position-absolute.p-3 USD
+                = text_field_tag 'general_transaction[general_transaction_lines_attributes][0][price_usd]', nil,
+                class: 'form-control form-control-solid pl-12 js-nominal',
+                data: {\
+                  controller: "base--input-price admin--general-transactions--usd-to-idr"\
+                }, readonly: 1, required: 1
+      - else
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
+        ]
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          - @general_transaction.general_transaction_lines.debit.each_with_index do |line,i|
+            .js-item-container.pl-5.position-relative.mb-4.pb-4[
+              style="border-bottom:1px solid #e8e8e8;"
+            ]
+              .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                | #{i+1}.
+              .position-absolute.right-0.top-0[
+                style="z-index:10;"
+              ]
+                button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#remove"
+                ]
+                  i.fas.fa-times
+              = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][group]", 'debit'
+              = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][id]", line.id
+              .row.mb-2
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    | Kode Akun 
+                    span.text-danger.ml-1 *
+                  = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][code]",
+                    options_for_select(select_account_options, line.code),
+                    include_blank: '== Pilih ==',
+                    class: 'form-control',
+                    placeholder: 'Kode Akun',
+                    data: { target: 'base--dynamic-input.input', controller: "select2" },
+                    id: "a#{SecureRandom.uuid}", required: 1
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    b Kode Karyawan/Business-Unit?
+                  .d-flex.align-items-center.justify-content-start
+                    span.switch.switch-icon
+                      label
+                        = check_box_tag "general_transaction[general_transaction_lines_attributes][#{i}][is_master_business_units_enabled]",
+                          true, line.is_master_business_units_enabled?, data: {\
+                            controller: 'admin--general-transactions--master-business-unit-activated',\
+                            action: 'change->admin--general-transactions--master-business-unit-activated#handleChange',\
+                          }
+                        span
+                    h6
+                      span.mbu
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit.code}
+                        - else
+                          | _
+                      span.mbul
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit_location.code}
+                        - else
+                          |  _ _
+                      span.mbuar
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit_area.code}
+                        - else
+                          |  _ _ _ _ _
+                      span.mbuact
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit_activity.code}
+                        - else
+                          |  _ _ _ _
+                      span.mbuaccount
+                        - if line.is_master_business_units_enabled?
+                          | #{line.code}
+                        - else
+                          |  _ _ _ _
+                  .mt-5.js-business-unit[
+                    class="#{line.is_master_business_units_enabled? ? '':'d-none'}"
+                  ]
+                    .row.mb-3
+                      .col-6.form-group.mb-1
+                        label
+                          | Business Unit
+                          span.text-danger.ml-1 *
+                        .checkbox-list
+                          - MasterBusinessUnit.business_unit.each do |mbu|
+                            label.checkbox
+                              = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_id]",
+                                mbu.id, line.master_business_unit_id.to_s == mbu.id,
+                                data: {\
+                                  controller: 'admin--general-transactions--master-business-unit-change',\
+                                  action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
+                                  code: mbu.code\
+                                }, required: 1, readonly: 1
+                              span
+                              | #{mbu.readable_name}
+                      .col-6.form-group.mb-1
+                        label
+                          | Business Unit Location
+                          span.text-danger.ml-1 *
+                        .checkbox-list
+                          - MasterBusinessUnit.business_unit_location.each do |mbu|
+                            label.checkbox
+                              = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_location_id]",
+                                mbu.id, line.master_business_unit_location_id.to_s == mbu.id,
+                                data: {\
+                                  controller: 'admin--general-transactions--master-business-unit-location-change',\
+                                  action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
+                                  code: mbu.code\
+                                }, required: 1, readonly: 1
+                              span
+                              | #{mbu.readable_name}
+                    .form-group[style="margin-bottom:5px;"]
+                      label
+                        | Business Unit Area
+                        span.text-danger.ml-1 *
+                      = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_area_id]",
+                        options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_area_id),
+                        include_blank: '== Pilih ==',
+                        class: 'form-control',
+                        placeholder: 'Business Unit Area',
+                        data: {\
+                          controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
+                        },
+                        id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                    .form-group[style="margin-bottom:5px;"]
+                      label
+                        | Business Unit Activity
+                        span.text-danger.ml-1 *
+                      = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_activity_id]",
+                        options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_activity_id),
+                        include_blank: '== Pilih ==',
+                        class: 'form-control',
+                        placeholder: 'Business Unit Activity',
+                        data: {\
+                          controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
+                        },
+                        id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+              .form-group[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Deskripsi
+                  span.text-danger.ml-1 *
+                = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group[style="margin-bottom:5px;position:relative;"]
+                label
+                  | Nominal
+                  span.text-danger.ml-1 *
+              .row.js-general-transactions-nominal-idr-usd
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 IDR
+                  = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_idr]", line.idr.amount,
+                  class: 'form-control pl-10 js-nominal',
+                  data: {\
+                    controller: "base--input-price admin--general-transactions--idr-to-usd"\
+                  }, required: 1
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 USD
+                  = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_usd]", line.usd.amount,
+                  class: 'form-control form-control-solid pl-12 js-nominal',
+                  data: {\
+                    controller: "base--input-price admin--general-transactions--usd-to-idr"\
+                  }, readonly: 1, required: 1
+    fieldset
+      legend
+        i.flaticon2-arrow-up.text-danger.mr-1
+        | KREDIT
+      - if @general_transaction.new_record?
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
+        ]
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          .js-item-container.pl-5.position-relative.mb-4.pb-4[
+            style="border-bottom:1px solid #e8e8e8;"
+          ]
+            .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+              | 1.
+            .position-absolute.right-0.top-0[
+              style="z-index:10;"
+            ]
+              button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                type="button"
+                data-action="click->base--dynamic-input-v2#remove"
+              ]
+                i.fas.fa-times
+            = hidden_field_tag 'general_transaction[general_transaction_lines_attributes][1][group]', 'credit'
+            .row.mb-2
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | Kode Akun 
+                  span.text-danger.ml-1 *
+                = select_tag 'general_transaction[general_transaction_lines_attributes][1][code]',
+                  options_for_select(select_account_options),
+                  include_blank: '== Pilih ==',
+                  class: 'form-control',
+                  placeholder: 'Kode Akun',
+                  data: { target: 'base--dynamic-input.input', controller: "select2" },
+                  id: "a#{SecureRandom.uuid}", required: 1
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
+                  b Kode Karyawan/Business-Unit?
+                .d-flex.align-items-center.justify-content-start
+                  span.switch.switch-icon
+                    label
+                      = check_box_tag 'general_transaction[general_transaction_lines_attributes][1][is_master_business_units_enabled]',
+                        true, false, data: {\
+                          controller: 'admin--general-transactions--master-business-unit-activated',\
+                          action: 'change->admin--general-transactions--master-business-unit-activated#handleChange',\
+                        }
+                      span
+                  h6
+                    span.mbu
+                      | _
+                    span.mbul
+                      |  _ _
+                    span.mbuar
+                      |  _ _ _ _ _
+                    span.mbuact
+                      |  _ _ _ _
+                    span.mbuaccount
+                      |  _ _ _ _
+                .mt-5.d-none.js-business-unit
+                  .row.mb-3
+                    .col-6.form-group.mb-1
+                      label
+                        | Business Unit
+                        span.text-danger.ml-1 *
+                      .checkbox-list
+                        - MasterBusinessUnit.business_unit.each do |mbu|
+                          label.checkbox
+                            = radio_button_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_id]',
+                              mbu.id, false,
+                              data: {\
+                                controller: 'admin--general-transactions--master-business-unit-change',\
+                                action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
+                                code: mbu.code\
+                              }, required: 1, readonly: 1
+                            span
+                            | #{mbu.readable_name}
+                    .col-6.form-group.mb-1
+                      label
+                        | Business Unit Location
+                        span.text-danger.ml-1 *
+                      .checkbox-list
+                        - MasterBusinessUnit.business_unit_location.each do |mbu|
+                          label.checkbox
+                            = radio_button_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_location_id]',
+                              mbu.id, false,
+                              data: {\
+                                controller: 'admin--general-transactions--master-business-unit-location-change',\
+                                action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
+                                code: mbu.code\
+                              }, required: 1, readonly: 1
+                            span
+                            | #{mbu.readable_name}
+                  .form-group[style="margin-bottom:5px;"]
+                    label
+                      | Business Unit Area
+                      span.text-danger.ml-1 *
+                    = select_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_area_id]',
+                      options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
+                      include_blank: '== Pilih ==',
+                      class: 'form-control',
+                      placeholder: 'Business Unit Area',
+                      data: {\
+                        controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
+                      },
+                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                  .form-group[style="margin-bottom:5px;"]
+                    label
+                      | Business Unit Activity
+                      span.text-danger.ml-1 *
+                    = select_tag 'general_transaction[general_transaction_lines_attributes][1][master_business_unit_activity_id]',
+                      options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
+                      include_blank: '== Pilih ==',
+                      class: 'form-control',
+                      placeholder: 'Business Unit Activity',
+                      data: {\
+                        controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
+                      },
+                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+            .form-group[style="margin-bottom:15px;position:relative;"]
+              label
+                | Deskripsi
+                span.text-danger.ml-1 *
+              = text_area_tag 'general_transaction[general_transaction_lines_attributes][1][description]', '',
+                class: 'form-control',
+                data: {\
+                  target: 'base--dynamic-input.input'\
+                }, required: 1
+            .form-group[style="margin-bottom:5px;position:relative;"]
+              label
+                | Nominal
+                span.text-danger.ml-1 *
+            .row.js-general-transactions-nominal-idr-usd
+              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                .position-absolute.p-3 IDR
+                = text_field_tag 'general_transaction[general_transaction_lines_attributes][1][price_idr]', nil,
                   class: 'form-control pl-10 js-nominal',
                   data: {\
                     controller: "base--input-price admin--general-transactions--idr-to-usd"\
                   }, required: 1
               .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                 .position-absolute.p-3 USD
-                = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_usd]", line.usd.amount,
+                = text_field_tag 'general_transaction[general_transaction_lines_attributes][1][price_usd]', nil,
                   class: 'form-control form-control-solid pl-12 js-nominal',
                   data: {\
                     controller: "base--input-price admin--general-transactions--usd-to-idr"\
                   }, readonly: 1, required: 1
+      - else
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
+        ]
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          - start = @general_transaction.general_transaction_lines.debit.count
+          - @general_transaction.general_transaction_lines.credit.each_with_index do |line,j|
+            - i = start + j
+            .js-item-container.pl-5.position-relative.mb-4.pb-4[
+              style="border-bottom:1px solid #e8e8e8;"
+            ]
+              .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                | #{j+1}.
+              .position-absolute.right-0.top-0[
+                style="z-index:10;"
+              ]
+                button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#remove"
+                ]
+                  i.fas.fa-times
+              = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][group]", 'credit'
+              = hidden_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][id]", line.id
+              .row.mb-2
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    | Kode Akun 
+                    span.text-danger.ml-1 *
+                  = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][code]",
+                    options_for_select(select_account_options, line.code),
+                    include_blank: '== Pilih ==',
+                    class: 'form-control',
+                    placeholder: 'Kode Akun',
+                    data: { target: 'base--dynamic-input.input', controller: "select2" },
+                    id: "a#{SecureRandom.uuid}", required: 1
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    b Kode Karyawan/Business-Unit?
+                  .d-flex.align-items-center.justify-content-start
+                    span.switch.switch-icon
+                      label
+                        = check_box_tag "general_transaction[general_transaction_lines_attributes][#{i}][is_master_business_units_enabled]",
+                          true, line.is_master_business_units_enabled?, data: {\
+                            controller: 'admin--general-transactions--master-business-unit-activated',\
+                            action: 'change->admin--general-transactions--master-business-unit-activated#handleChange',\
+                          }
+                        span
+                    h6
+                      span.mbu
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit.code}
+                        - else
+                          | _
+                      span.mbul
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit_location.code}
+                        - else
+                          |  _ _
+                      span.mbuar
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit_area.code}
+                        - else
+                          |  _ _ _ _ _
+                      span.mbuact
+                        - if line.is_master_business_units_enabled?
+                          | #{line.master_business_unit_activity.code}
+                        - else
+                          |  _ _ _ _
+                      span.mbuaccount
+                        - if line.is_master_business_units_enabled?
+                          | #{line.code}
+                        - else
+                          |  _ _ _ _
+                  .mt-5.d-none.js-business-unit
+                    .row.mb-3
+                      .col-6.form-group.mb-1
+                        label
+                          | Business Unit
+                          span.text-danger.ml-1 *
+                        .checkbox-list
+                          - MasterBusinessUnit.business_unit.each do |mbu|
+                            label.checkbox
+                              = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_id]",
+                                mbu.id, line.master_business_unit_id.to_s == mbu.id,
+                                data: {\
+                                  controller: 'admin--general-transactions--master-business-unit-change',\
+                                  action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
+                                  code: mbu.code\
+                                }, required: 1, readonly: 1
+                              span
+                              | #{mbu.readable_name}
+                      .col-6.form-group.mb-1
+                        label
+                          | Business Unit Location
+                          span.text-danger.ml-1 *
+                        .checkbox-list
+                          - MasterBusinessUnit.business_unit_location.each do |mbu|
+                            label.checkbox
+                              = radio_button_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_location_id]",
+                                mbu.id, line.master_business_unit_location_id.to_s == mbu.id,
+                                data: {\
+                                  controller: 'admin--general-transactions--master-business-unit-location-change',\
+                                  action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
+                                  code: mbu.code\
+                                }, required: 1, readonly: 1
+                              span
+                              | #{mbu.readable_name}
+                    .form-group[style="margin-bottom:5px;"]
+                      label
+                        | Business Unit Area
+                        span.text-danger.ml-1 *
+                      = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_area_id]",
+                        options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_area_id),
+                        include_blank: '== Pilih ==',
+                        class: 'form-control',
+                        placeholder: 'Business Unit Area',
+                        data: {\
+                          controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
+                        },
+                        id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                    .form-group[style="margin-bottom:5px;"]
+                      label
+                        | Business Unit Activity
+                        span.text-danger.ml-1 *
+                      = select_tag "general_transaction[general_transaction_lines_attributes][#{i}][master_business_unit_activity_id]",
+                        options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_activity_id),
+                        include_blank: '== Pilih ==',
+                        class: 'form-control',
+                        placeholder: 'Business Unit Activity',
+                        data: {\
+                          controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
+                        },
+                        id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+              .form-group[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Deskripsi
+                  span.text-danger.ml-1 *
+                = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group[style="margin-bottom:5px;position:relative;"]
+                label
+                  | Nominal
+                  span.text-danger.ml-1 *
+              .row.js-general-transactions-nominal-idr-usd
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 IDR
+                  = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_idr]", line.idr.amount,
+                    class: 'form-control pl-10 js-nominal',
+                    data: {\
+                      controller: "base--input-price admin--general-transactions--idr-to-usd"\
+                    }, required: 1
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 USD
+                  = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][price_usd]", line.usd.amount,
+                    class: 'form-control form-control-solid pl-12 js-nominal',
+                    data: {\
+                      controller: "base--input-price admin--general-transactions--usd-to-idr"\
+                    }, readonly: 1, required: 1
     .form-group.mt-3
       label Dokumen (maks. 10 Dokumen)
       .input-group.d-block

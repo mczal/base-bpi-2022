@@ -35,6 +35,14 @@ scss:
           ]
             i.la.la-pencil-alt
             |  Ubah 
+          a.btn.btn-light-danger.font-weight-bold.ml-2[
+            href="#{admin_general_transaction_path(id: @general_transaction.id)}"
+            data-method="delete"
+            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+            title="Delete"
+          ]
+            i.la.la-trash
+            |  Hapus
 
   .d-flex.flex-column-fluid.mb-3
     = render partial: 'shared/resources/edit'

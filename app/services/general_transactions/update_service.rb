@@ -11,8 +11,19 @@ module GeneralTransactions
 
     private
       def action
+        destroy_not_available_lines
+
         general_transaction.assign_attributes(attributes)
         general_transaction.save!
+      end
+
+      def destroy_not_available_lines
+        ids = attributes[:general_transaction_lines_attributes].values.map{|x|x[:id]}
+        general_transaction.general_transaction_lines
+          .where.not(id: ids)
+          .destroy_all
+
+        general_transaction.reload
       end
 
       def attributes

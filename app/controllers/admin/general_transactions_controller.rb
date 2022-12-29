@@ -1,7 +1,7 @@
 module Admin
   class GeneralTransactionsController < ::AdminController
     before_action :general_transaction, only: %i[show edit]
-    before_action :closed_journals, only: %i[destroy create]
+    before_action :closed_journals, only: %i[destroy create update]
 
     def index
       @general_transaction = GeneralTransaction.new(company: current_company)
