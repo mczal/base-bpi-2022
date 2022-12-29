@@ -24,9 +24,18 @@ module MoneyHelper
   end
 
   def print_money money, precision:3
-    return '' unless money.present?
-    formatted_money = money.format
-    return formatted_money unless formatted_money.match(/,/)
+    return '-' unless money.present? && money != 0
+
+    # formatted_money = money.format
+    # if !formatted_money.match(/,/)
+      # number_to_currency(
+        # money.amount,
+        # precision: precision,
+        # unit: money.symbol,
+        # negative_format: '(%u%n)'
+      # )
+    # end
+
     number_to_currency(
       money.amount,
       precision: precision,

@@ -32,7 +32,7 @@ module Admin
             accounts_service,
             account_master_business_units_service,
             account_beginning_balances_service,
-            journals_service,
+            # journals_service,
             clients_service,
           ]
         end

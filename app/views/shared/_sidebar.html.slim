@@ -103,8 +103,8 @@
                   rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
               /! end::Svg Icon
             span.menu-text Jurnal Umum
-        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/journals\/?/)}") data-menu-toggle="hover" 
-          a.menu-link href=admin_journals_path(slug: current_company.slug) 
+        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/trial_balances\/?/)}") data-menu-toggle="hover" 
+          a.menu-link href=admin_trial_balances_path(slug: current_company.slug) 
             span.svg-icon.menu-icon
               /! begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Home/Library.svg
               svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -114,9 +114,9 @@
                   rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
               /! end::Svg Icon
             span.menu-text
-              | [B]Buku Besar
-        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/journals\/?/)}") data-menu-toggle="hover" 
-          a.menu-link href=admin_journals_path(slug: current_company.slug) 
+              | Neraca Saldo
+        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/general_ledgers\/?/)}") data-menu-toggle="hover" 
+          a.menu-link href=admin_general_ledgers_path(slug: current_company.slug) 
             span.svg-icon.menu-icon
               /! begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Home/Library.svg
               svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
@@ -126,7 +126,7 @@
                   rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
               /! end::Svg Icon
             span.menu-text
-              | [B]Neraca Saldo
+              | Buku Besar
         li.menu-section.mt-1
           h4.menu-text Laporan
           i.menu-icon.ki.ki-bold-more-hor.icon-md

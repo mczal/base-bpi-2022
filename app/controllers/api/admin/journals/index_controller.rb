@@ -25,7 +25,10 @@ module Api
 
             if sort.present?
               @journals = @journals
-                .reorder("#{sort[:field]}": sort[:sort])
+                .reorder(
+                  "#{sort[:field]}": sort[:sort],
+                  number_evidence: sort[:sort]
+                )
             else
               @journals = @journals
                 .reorder(date: :desc, number_evidence: :desc)

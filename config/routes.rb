@@ -53,6 +53,16 @@ Rails.application.routes.draw do
       to: 'account_categories#edit',
       as: :edit_account_category
 
+    resources :general_ledgers, only: :index
+    post 'general_ledgers/table',
+      to: 'general_ledgers#table',
+      as: :general_ledgers_table
+
+    resources :trial_balances, only: :index
+    post 'trial_balances/table',
+      to: 'trial_balances#table',
+      as: :trial_balances_table
+
     resources :journals
     namespace :journals do
       post 'actions/export',

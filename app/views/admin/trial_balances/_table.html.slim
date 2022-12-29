@@ -1,0 +1,74 @@
+.table-responsive.position-relative[
+  style="max-height:75vh;"
+]
+  table.table.table-hover
+    thead
+      tr
+        th[
+          style="background-color:#F3F6F9;position:sticky;top:-1px;z-index:5;vertical-align:middle;"
+        ] Kode
+        th[
+          style="background-color:#F3F6F9;position:sticky;top:-1px;z-index:5;vertical-align:middle;"
+        ] Nama
+        th[
+          style="background-color:#F3F6F9;position:sticky;top:-1px;z-index:5"
+        ]
+          div
+            span[style="border-bottom:1px solid #666666;"]
+              | (IDR) Debit
+          div[style="border-top:1px solid #66666600;color:#2196f3;"]
+            | (USD) Debit
+        th[
+          style="background-color:#F3F6F9;position:sticky;top:-1px;z-index:5"
+        ]
+          div
+            span[style="border-bottom:1px solid #666666;"]
+              | (IDR) Kredit
+          div[style="border-top:1px solid #66666600;color:#2196f3;"]
+            | (USD) Kredit
+    tbody
+      - AccountCategory.includes(:accounts).all.each.with_index(10) do |account_category,i|
+        tr
+          th[
+            colspan="100%"
+            style="background-color:#F3F6F9;position:sticky;top:50px;z-index:#{i}"
+          ]
+            span
+              | #{account_category.code}
+            span
+              i.la.la-angle-double-right.text-dark.icon-nm.mx-4
+            span
+              | #{account_category.description}
+        - account_category.accounts.each do |account|
+          tr
+            td.pl-5
+              | #{account.code}
+            td
+              | #{account.name}
+            td
+              span[style="display:inherit;"]
+                div
+                  span[style="border-bottom:1px solid #666666;display:inherit;"]
+                    - if account.balance_idr >= 0
+                      = print_money account.balance_idr
+                    - else
+                      | -
+                div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                  - if account.balance_usd >= 0
+                    = print_money account.balance_usd
+                  - else
+                    | -
+            td
+              span[style="display:inherit;"]
+                div
+                  span[style="border-bottom:1px solid #666666;display:inherit;"]
+                    - if account.balance_idr < 0
+                      = print_money account.balance_idr.abs
+                    - else
+                      | -
+                div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                  - if account.balance_usd < 0
+                    = print_money account.balance_usd.abs
+                  - else
+                    | -
+

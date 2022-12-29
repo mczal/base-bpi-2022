@@ -15,6 +15,7 @@ export default class extends DatatablesController {
       {
         field: 'tax_id_number',
         title: 'No. NPWP/NIK',
+        width: 125,
         autoHide: false,
         template: function(data) {
           return `<span class="font-weight-bolder">${data.npwp}</span>`;

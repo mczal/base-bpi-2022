@@ -1,6 +1,19 @@
 import DatatablesController from '../../datatables_controller';
 
 export default class extends DatatablesController {
+  connect(){
+    super.connect();
+    this.bindChangeDateFilter();
+  }
+
+  bindChangeDateFilter(){
+    $('#kt_dashboard_daterangepicker_custom').on('apply.daterangepicker', function(ev, picker) {
+      const startDate = picker.startDate.format('DD/MM/YYYY')
+      const endDate = picker.endDate.format('DD/MM/YYYY')
+      this.datatable.search(`${startDate} - ${endDate}`, "daterange")
+    }.bind(this));
+  }
+
   datatableColumns(){
     return [
       {
@@ -53,13 +66,23 @@ export default class extends DatatablesController {
         field: 'Actions',
         title: 'Actions',
         sortable: false,
-        width: 100,
+        width: 125,
+        textAlign: 'center',
         overflow: 'visible',
         autoHide: false,
         template: function(data) {
           return `
             <a href="${data.show_path}" class="btn btn-sm btn-clean btn-icon">
-              <i class="la la-eye"></i>
+              <i class="la la-eye text-primary"></i>
+            </a>
+            <a href="javascript:void(0);" class="btn btn-sm btn-clean btn-icon"
+              data-toggle="modal"
+              data-target="#Edit"
+              data-controller="admin--edit"
+              data-action="click->admin--edit#handleClick"
+              data-admin--edit-path="${data.edit_path}"
+            >
+              <i class="la la-edit text-warning"></i>
             </a>
             <a href="${data.delete_path}" data-method="delete" data-confirm="Apakah anda yakin ingin menghapus akun ini?" class="btn btn-sm btn-clean btn-icon" title="Delete">
               <i class="la la-trash text-danger"></i>

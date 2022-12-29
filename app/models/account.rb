@@ -3,6 +3,7 @@ class Account < ApplicationRecord
   include Accounts::AssignDefaultValues
   include Accounts::MasterBusinessUnits
   include Accounts::ReportCategoryForCheckbox
+  include Accounts::Reports::Balances
 
   belongs_to :company
   belongs_to :account_category

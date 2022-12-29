@@ -7,27 +7,27 @@ scss:
   #kt_subheader.subheader.py-2.py-lg-4.subheader-solid
     .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
       .d-flex.align-items-center.flex-wrap.mr-2
-        h5.text-dark.font-weight-bold.mt-2.mb-2.mr-2 Daftar Jurnal
+        h5.text-dark.font-weight-bold.mt-2.mb-2.mr-2 Neraca Saldo
 
       #kt_subheader_search.d-flex.align-items-center
         .d-flex.align-items-center[
-          data-controller="picker--daterange"
-          data-picker--daterange-prevent-default="1"
+          data-controller="picker--daterange-v2"
+          data-picker--daterange-v2-prevent-default="1"
         ]
           a#kt_dashboard_daterangepicker_custom.btn.btn-sm.btn-light.font-weight-bold.mr-2[
             href="javascript:void(0)"
             data-placement="left"
             data-toggle="tooltip"
             title="Select Date Range"
-            data-start-date="#{params[:start_date]}"
-            data-end-date="#{params[:end_date]}"
+            data-start-date="#{params[:start_date] || readable_date_3(DateTime.now.localtime.beginning_of_month.to_date)}"
+            data-end-date="#{params[:end_date] || readable_date_3(DateTime.now.localtime.end_of_month.to_date)}"
           ]
             span#kt_dashboard_daterangepicker_title_custom.text-muted.font-size-base.font-weight-bold.mr-2 Today
             span#kt_dashboard_daterangepicker_date_custom.text-primary.font-size-base.font-weight-bolder Aug 6
 
         .ml-0.ml-sm-2
           .input-group.input-group-sm.input-group-solid style=("max-width: 250px")
-            input#kt_datatable_search_query.form-control placeholder="Cari No. Bukti / Akun" type="text"
+            input#kt_datatable_search_query.form-control placeholder="Cari Kode Akun" type="text"
             .input-group-append
               span.input-group-text
                 span.svg-icon
@@ -38,18 +38,18 @@ scss:
                       path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"
   .d-flex.flex-column-fluid
     .container-fluid
-      .card.card-custom
+      .card.card-custom.card-stretch.gutter-b
         .card-header
           .card-title
             span.card-icon
               i.flaticon2-favourite.text-primary
             h3.card-label
-              | List Jurnal
+              | Neraca Saldo
               br
               span.font-size-sm.text-dark-50.font-weight-bold
-                | Total #{Journal.count} Jurnal
+                | Total #{Account.count} Akun
           .card-toolbar.justify-content-end
-            .dropdown.dropdown-inline.mr-2.mb-2
+            / .dropdown.dropdown-inline.mr-2.mb-2
               button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
                 aria-expanded="false"
                 aria-haspopup="true"
@@ -91,8 +91,8 @@ scss:
                         ]
                         i.nav-icon.la.la-file-excel-o
                         span.nav-text.ml-2 Import Data Jurnal
-        .card-body
-          #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
-            data-admin--journals--index-data-path="#{api_admin_journals_index_path(slug: current_company.slug, start_date: params[:start_date], end_date: params[:end_date])}"
-            data-controller="admin--journals--index"
-          ]
+        .card-body.py-2[
+          data-controller="admin--trial-balances--table"
+          data-admin--trial-balances--table-path="#{admin_trial_balances_table_path(slug: params[:slug])}"
+        ]
+          / = render partial: 'table'

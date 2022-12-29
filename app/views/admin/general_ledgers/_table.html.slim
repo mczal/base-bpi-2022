@@ -1,0 +1,120 @@
+.table-responsive.position-relative[
+  style="max-height:75vh;min-width:700px;overflow-x:hidden;"
+]
+  table.table.table-hover.table-bordered
+    tbody
+      / - AccountCategory.where(code: '20000 - 23999').includes(:accounts).all.each.with_index(10) do |account_category,i|
+      - AccountCategory.includes(:accounts).all.each.with_index(10) do |account_category,i|
+        tr
+          th[
+            colspan="100%"
+            style="background-color:#F3F6F9;position:sticky;top:-1px;z-index:#{i}"
+          ]
+            span
+              | #{account_category.code}
+            span
+              i.la.la-angle-double-right.text-dark.icon-nm.mx-4
+            span
+              | #{account_category.description}
+        / - account_category.accounts.where(code: '20100').each do |account|
+        - account_category.accounts.each do |account|
+          tr
+            th[
+              style="vertical-align:middle;background-color:#F3F6F9;position:sticky;top:35px;z-index:#{i}"
+            ]
+              | #{account.code}
+            th[
+              style="vertical-align:middle;background-color:#F3F6F9;position:sticky;top:35px;z-index:#{i}"
+            ]
+              | #{account.name}
+            th[
+              style="vertical-align:middle;background-color:#F3F6F9;position:sticky;top:35px;z-index:#{i}"
+            ]
+              - balance = @account_balances_presenter.balance(account: account)
+              div
+                span[style="border-bottom:1px solid #666666;"]
+                  = print_money balance[:balance_idr]
+              div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                = print_money balance[:balance_usd]
+          tr.no-hover
+            td.p-0[
+              colspan="100%"
+            ]
+              table.table.table-sm.mx-5.my-table-detail-ledger[
+                style="width:100%;"
+              ]
+                thead
+                  tr
+                    th[style="width:5%;vertical-align:middle;background-color:#FFF;position:sticky;top:94px;z-index:#{i-1}"]
+                      | #
+                    th[style="width:10%;vertical-align:middle;background-color:#FFF;position:sticky;top:94px;z-index:#{i-1}"]
+                      | Tanggal
+                    th[style="width:12%;vertical-align:middle;background-color:#FFF;position:sticky;top:94px;z-index:#{i-1}"]
+                      | Nomor Bukti
+                    th[style="width:22%;vertical-align:middle;background-color:#FFF;position:sticky;top:94px;z-index:#{i-1}"]
+                      | Keterangan
+                    th[style="width:17%;vertical-align:middle;background-color:#FFF;position:sticky;top:94px;z-index:#{i-1}"]
+                      div
+                        span[style="border-bottom:1px solid #666666;"]
+                          | (IDR) Debit
+                      div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                        | (USD) Debit
+                    th[style="width:17%;vertical-align:middle;background-color:#FFF;position:sticky;top:94px;z-index:#{i-1}"]
+                      div
+                        span[style="border-bottom:1px solid #666666;"]
+                          | (IDR) Kredit
+                      div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                        | (USD) Kredit
+                    th[style="width:17%;vertical-align:middle;background-color:#FFF;position:sticky;top:94px;z-index:#{i-1}"]
+                      div
+                        span[style="border-bottom:1px solid #666666;"]
+                          | (IDR) Saldo
+                      div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                        | (USD) Saldo
+                tbody
+                  - @beginning_balance = @presenter.beginning_balance(account: account)
+                  tr
+                    td[style="vertical-align:middle;"]
+                    td[style="vertical-align:middle;"]
+                      | #{readable_date_3 @beginning_balance[:date]}
+                    td[style="vertical-align:middle;" colspan="4"]
+                      | [SALDO AWAL]
+                    td[style="vertical-align:middle;"]
+                      span[style="display:inherit;"]
+                        div
+                          span[style="border-bottom:1px solid #666666;display:inherit;"]
+                            = print_money @beginning_balance[:balance_idr]
+                        div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                          = print_money @beginning_balance[:balance_usd]
+                  - @presenter.journals(account: account).each.with_index(1) do |journal, k|
+                    tr
+                      td[style="vertical-align:middle;"]
+                        | #{k}. 
+                      td[style="vertical-align:middle;"]
+                        | #{readable_date_3 journal.date}
+                      td[style="vertical-align:middle;"]
+                        | #{journal.number_evidence}
+                      td[style="vertical-align:middle;"]
+                        | #{journal.description}
+                      td[style="vertical-align:middle;"]
+                        span[style="display:inherit;"]
+                          div
+                            span[style="border-bottom:1px solid #666666;display:inherit;"]
+                              = print_money journal.debit_idr
+                          div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                            = print_money journal.debit_usd
+                      td[style="vertical-align:middle;"]
+                        span[style="display:inherit;"]
+                          div
+                            span[style="border-bottom:1px solid #666666;display:inherit;"]
+                              = print_money journal.credit_idr
+                          div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                            = print_money journal.credit_usd
+                      td[style="vertical-align:middle;"]
+                        span[style="display:inherit;"]
+                          div
+                            span[style="border-bottom:1px solid #666666;display:inherit;"]
+                              | #{print_money (@beginning_balance[:balance_idr] += journal.debit_idr - journal.credit_idr)}
+                          div[style="border-top:1px solid #66666600;color:#2196f3;"]
+                            | #{print_money (@beginning_balance[:balance_usd] += journal.debit_usd - journal.credit_usd)}
+

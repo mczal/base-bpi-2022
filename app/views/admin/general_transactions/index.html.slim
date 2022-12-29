@@ -6,7 +6,7 @@
 
       #kt_subheader_search.d-flex.align-items-center
         .d-flex.align-items-center[
-          data-controller="picker--daterange"
+          data-controller="picker--daterange-v2"
           data-picker--daterange-v2-prevent-default=1
         ]
           a#kt_dashboard_daterangepicker_custom.btn.btn-sm.btn-light.font-weight-bold.mr-2[
@@ -56,6 +56,7 @@
             = render partial: 'new'
 
         .card-body
+          = render partial: 'edit'
           #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
             data-admin--general-transactions--index-data-path="#{api_admin_general_transactions_index_path(slug: current_company.slug, start_date: params[:start_date], end_date: params[:end_date])}"
             data-controller="admin--general-transactions--index"

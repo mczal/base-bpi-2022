@@ -13,12 +13,13 @@ module Admin
       end
 
       def import
-        if !parser_service.run
-          return redirect_to admin_journals_path, 
-            alert: parser_service.error_messages.join('<br/>')
+        if !importer_service.run
+          flash[:danger] = "Gagal. #{importer_service.full_error_messages_html}"
+          return redirect_to admin_journals_path
         end
 
-        redirect_to admin_journals_path, notice: 'File Berhasil di import'
+        flash[:success] = "Berhasil!"
+        redirect_to admin_journals_path
       end
 
       def download_template
@@ -30,20 +31,16 @@ module Admin
       end
 
       private
-      def parser_service        
-        @parser_service ||= ::Journals::ParserService.new(
-          params[:file],
-          current_company.id
-        )
-      end
-
-      def date_range
-        if params[:start_date].present? && params[:end_date].present?
-          return (params[:start_date].to_date..params[:end_date].to_date)
+        def importer_service
+          @importer_service = ::Journals::ImporterService.new(params[:file])
         end
-        return (Date.today.beginning_of_year..Date.today.end_of_month)
-      end
 
+        def date_range
+          if params[:start_date].present? && params[:end_date].present?
+            return (params[:start_date].to_date..params[:end_date].to_date)
+          end
+          return (Date.today.beginning_of_year..Date.today.end_of_month)
+        end
     end
   end
 end

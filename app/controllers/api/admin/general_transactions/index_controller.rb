@@ -28,12 +28,25 @@ module Api
                 .reorder("#{sort[:field]}": sort[:sort])
             end
 
-            if query.present? && query.dig(:search).present?
-              @general_transactions = @general_transactions
-                .search(query[:search])
+            if query.present?
+              apply_filter_from_query
             end
 
             @general_transactions
+          end
+
+          def apply_filter_from_query
+            if query.dig(:daterange).present?
+              daterange = query[:daterange].split(' - ')
+              start_date = Date.strptime(daterange[0], '%d/%m/%Y')
+              end_date  = Date.strptime(daterange[1], '%d/%m/%Y')
+              @general_transactions = @general_transactions
+                .where('date BETWEEN ? AND ?', start_date, end_date)
+            end
+            if query.dig(:search).present?
+              @general_transactions = @general_transactions
+                .search(query[:search])
+            end
           end
 
           def paginated_general_transactions
@@ -78,6 +91,7 @@ module Api
                 date: general_transaction.date.strftime("%d %b %Y"),
                 number_evidence: general_transaction.number_evidence,
                 show_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug),
+                edit_path: admin_edit_general_transaction_path(id: general_transaction.id,slug: current_company.slug),
                 delete_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug)
               }
             end

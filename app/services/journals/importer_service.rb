@@ -169,8 +169,14 @@ module Journals
       end
 
       def is_row_valid? row
-        get_account_code(row).present? &&
-          get_account(row).present?
+        account_code_exist = get_account_code(row).present?
+        account_exist = get_account(row)
+
+        if account_code_exist && get_account_code(row).to_s.to_i != 0 && !account_exist
+          binding.pry
+        end
+
+        account_code_exist && account_exist
       end
 
       def company
