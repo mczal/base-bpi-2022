@@ -40,6 +40,7 @@
             span
               | #{account_category.description}
         - account_category.accounts.each do |account|
+          - balance = @presenter.balance(account: account)
           tr
             td.pl-5
               | #{account.code}
@@ -49,26 +50,25 @@
               span[style="display:inherit;"]
                 div
                   span[style="border-bottom:1px solid #666666;display:inherit;"]
-                    - if account.balance_idr >= 0
-                      = print_money account.balance_idr
+                    - if balance[:balance_idr] >= 0
+                      = print_money balance[:balance_idr]
                     - else
                       | -
                 div[style="border-top:1px solid #66666600;color:#2196f3;"]
-                  - if account.balance_usd >= 0
-                    = print_money account.balance_usd
+                  - if balance[:balance_usd] >= 0
+                    = print_money balance[:balance_usd]
                   - else
                     | -
             td
               span[style="display:inherit;"]
                 div
                   span[style="border-bottom:1px solid #666666;display:inherit;"]
-                    - if account.balance_idr < 0
-                      = print_money account.balance_idr.abs
+                    - if balance[:balance_idr] < 0
+                      = print_money balance[:balance_idr].abs
                     - else
                       | -
                 div[style="border-top:1px solid #66666600;color:#2196f3;"]
-                  - if account.balance_usd < 0
-                    = print_money account.balance_usd.abs
+                  - if balance[:balance_usd] < 0
+                    = print_money balance[:balance_usd].abs
                   - else
                     | -
-
