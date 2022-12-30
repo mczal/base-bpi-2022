@@ -86,7 +86,7 @@ export default class extends DatatablesController {
         template: function(data) {
           return `
             <div>
-              <span data-controller="base--popover" data-base--popover-html="1" data-base--popover-trigger="hover" data-content="<div><b>${data.account_category_description}</b></div><div>${data.account_category_range}</div>" class="svg-icon svg-icon-light-dark" style="cursor:pointer;">
+              <span data-controller="base--popover" data-base--popover-html="1" data-base--popover-trigger="hover" data-content="<div><b>${data.account_category_description}</b></div><div>${data.account_category_range}</div>" data-title="Kategori" class="svg-icon svg-icon-light-dark" style="cursor:pointer;">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                     <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                         <rect x="0" y="0" width="24" height="24"/>
