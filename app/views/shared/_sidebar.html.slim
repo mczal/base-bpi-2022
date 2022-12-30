@@ -182,12 +182,10 @@
                   path d="M17,11 C15.3431458,11 14,9.65685425 14,8 C14,6.34314575 15.3431458,5 17,5 C18.6568542,5 20,6.34314575 20,8 C20,9.65685425 18.6568542,11 17,11 Z M6,19 C4.34314575,19 3,17.6568542 3,16 C3,14.3431458 4.34314575,13 6,13 C7.65685425,13 9,14.3431458 9,16 C9,17.6568542 7.65685425,19 6,19 Z" fill="#000000" 
               /! end::Svg Icon
             span.menu-text Pengaturan
-
-        - if current_user.has_role? :super_admin
+        / - if current_user.has_role? :super_admin
           li.menu-section.mt-1
             h4.menu-text Super Admin
             i.menu-icon.ki.ki-bold-more-hor.icon-md
-
           li aria-haspopup="true" class=("menu-item #{'menu-item-active' if current_page?(admin_companies_path(slug: current_company.slug))}") data-menu-toggle="hover" 
             a.menu-link.menu-toggle href=admin_companies_path(slug: current_company.slug)
               span.svg-icon.menu-icon
@@ -199,7 +197,6 @@
                     rect fill="#000000" height="9" rx="1.5" width="3" x="18" y="11" 
                     rect fill="#000000" height="7" rx="1.5" width="3" x="3" y="13" 
               span.menu-text Register Pengguna
-
         li.menu-item.menu-item-submenu aria-haspopup="true" data-menu-toggle="hover" 
           = link_to sign_out_path(slug: current_company.slug), method: :delete, class: 'menu-link' do
             span.svg-icon.menu-icon

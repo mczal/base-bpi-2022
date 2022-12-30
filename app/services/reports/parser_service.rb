@@ -7,26 +7,26 @@ module Reports
       :code => 2,
       :formula => 3
     }
-    
-    def action      
+
+    def action
       xlsx.sheets.each_with_index do |report_name, index|
         @sheet = xlsx.sheet(index)
         @report = Report.find_or_initialize_by(
           name: report_name,
           company_id: @company_id,
           shown: true
-        )        
+        )
+        @report.save
 
         @sheet.each.with_index(1) do |row, i|
           next if i < 2 || !is_row_valid?(row)
           parse_and_save(row, i)
         end
-        @report.save
       end
     end
 
     def is_row_valid? row
-      return false if row[FIELD_MAP[:name]].blank?      
+      return false if row[FIELD_MAP[:name]].blank?
       true
     end
 
@@ -36,7 +36,7 @@ module Reports
       formula = get_formula(row)
       order = i
 
-      group = "category" if name.present? && formula.blank?      
+      group = "category" if name.present? && formula.blank?
       group = "component" if name.present? && code.present? && formula.present?
       group = "accumulation" if name.present? && code.blank? && formula.present?
 
@@ -44,16 +44,17 @@ module Reports
         .find_or_initialize_by(
           name: name
         )
-      
+
       if new_report_line.codes.blank?
-        new_report_line.codes = [code] 
-      else 
+        new_report_line.codes = [code]
+      else
         new_report_line.codes << code
       end
 
       new_report_line.formula = formula
       new_report_line.group = group
-      new_report_line.order = order      
+      new_report_line.order = order
+      new_report_line.save!
     end
 
     def get_name row

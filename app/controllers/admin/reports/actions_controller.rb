@@ -3,18 +3,18 @@
 module Admin
   module Reports
     class ActionsController < Admin::ReportsController
-      
+
       def import_form
       end
 
       def import_preview
-        return render partial: "admin/reports/partials/table_report_lines", 
+        return render partial: "admin/reports/partials/table_report_lines",
           locals: { report_facede: report_facede }
       end
 
       def import
         if params[:import][:file].present? && !parser_service.run
-          return redirect_to admin_reports_path, 
+          return redirect_to admin_reports_path,
             alert: parser_service.error_messages.join('<br/>')
         end
 
@@ -33,7 +33,7 @@ module Admin
 
       def export
         @report = Report.find_by(id: params[:id])
-        return redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' if @report.blank?        
+        return redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' if @report.blank?
         @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
         respond_to do |format|
           format.xlsx {
@@ -44,41 +44,41 @@ module Admin
 
       def export_pdf
         @report = Report.find_by(id: params[:id])
-        return redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' if @report.blank?        
+        return redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' if @report.blank?
         @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
         respond_to do |format|
           format.pdf {
             render pdf: "Laporan #{@report.name}",
               template: 'admin/reports/actions/export_pdf.html.slim',
-              layout: 'pdf'          
+              layout: 'pdf'
           }
         end
       end
 
       private
-      def parser_service
-        @file_blob = ActiveStorage::Blob.find_signed(params[:import][:file].first, purpose: :blob_id)
-        @file = url_for(@file_blob)
-        @parser_service ||= ::Reports::ParserService.new(
-          @file,
-          current_user.company.id
-        )
-      end
+        def parser_service
+          @file_blob = ActiveStorage::Blob.find_signed(params[:import][:file].first, purpose: :blob_id)
+          @file = url_for(@file_blob)
+          @parser_service ||= ::Reports::ParserService.new(
+            @file,
+            current_user.company.id
+          )
+        end
 
-      def preview_parser_service        
-        @file_blob = ActiveStorage::Blob.find_signed(params[:id], purpose: :blob_id)
-        @file = url_for(@file_blob)
-        @preview_parser_service = ::Reports::ParserPreviewService.new(
-          @file,
-          current_user.company.id
-        )
-      end
+        def preview_parser_service
+          @file_blob = ActiveStorage::Blob.find_signed(params[:id], purpose: :blob_id)
+          @file = url_for(@file_blob)
+          @preview_parser_service = ::Reports::ParserPreviewService.new(
+            @file,
+            current_user.company.id
+          )
+        end
 
-      def report_facede
-        preview_parser_service.run
-        @report = @preview_parser_service.report
-        @report_facede = ::Admin::Reports::PreviewFacade.new(@report)
-      end
+        def report_facede
+          preview_parser_service.run
+          @report = @preview_parser_service.report
+          @report_facede = ::Admin::Reports::PreviewFacade.new(@report)
+        end
     end
   end
 end

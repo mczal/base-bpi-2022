@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  module Reports    
+  module Reports
     class IndexFacade
       def initialize params, current_company
         @params = params
@@ -40,7 +40,7 @@ module Admin
             end
           end
         end
-        
+
         def add_category_report report_line
           {
             name: report_line.name,
@@ -51,16 +51,16 @@ module Admin
           }
         end
 
-        def add_component_report report_line                    
+        def add_component_report report_line
           error_message = ""
           value = 0
 
           begin
             value = eval(formula_component_parser(report_line))
-          rescue SyntaxError => e            
+          rescue SyntaxError => e
             error_message = "Formula Error: #{report_line.name} --> #{report_line.formula}"
           end
-          
+
           {
             name: report_line.name,
             value: value,
@@ -76,7 +76,7 @@ module Admin
 
           begin
             value = eval(formula_accumulation_parser(report_line))
-          rescue SyntaxError => e            
+          rescue SyntaxError => e
             error_message = "Formula Error: #{report_line.name} --> #{report_line.formula}"
           end
 
@@ -87,7 +87,7 @@ module Admin
             styles_row: "",
             error_message: error_message
           }
-        end      
+        end
 
         def formula_component_parser report_line
           journal_lines = get_journal_lines(report_line.codes)
@@ -102,15 +102,19 @@ module Admin
         end
 
         def get_journal_lines codes
-          Journal.where(company_id: @current_company.id, code: codes, date: @start_date..@end_date)
+          Journal.where(
+            company_id: @current_company.id,
+            code: codes,
+            date: @start_date..@end_date
+          )
         end
 
         def formula_accumulation_parser report_line
           values_formula = {}
           enum_formula = report_line.formula.gsub(/\${.*?}/)
-          enum_formula.each do |formula_key|          
+          enum_formula.each do |formula_key|
             values_formula[formula_key] = get_values_formula(formula_key)
-          end          
+          end
 
           formula = report_line.formula
           values_formula.each do |key, value|
@@ -122,10 +126,10 @@ module Admin
 
         def get_values_formula formula_key
           filtered_formula_key = formula_key.gsub("${", "").gsub("}", "")
-          filtered_formula_keys = @table_reports.select do |table_report| 
+          filtered_formula_keys = @table_reports.select do |table_report|
             table_report[:name] == filtered_formula_key
           end.uniq
-          
+
           return filtered_formula_keys.sum {|table_report| table_report[:value].to_money}
         end
     end

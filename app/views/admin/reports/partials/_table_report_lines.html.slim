@@ -6,7 +6,7 @@ table.table
         | IDR
 
   tbody
-    - report_facede.table_reports.each do |table_report|
+    - @report_facede.table_reports.each do |table_report|
       - if table_report[:error_message].present?        
         .alert.alert-danger.alert-dismissible.fade.show role="alert" 
           button.close aria-label="Close" data-dismiss="alert" type="button" 
@@ -18,4 +18,3 @@ table.table
           = table_report[:name]
         td.text-left
           = table_report[:value].to_money.format if table_report[:value].present?
-        
