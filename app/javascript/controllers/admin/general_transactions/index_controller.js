@@ -7,10 +7,9 @@ export default class extends DatatablesController {
   }
 
   bindChangeDateFilter(){
-    $('#kt_dashboard_daterangepicker_custom').on('apply.daterangepicker', function(ev, picker) {
-      const startDate = picker.startDate.format('DD/MM/YYYY')
-      const endDate = picker.endDate.format('DD/MM/YYYY')
-      this.datatable.search(`${startDate} - ${endDate}`, "daterange")
+    $('#kt_dashboard_datepicker_custom').on('change', function(e) {
+      this.datatable.setDataSourceParam('date', e.currentTarget.value);
+      this.datatable.load();
     }.bind(this));
   }
 

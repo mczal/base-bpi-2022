@@ -35,6 +35,15 @@ module DateHelper
     I18n.l(date, format: '%d %b %Y')
   end
 
+  def readable_date_5 date
+    return "-" unless date.present?
+    I18n.l(date, format: '%B %Y')
+  end
+  def readable_date_6 date
+    return "-" unless date.present?
+    I18n.l(date, format: '%m-%Y')
+  end
+
   def readable_timestamp date
     return "-" unless date.present?
     I18n.l(date, format: '%A, %d %B %Y %H:%M')

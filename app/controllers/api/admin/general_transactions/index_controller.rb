@@ -20,8 +20,12 @@ module Api
             return @general_transactions if @general_transactions.present?
 
             @general_transactions = GeneralTransaction
-              .where(company_id: current_company.id, date: date_range)
+              .where(company_id: current_company.id)
               .order(date: :desc)
+            if date_range.present?
+              @general_transactions = @general_transactions
+                .where(date: date_range)
+            end
 
             if sort.present?
               @general_transactions = @general_transactions
@@ -36,13 +40,6 @@ module Api
           end
 
           def apply_filter_from_query
-            if query.dig(:daterange).present?
-              daterange = query[:daterange].split(' - ')
-              start_date = Date.strptime(daterange[0], '%d/%m/%Y')
-              end_date  = Date.strptime(daterange[1], '%d/%m/%Y')
-              @general_transactions = @general_transactions
-                .where('date BETWEEN ? AND ?', start_date, end_date)
-            end
             if query.dig(:search).present?
               @general_transactions = @general_transactions
                 .search(query[:search])
@@ -108,10 +105,12 @@ module Api
           end
 
           def date_range
-            if params[:start_date].present? && params[:end_date].present?
-              return (params[:start_date].to_date..params[:end_date].to_date)
+            return @date_range if @date_range.present?
+
+            if params[:date].present?
+              date = Date.strptime(params[:date], '%m-%Y')
+              return @date_range = (date.beginning_of_month..date.end_of_month)
             end
-            return (Date.today.beginning_of_year..Date.today.end_of_month)
           end
       end
     end

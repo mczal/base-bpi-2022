@@ -20,8 +20,12 @@ module Api
             return @journals if @journals.present?
 
             @journals = Journal
-              .where(company_id: current_company.id, date: date_range)
+              .where(company_id: current_company.id)
               .order(date: :desc)
+            if date_range.present?
+              @journals = @journals
+                .where(date: date_range)
+            end
 
             if sort.present?
               @journals = @journals
@@ -119,10 +123,12 @@ module Api
           end
 
           def date_range
-            if params[:start_date].present? && params[:end_date].present?
-              return (params[:start_date].to_date..params[:end_date].to_date)
+            return @date_range if @date_range.present?
+
+            if params[:date].present?
+              date = Date.strptime(params[:date], '%m-%Y')
+              return @date_range = (date.beginning_of_month..date.end_of_month)
             end
-            return (Date.today.beginning_of_year..Date.today.end_of_month)
           end
       end
     end

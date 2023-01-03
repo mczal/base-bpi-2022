@@ -79,6 +79,38 @@
                       data-action="click->base--dynamic-input-v2#remove"
                     ]
                       i.fas.fa-times
+          - else
+            .pb-10.position-relative[
+              data-controller="base--dynamic-input-v2"
+            ]
+              .position-absolute.right-0.bottom-0[style="z-index:10;"]
+                button.btn-sm.btn.btn-outline-primary.mr-3[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#add"
+                ]
+                  i.fas.fa-plus.mr-1
+                  | Tambah
+              .js-item-container.d-flex.align-items-center[
+                style="justify-content:space-between;"
+              ]
+                .d-flex.align-items-center
+                  .js-item-index.font-weight-bolder.mr-2
+                    | 1.
+                  .form-group[
+                    style="margin-bottom:5px;"
+                  ]
+                    = select_tag 'report_reference[][account_code][]',
+                      options_from_collection_for_select(Account.select(:code, :name), :code, :readable_name),
+                      include_blank: '== Pilih ==',
+                      class: 'form-control',
+                      id: "a-#{SecureRandom.uuid}",
+                      data: { controller: 'select2' }
+                div
+                  button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                    type="button"
+                    data-action="click->base--dynamic-input-v2#remove"
+                  ]
+                    i.fas.fa-times
   .modal-footer
     button.btn.btn-light-primary.font-weight-bold[
       data-dismiss="modal"

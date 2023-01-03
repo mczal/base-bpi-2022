@@ -8,19 +8,14 @@ module Admin
 
       def start_date
         return @start_date if @start_date.present?
-        if !@params[:start_date].present?
-          return @start_date = DateTime.now.localtime.to_date.beginning_of_year
+        if !@params[:date].present?
+          return @start_date = DateTime.now.localtime.to_date.beginning_of_month
         end
 
-        @start_date = Date.strptime(@params[:start_date], '%d/%m/%Y')
+        @start_date = Date.strptime(@params[:date], '%m-%Y').beginning_of_month
       end
       def end_date
-        return @end_date if @end_date.present?
-        if !@params[:end_date].present?
-          return @end_date = DateTime.now.localtime.to_date.beginning_of_year
-        end
-
-        @end_date = Date.strptime(@params[:end_date], '%d/%m/%Y')
+        @end_date ||= start_date.end_of_month
       end
 
       def calculate_accumulation_idr_for report_line
@@ -66,10 +61,10 @@ module Admin
         end
 
         if @results[report_line.name].present?
-          @results[report_line.name][:price_idr] = balance_idr(report_line.codes_references)
+          @results[report_line.name][:price_idr] = balance_idr(report_line.codes_references, report_line.formula)
         else
           @results[report_line.name] = {
-            price_idr: balance_idr(report_line.codes_references)
+            price_idr: balance_idr(report_line.codes_references, report_line.formula)
           }
         end
 
@@ -85,10 +80,10 @@ module Admin
         end
 
         if @results[report_line.name].present?
-          @results[report_line.name][:price_usd] = balance_usd(report_line.codes_references)
+          @results[report_line.name][:price_usd] = balance_usd(report_line.codes_references, report_line.formula)
         else
           @results[report_line.name] = {
-            price_usd: balance_usd(report_line.codes_references)
+            price_usd: balance_usd(report_line.codes_references, report_line.formula)
           }
         end
 
@@ -96,8 +91,12 @@ module Admin
       end
 
       private
-        def balance_idr codes
-          @balance_idr = debit_balance_idr(codes) - credit_balance_idr(codes)
+        def balance_idr codes, formula
+          script = formula.dup
+          script = script
+            .gsub('${debit}', debit_balance_idr(codes).amount.to_s)
+            .gsub('${credit}', credit_balance_idr(codes).amount.to_s)
+          @balance_idr = eval(script).to_money
         end
         def debit_balance_idr codes
           @debit_balance_idr = Journal.find_by_sql(
@@ -124,8 +123,12 @@ module Admin
           ).first&.credit_idr.to_money
         end
 
-        def balance_usd codes
-          @balance_usd = debit_balance_usd(codes) - credit_balance_usd(codes)
+        def balance_usd codes, formula
+          script = formula.dup
+          script = script
+            .gsub('${debit}', debit_balance_usd(codes).amount.to_s)
+            .gsub('${credit}', credit_balance_usd(codes).amount.to_s)
+          @balance_usd = eval(script).to_money.with_currency(:usd)
         end
         def debit_balance_usd codes
           @debit_balance_usd = Journal.find_by_sql(

@@ -35,13 +35,13 @@ export default class extends Controller {
     }
 
     function cb(start, end, label) {
-        var title = '';
-        var range = '';
+      var title = '';
+      var range = '';
 
-        range = start.format('MMM D') + ' - ' + end.format('MMM D');
+      range = start.format('MMM D YYYY') + ' - ' + end.format('MMM D YYYY');
 
-        $('#kt_dashboard_daterangepicker_date_custom').html(range);
-        $('#kt_dashboard_daterangepicker_title_custom').html(title);
+      $('#kt_dashboard_daterangepicker_date_custom').html(range);
+      $('#kt_dashboard_daterangepicker_title_custom').html(title);
     }
 
     picker.daterangepicker({

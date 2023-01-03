@@ -93,7 +93,15 @@
                       td[style="vertical-align:middle;"]
                         | #{readable_date_3 journal.date}
                       td[style="vertical-align:middle;"]
-                        | #{journal.number_evidence}
+                        span.font-weight-bolder
+                          | #{journal.number_evidence}
+                        a.ml-1[
+                          href="#{journal.source_path}"
+                          title="Sumber"
+                          data-controller="base--tooltip"
+                          target="_blank"
+                        ]
+                          i.fas.fa-external-link-alt.font-size-sm
                       td[style="vertical-align:middle;"]
                         | #{journal.description}
                       td[style="vertical-align:middle;"]

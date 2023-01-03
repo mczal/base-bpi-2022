@@ -91,10 +91,7 @@ class AccountBalancesPresenter
     def daterange
       return @daterange if @daterange.present?
 
-      token = @params[:daterange].split('-')
-      start_date = Date.strptime(token[0], '%d/%m/%Y')
-      end_date = Date.strptime(token[1], '%d/%m/%Y')
-
-      @daterange = start_date..end_date
+      date = Date.strptime(@params[:date], '%m-%Y')
+      return @daterange = (date.beginning_of_month..date.end_of_month)
     end
 end

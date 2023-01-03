@@ -60,7 +60,7 @@
                   td.text-center
                     = link_to admin_report_path(id: report.id, slug: current_company.slug), class: "btn btn-sm btn-clean mr-2"
                       i.fa.fa-eye.mr-1
-                    = link_to admin_report_path(id: report.id, slug: current_company.slug), method: :delete, class: "btn btn-sm btn-clean mr-2 d-none", data: { confirm: 'Anda yakin ingin menghapus laporan ini?' }
+                    = link_to admin_report_path(id: report.id, slug: current_company.slug), method: :delete, class: "btn btn-sm btn-clean mr-2", data: { confirm: 'Anda yakin ingin menghapus laporan ini?' }
                       i.fa.fa-trash.mr-1.text-danger
                   
         .card-footer

@@ -16,6 +16,8 @@ module ReportLines
     private
       def run_report_reference
         report_reference_attributes.each do |p|
+          next unless p[:reference_code].present? && p[:account_code].filter{|x|x.present?}.present?
+
           report_references = ReportReference.where(
             report_id: report_line.report_id,
             reference_code: p[:reference_code]

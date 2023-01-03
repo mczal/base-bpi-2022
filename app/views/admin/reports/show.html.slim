@@ -3,12 +3,24 @@
     .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
       .d-flex.align-items-center.flex-wrap.mr-2
         h5.text-dark.font-weight-bold.mt-2.mb-2.mr-2 Daftar Laporan
-
       #kt_subheader_search.d-flex.align-items-center        
-        .d-flex.align-items-center[
+        label.btn.btn-sm.btn-light.font-weight-bold.mr-2.my-0
+          span.text-primary.font-size-base.font-weight-bolder
+            | #{params[:date].present? ? readable_date_5(Date.strptime(params[:date], '%m-%Y')) : readable_date_5(DateTime.now.localtime.to_date)}
+          input#kt_dashboard_datepicker_custom[
+            type="text"
+            class=""
+            value="#{params[:date] || readable_date_6(DateTime.now.localtime.to_date)}"
+            readonly="readonly"
+            placeholder="Select date"
+            data-controller="picker--date-month-year"
+            data-picker--date-month-year-refresh-on-change="1"
+            style="opacity:0;width:1px;"
+          ]
+        / .d-flex.align-items-center[
           data-controller="picker--daterange"
           data-picker--daterange-v2-prevent-default=1
-        ]
+        / ]
           a#kt_dashboard_daterangepicker_custom.btn.btn-sm.btn-light.font-weight-bold.mr-2[
             href="javascript:void(0)"
             data-placement="left"
@@ -19,7 +31,6 @@
           ]
             span#kt_dashboard_daterangepicker_title_custom.text-muted.font-size-base.font-weight-bold.mr-2 Today
             span#kt_dashboard_daterangepicker_date_custom.text-primary.font-size-base.font-weight-bolder Aug 6
-
         .ml-0.ml-sm-2
           .input-group.input-group-sm.input-group-solid style=("max-width: 250px")
             input#kt_datatable_search_query.form-control placeholder="Cari..." type="text"
@@ -31,7 +42,6 @@
                       rect height="24" width="24" x="0" y="0"
                       path d="M14.292893xq2,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"
                       path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero"
-                                 
   .d-flex.flex-column-fluid
     .container-fluid
       .card.card-custom
@@ -124,102 +134,127 @@
             role="tabpanel" aria-labelledby="documents"
             class="#{'active show' unless params[:tag].to_s == 'configuration'}"
           ]
-            .card-body.pt-0
-              table.table.table-hover
+            .card-body.pt-0[
+              style="max-height:70vh;overflow:scroll;position:relative;"
+            ]
+              table.table.table-hover.table-bordered
                 thead
                   tr
-                    th width="50%"
+                    th[
+                      rowspan="2"
+                      style="position:sticky;top:-1px;background-color:#FFF;"
+                    ]
                     th.text-center[
-                      style="width:150px;max-width:200px !important;"
+                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
                     ]
                       | IDR
                     th.text-center[
-                      style="width:150px;max-width:200px !important;"
+                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
                     ]
                       | USD
                 tbody
-                  - @report.report_lines.each do |report_line|
-                    tr
-                      td[
-                        style="#{report_line.style}"
-                      ]
-                        = report_line.name
-                      td.text-center[
-                        style="#{report_line.style}"
-                      ]
-                        - if report_line.value?
-                          = print_money @show_facade.calculate_value_idr_for(report_line)
-                        - elsif report_line.accumulation?
-                          = print_money @show_facade.calculate_accumulation_idr_for(report_line)
-                      td.text-center[
-                        style="#{report_line.style}"
-                      ]
-                        - if report_line.value?
-                          = print_money @show_facade.calculate_value_usd_for(report_line)
-                        - elsif report_line.accumulation?
-                          = print_money @show_facade.calculate_accumulation_usd_for(report_line)
+                  - @report.report_lines.each.with_index(1) do |report_line,i|
+                    - if report_line.title?
+                      tr
+                        td[
+                          style="#{report_line.style}position:sticky;top:44px;z-index:#{i};"
+                          colspan="100%"
+                        ]
+                          = report_line.name
+                    - else
+                      tr
+                        td[
+                          style="#{report_line.style}"
+                        ]
+                          = report_line.name
+                        td.text-center[
+                          style="#{report_line.style}"
+                        ]
+                          - if report_line.value?
+                            = print_money @show_facade.calculate_value_idr_for(report_line)
+                          - elsif report_line.accumulation?
+                            = print_money @show_facade.calculate_accumulation_idr_for(report_line)
+                        td.text-center[
+                          style="#{report_line.style}"
+                        ]
+                          - if report_line.value?
+                            = print_money @show_facade.calculate_value_usd_for(report_line)
+                          - elsif report_line.accumulation?
+                            = print_money @show_facade.calculate_accumulation_usd_for(report_line)
           #configurations.tab-pane.fade[
             role="tabpanel" aria-labelledby="approval"
             class="#{'active show' if params[:tag].to_s == 'configuration'}"
           ]
-            .card-body.pt-0
+            .card-body.pt-0[
+              style="max-height:70vh;overflow:scroll;position:relative;"
+            ]
               = render partial: 'admin/report_lines/edit'
-              table.table.table-hover
+              table.table.table-hover.table-bordered
                 thead
                   tr
-                    th width="50%"
+                    th[
+                      style="width:50%;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
+                    ] 
                     th.text-left[
-                      style="width:150px;max-width:200px !important;"
+                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
                     ]
                       | Acuan / Kode Akun
                     th.text-left[
-                      style="width:150px;max-width:200px !important;"
+                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
                     ]
                       | Formula
                     th.text-left[
-                      style="width:150px;max-width:200px !important;"
+                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
                     ]
                       | #
                 tbody
-                  - @report.report_lines.each do |report_line|
-                    tr
-                      - if report_line.accumulation?
+                  - @report.report_lines.each.with_index(1) do |report_line,i|
+                    - if report_line.title?
+                      tr
                         td[
-                          style="#{report_line.style}"
+                          style="#{report_line.style}position:sticky;top:44px;z-index:#{i};"
+                          colspan="100%"
                         ]
                           = report_line.name
+                    - else
+                      tr
+                        - if report_line.accumulation?
+                          td[
+                            style="#{report_line.style}"
+                          ]
+                            = report_line.name
+                          td.text-left[
+                            style="#{report_line.style}"
+                            colspan="2"
+                          ]
+                            = report_line.formula
+                        - else
+                          td[
+                            style="#{report_line.style}"
+                          ]
+                            = report_line.name
+                          td.text-left[
+                            style="#{report_line.style}"
+                          ]
+                            b
+                              = report_line.codes.join(', ')
+                            - if report_line.codes_references.present?
+                              span.mx-1
+                                | /
+                              = report_line.codes_references.map{|x| "<span data-title='#{x}' data-content='#{Account.find_by(code: x).name}' data-base--popover-trigger='hover' data-controller='base--popover'>#{x}</span>"}.join(', ').html_safe
+                          td.text-left[
+                            style="#{report_line.style}"
+                          ]
+                            = report_line.formula
                         td.text-left[
                           style="#{report_line.style}"
-                          colspan="2"
                         ]
-                          = report_line.formula
-                      - else
-                        td[
-                          style="#{report_line.style}"
-                        ]
-                          = report_line.name
-                        td.text-left[
-                          style="#{report_line.style}"
-                        ]
-                          b
-                            = report_line.codes.join(', ')
-                          - if report_line.codes_references.present?
-                            span.mx-1
-                              | /
-                            = report_line.codes_references.map{|x| "<span data-title='#{x}' data-content='#{Account.find_by(code: x).name}' data-base--popover-trigger='hover' data-controller='base--popover'>#{x}</span>"}.join(', ').html_safe
-                        td.text-left[
-                          style="#{report_line.style}"
-                        ]
-                          = report_line.formula
-                      td.text-left[
-                        style="#{report_line.style}"
-                      ]
-                        a.btn.btn-sm.btn-clean.btn-icon[
-                          href="javascript:void(0);"
-                          data-toggle="modal"
-                          data-target="#Edit"
-                          data-controller="admin--edit"
-                          data-action="click->admin--edit#handleClick"
-                          data-admin--edit-path="#{admin_edit_report_line_path(id: report_line.id)}"
-                        ]
-                          i.fas.fa-pencil-alt.text-warning
+                          a.btn.btn-sm.btn-clean.btn-icon[
+                            href="javascript:void(0);"
+                            data-toggle="modal"
+                            data-target="#Edit"
+                            data-controller="admin--edit"
+                            data-action="click->admin--edit#handleClick"
+                            data-admin--edit-path="#{admin_edit_report_line_path(id: report_line.id)}"
+                          ]
+                            i.fas.fa-pencil-alt.text-warning

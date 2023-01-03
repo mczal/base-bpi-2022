@@ -3,14 +3,8 @@ import DatatablesController from '../../datatables_controller';
 export default class extends DatatablesController {
   connect(){
     super.connect();
-
-    $('#kt_dashboard_daterangepicker_custom').on('apply.daterangepicker', function(ev, picker) {
-      const startDate = picker.startDate.format("D/M/Y");
-      const endDate  = picker.endDate.format("D/M/Y");
-      const dateQuery = `${startDate}-${endDate}`;
-      // this.datatable.search(dateQuery, 'date_range')
-      this.datatable.setDataSourceParam('start_date', startDate);
-      this.datatable.setDataSourceParam('end_date', endDate);
+    $('#kt_dashboard_datepicker_custom').on('change', function(e) {
+      this.datatable.setDataSourceParam('date', e.currentTarget.value);
       this.datatable.load();
     }.bind(this));
   }
@@ -70,9 +64,9 @@ export default class extends DatatablesController {
             <span class="font-weight-bolder">
               ${data.number_evidence}
             </span>
-            <a class="ml-1" href="${data.source_path}" title="Sumber" data-controller="base--tooltip">
+            <a class="ml-1" href="${data.source_path}" title="Sumber" data-controller="base--tooltip" target="_blank">
               <i class="fas fa-external-link-alt font-size-sm"></i>
-            </span>
+            </a>
           `;
         }
       },
