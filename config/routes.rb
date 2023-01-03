@@ -105,6 +105,11 @@ Rails.application.routes.draw do
           as: :import_preview
     end
 
+    resources :report_lines, only: %i[update]
+    post 'report_lines/:id/edit',
+      to: 'report_lines#edit',
+      as: :edit_report_line
+
     resources :companies
     resources :settings, only: [:index]
     namespace :settings do

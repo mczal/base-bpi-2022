@@ -90,7 +90,7 @@ Rails.application.configure do
 
   # Roteate logs when it is 100MB in size and keep 100.
   config.logger = ActiveSupport::Logger.new(config.paths['log'].first, 100, 104857600)
-  
+
   if ENV["RAILS_LOG_TO_STDOUT"].present?
     logger           = ActiveSupport::Logger.new(STDOUT)
     logger.formatter = config.log_formatter
@@ -122,7 +122,7 @@ Rails.application.configure do
   # config.active_record.database_resolver_context = ActiveRecord::Middleware::DatabaseSelector::Resolver::Session
 
   config.action_mailer.default_url_options = { host: ENV['HOST'] }
-  
+
   if ENV['ASSET_HOST_NAME'].present?
     config.action_controller.asset_host = ENV['ASSET_HOST_NAME']
   end

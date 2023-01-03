@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2022_12_28_062731) do
+ActiveRecord::Schema.define(version: 2023_01_02_170651) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -262,6 +262,16 @@ ActiveRecord::Schema.define(version: 2022_12_28_062731) do
     t.index ["report_id"], name: "index_report_lines_on_report_id"
   end
 
+  create_table "report_references", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "report_id"
+    t.string "account_code"
+    t.string "account_name"
+    t.string "reference_code"
+    t.index ["report_id"], name: "index_report_references_on_report_id"
+  end
+
   create_table "reports", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.integer "order"
@@ -320,6 +330,7 @@ ActiveRecord::Schema.define(version: 2022_12_28_062731) do
   add_foreign_key "general_transactions", "companies"
   add_foreign_key "journals", "companies"
   add_foreign_key "report_lines", "reports"
+  add_foreign_key "report_references", "reports"
   add_foreign_key "reports", "companies"
   add_foreign_key "users", "companies"
 end

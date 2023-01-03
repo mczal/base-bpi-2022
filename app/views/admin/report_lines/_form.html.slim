@@ -1,0 +1,87 @@
+= form_for [:admin,@report_line] do |f|
+  .modal-header
+    h5#exampleModalLabel.modal-title
+      span
+        - if @report_line.new_record?
+          | New
+        - else
+          | Edit
+      span.mx-2
+        | |
+      span.font-weight-normal
+        | Report Line
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      i.ki.ki-close aria-hidden="true"
+  .modal-body
+    .form-group[
+      style="margin-bottom:5px;"
+    ]
+      label
+        | Nama
+      = f.text_field :name,
+        placeholder: 'Nama',
+        class: 'form-control',
+        required:1, disabled: 1
+    .form-group[
+      style="margin-bottom:5px;"
+    ]
+      label
+        | Formula
+        span.text-danger.ml-1 *
+      = f.text_area :formula,
+        placeholder: 'Formula',
+        class: 'form-control',
+        required:1, required: 1,
+        style: 'height:150px;'
+    hr
+    - @report_line.codes.each do |code|
+      .row
+        .col-lg-3.form-group
+          label
+            | Acuan
+          = text_field_tag 'report_reference[][reference_code]',
+            code, class: 'form-control form-control-solid',
+            required: 1, readonly: 1
+        .col-lg-9.form-group
+          label
+            | Kode Akun
+          - report_references = ReportReference.where(report_id: @report_line.report_id, reference_code: code)
+          - if report_references.present?
+            .pb-10.position-relative[
+              data-controller="base--dynamic-input-v2"
+            ]
+              .position-absolute.right-0.bottom-0[style="z-index:10;"]
+                button.btn-sm.btn.btn-outline-primary.mr-3[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#add"
+                ]
+                  i.fas.fa-plus.mr-1
+                  | Tambah
+              - report_references.each.with_index(1) do |report_reference,i|
+                .js-item-container.d-flex.align-items-center[
+                  style="justify-content:space-between;"
+                ]
+                  .d-flex.align-items-center
+                    .js-item-index.font-weight-bolder.mr-2
+                      | #{i}.
+                    .form-group[
+                      style="margin-bottom:5px;"
+                    ]
+                      = select_tag 'report_reference[][account_code][]',
+                        options_from_collection_for_select(Account.select(:code, :name), :code, :readable_name, report_reference.account_code),
+                        include_blank: '== Pilih ==',
+                        class: 'form-control',
+                        id: "a-#{SecureRandom.uuid}",
+                        data: { controller: 'select2' }
+                  div
+                    button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                      type="button"
+                      data-action="click->base--dynamic-input-v2#remove"
+                    ]
+                      i.fas.fa-times
+  .modal-footer
+    button.btn.btn-light-primary.font-weight-bold[
+      data-dismiss="modal"
+      type="button"
+    ] Batal
+    = f.submit "Simpan", class: "btn btn-outline-success"

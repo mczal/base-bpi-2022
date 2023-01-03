@@ -1,27 +1,33 @@
-class Admin::ReportsController < AdminController
-  def index
-    @total_reports = Report
-      .where(company: current_company)
-      .count
-      
-    @reports = Report
-      .where(company: current_company)
-      .page(params[:page])
-      .per(10)
-  end
+module Admin
+  class ReportsController < AdminController
+    before_action :report, only: %i[show]
 
-  def show    
-    @start_date = params[:start_date]&.to_date || Date.today.beginning_of_year
-    @end_date = params[:end_date]&.to_date || Date.today
-    @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
-  end
+    def index
+      @total_reports = Report
+        .where(company: current_company)
+        .count
 
-  def destroy
-    @report = Report.find_by_id(params[:id])
-    if @report.present? && @report.destroy
-      return redirect_to admin_reports_path, notice: "Laporan Berhasil di hapus."
+      @reports = Report
+        .where(company: current_company)
+        .page(params[:page])
+        .per(10)
     end
 
-    redirect_to admin_reports_path, alert: "Laporan tidak ditemukan."
+    def show
+      @show_facade = Admin::Reports::ShowFacade.new(params)
+    end
+
+    def destroy
+      if report.destroy
+        return redirect_to admin_reports_path, notice: "Laporan Berhasil di hapus."
+      end
+
+      redirect_to admin_reports_path, alert: "Laporan tidak ditemukan."
+    end
+
+    private
+      def report
+        @report ||= Report.find_by(id: params[:id])
+      end
   end
 end

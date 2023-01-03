@@ -14,8 +14,8 @@
             data-placement="left"
             data-toggle="tooltip"
             title="Select Date Range"
-            data-start-date="#{params[:start_date]}"
-            data-end-date="#{params[:end_date]}"
+            data-start-date="#{readable_date_3 @show_facade.start_date}"
+            data-end-date="#{readable_date_3 @show_facade.end_date}"
           ]
             span#kt_dashboard_daterangepicker_title_custom.text-muted.font-size-base.font-weight-bold.mr-2 Today
             span#kt_dashboard_daterangepicker_date_custom.text-primary.font-size-base.font-weight-bolder Aug 6
@@ -40,10 +40,10 @@
             .font-weight-bolder.text-dark.mt-2
               span.card-icon
                 .fa.fa-book.text-primary.mr-2
-                | #{@report_facede.report.name} 
+                | #{@report.name} 
             .text-muted.mt-3.font-weight-bold.font-size-sm              
               .mr-2 
-                | (#{@start_date.strftime("%d %B %Y")} - #{@end_date.strftime("%d %B %Y")})
+                | (#{readable_date_2 @show_facade.start_date} - #{readable_date_2 @show_facade.end_date})
           .card-toolbar          
             .dropdown.dropdown-inline.mr-2.mb-2
               button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
@@ -94,5 +94,132 @@
                           ]
                           span.nav-text.ml-2 Export Data PDF
 
-        .card-body
-          = render "admin/reports/partials/table_report_lines"
+        .card-header.border-0.pt-5
+          .card-title.font-weight-bolder
+            .card-label
+              ul#myTab.nav.nav-tabs[role="tablist"]
+                li.nav-item
+                  a#home-tab12a.nav-link[
+                    data-toggle="tab"
+                    href="#reports"
+                    class="#{'active' unless params[:tag].to_s == 'configuration'}"
+                  ]
+                    span.nav-icon
+                      i.flaticon2-layers-1
+                    span.nav-text
+                      | Laporan
+                li.nav-item
+                  a#profile-tab14a.nav-link[
+                    data-toggle="tab"
+                    href="#configurations"
+                    aria-controls="configurations"
+                    class="#{'active' if params[:tag].to_s == 'configuration'}"
+                  ]
+                    span.nav-icon
+                      i.far.fa-calendar-check
+                    span.nav-text
+                      | Konfigurasi
+        #myTabContent.tab-content.mt-5
+          #reports.tab-pane.fade[
+            role="tabpanel" aria-labelledby="documents"
+            class="#{'active show' unless params[:tag].to_s == 'configuration'}"
+          ]
+            .card-body.pt-0
+              table.table.table-hover
+                thead
+                  tr
+                    th width="50%"
+                    th.text-center[
+                      style="width:150px;max-width:200px !important;"
+                    ]
+                      | IDR
+                    th.text-center[
+                      style="width:150px;max-width:200px !important;"
+                    ]
+                      | USD
+                tbody
+                  - @report.report_lines.each do |report_line|
+                    tr
+                      td[
+                        style="#{report_line.style}"
+                      ]
+                        = report_line.name
+                      td.text-center[
+                        style="#{report_line.style}"
+                      ]
+                        - if report_line.value?
+                          = print_money @show_facade.calculate_value_idr_for(report_line)
+                        - elsif report_line.accumulation?
+                          = print_money @show_facade.calculate_accumulation_idr_for(report_line)
+                      td.text-center[
+                        style="#{report_line.style}"
+                      ]
+                        - if report_line.value?
+                          = print_money @show_facade.calculate_value_usd_for(report_line)
+                        - elsif report_line.accumulation?
+                          = print_money @show_facade.calculate_accumulation_usd_for(report_line)
+          #configurations.tab-pane.fade[
+            role="tabpanel" aria-labelledby="approval"
+            class="#{'active show' if params[:tag].to_s == 'configuration'}"
+          ]
+            .card-body.pt-0
+              = render partial: 'admin/report_lines/edit'
+              table.table.table-hover
+                thead
+                  tr
+                    th width="50%"
+                    th.text-left[
+                      style="width:150px;max-width:200px !important;"
+                    ]
+                      | Acuan / Kode Akun
+                    th.text-left[
+                      style="width:150px;max-width:200px !important;"
+                    ]
+                      | Formula
+                    th.text-left[
+                      style="width:150px;max-width:200px !important;"
+                    ]
+                      | #
+                tbody
+                  - @report.report_lines.each do |report_line|
+                    tr
+                      - if report_line.accumulation?
+                        td[
+                          style="#{report_line.style}"
+                        ]
+                          = report_line.name
+                        td.text-left[
+                          style="#{report_line.style}"
+                          colspan="2"
+                        ]
+                          = report_line.formula
+                      - else
+                        td[
+                          style="#{report_line.style}"
+                        ]
+                          = report_line.name
+                        td.text-left[
+                          style="#{report_line.style}"
+                        ]
+                          b
+                            = report_line.codes.join(', ')
+                          - if report_line.codes_references.present?
+                            span.mx-1
+                              | /
+                            = report_line.codes_references.map{|x| "<span data-title='#{x}' data-content='#{Account.find_by(code: x).name}' data-base--popover-trigger='hover' data-controller='base--popover'>#{x}</span>"}.join(', ').html_safe
+                        td.text-left[
+                          style="#{report_line.style}"
+                        ]
+                          = report_line.formula
+                      td.text-left[
+                        style="#{report_line.style}"
+                      ]
+                        a.btn.btn-sm.btn-clean.btn-icon[
+                          href="javascript:void(0);"
+                          data-toggle="modal"
+                          data-target="#Edit"
+                          data-controller="admin--edit"
+                          data-action="click->admin--edit#handleClick"
+                          data-admin--edit-path="#{admin_edit_report_line_path(id: report_line.id)}"
+                        ]
+                          i.fas.fa-pencil-alt.text-warning

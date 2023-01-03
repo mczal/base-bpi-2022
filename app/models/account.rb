@@ -29,4 +29,8 @@ class Account < ApplicationRecord
   def general_transaction_lines
     @general_transaction_lines ||= GeneralTransactionLine.where(code: self.code)
   end
+
+  def readable_name
+    @readable_name ||= "#{code}  |  #{name}"
+  end
 end

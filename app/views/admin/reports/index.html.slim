@@ -26,7 +26,9 @@
               i.flaticon2-favourite.text-primary
             h3.card-label
               | List Laporan
-              
+              br
+              span.font-size-sm.text-dark-50.font-weight-bold
+                | Total #{@total_reports} Laporan
           .card-toolbar.justify-content-end
             = link_to admin_reports_action_import_path(slug: current_company.slug),\
               method: :get, class: "btn btn-primary" do

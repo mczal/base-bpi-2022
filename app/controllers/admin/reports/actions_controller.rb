@@ -59,7 +59,7 @@ module Admin
         def parser_service
           @file_blob = ActiveStorage::Blob.find_signed(params[:import][:file].first, purpose: :blob_id)
           @file = url_for(@file_blob)
-          @parser_service ||= ::Reports::ParserService.new(
+          @parser_service ||= ::Reports::ImporterService.new(
             @file,
             current_user.company.id
           )

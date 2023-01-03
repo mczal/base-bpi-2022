@@ -13,7 +13,7 @@ module Reports
         return
       end
     end
-  
+
     def is_row_valid? row
       true
     end
