@@ -3,7 +3,6 @@ import { Controller } from '@hotwired/stimulus';
 export default class extends Controller {
   initialize(){
     this.path = this.data.get('path');
-    this.fixedRatesOptionElement = document.querySelector('.js-fixed-rates-options');
   }
 
   handleChange(){
@@ -20,6 +19,16 @@ export default class extends Controller {
   }
   handleFail(responseText){
     console.error('[ERROR]', responseText);
+  }
+
+  get fixedRatesOptionElement(){
+    if(this._fixedRatesOptionElement){
+      return this._fixedRatesOptionElement;
+    }
+    this._fixedRatesOptionElement = this.element.closest('form')
+      .querySelector('.js-fixed-rates-options');
+
+    return this._fixedRatesOptionElement;
   }
 
   get ajaxOptions(){

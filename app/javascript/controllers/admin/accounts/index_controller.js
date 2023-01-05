@@ -78,11 +78,14 @@ export default class extends DatatablesController {
         field: 'Actions',
         title: 'Actions',
         sortable: false,
-        width: 100,
+        width: 120,
         overflow: 'visible',
         autoHide: false,
         template: function(data) {
           return `
+            <a href="${data.delete_path}" class="btn btn-sm btn-clean btn-icon">
+              <i class="la la-eye text-primary"></i>
+            </a>
             <a href="javascript:void(0);" class="btn btn-sm btn-clean btn-icon"
               data-toggle="modal"
               data-target="#Edit"

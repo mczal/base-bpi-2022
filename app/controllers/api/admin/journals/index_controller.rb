@@ -18,15 +18,31 @@ module Api
 
           def journals
             return @journals if @journals.present?
+            @journals = Journal.where(company_id: current_company.id)
 
-            @journals = Journal
-              .where(company_id: current_company.id)
-              .order(date: :desc)
+            apply_query
+            apply_sort
+
+            @journals
+          end
+
+          def apply_query
             if date_range.present?
               @journals = @journals
                 .where(date: date_range)
             end
+            if query.present? && query.dig(:search).present?
+              @journals = @journals
+                .search(query[:search])
+            end
+            if params[:account_code].present?
+              @journals = @journals.where(
+                code: params[:account_code]
+              )
+            end
+          end
 
+          def apply_sort
             if sort.present?
               @journals = @journals
                 .reorder(
@@ -37,13 +53,6 @@ module Api
               @journals = @journals
                 .reorder(date: :desc, number_evidence: :desc)
             end
-
-            if query.present? && query.dig(:search).present?
-              @journals = @journals
-                .search(query[:search])
-            end
-
-            @journals
           end
 
           def paginated_journals

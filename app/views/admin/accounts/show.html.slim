@@ -1,0 +1,222 @@
+scss:
+  table {
+    overflow-x: scroll !important;
+    & thead tr {
+      & th {
+        position: sticky;
+        top: 0;
+        background: white;
+        z-index:10;
+      }
+    }
+  }
+
+#kt_content.content.d-flex.flex-column.flex-column-fluid
+  #kt_subheader.subheader.py-2.py-lg-6.subheader-solid
+    .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+      .d-flex.align-items-center.flex-wrap.mr-1
+        button#kt_subheader_mobile_toggle.burger-icon.burger-icon-left.mr-4.d-inline-block.d-lg-none data-controller="base--mobile-mode"
+          span
+        .d-flex.align-items-baseline.flex-wrap.mr-5
+          h5.text-dark.font-weight-bold.my-1.mr-5
+            | Akun - #{@account.code}
+            / span.ml-2
+              |  #{@account.status_for_html}
+      #kt_subheader_search.d-flex.align-items-center
+        .ml-0.ml-sm-2
+          a.btn.btn-light-primary.font-weight-bold.ml-2[
+            href="javascript:void(0);"
+            data-toggle="modal"
+            data-target="#Edit"
+            data-controller="admin--edit"
+            data-action="click->admin--edit#handleClick"
+            data-admin--edit-path="#{admin_edit_account_path(id: @account.id)}"
+          ]
+            i.la.la-pencil-alt
+            |  Ubah 
+          a.btn.btn-light-danger.font-weight-bold.ml-2[
+            href="#{admin_account_path(id: @account.id)}"
+            data-method="delete"
+            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+            title="Delete"
+          ]
+            i.la.la-trash
+            |  Hapus
+
+  .d-flex.flex-column-fluid.mb-3
+    = render partial: 'shared/resources/edit'
+    .container
+      .d-flex.flex-row
+        #kt_profile_aside.flex-row-auto.offcanvas-mobile.w-300px.w-xl-400px
+          .fixed_position_card.card.card-custom
+            .card-header
+              .card-title
+                | Informasi Umum
+            .card-body.pt-4
+              .pt-2.pb-1
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Dibuat:
+                  .text-right
+                    = readable_timestamp_2 @account.created_at.localtime
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Diubah:
+                  .text-right
+                    = readable_timestamp_2 @account.updated_at.localtime
+              .pt-3.pb-3
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Kode:
+                  b.text-right
+                    = @account.code
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Nama:
+                  b.text-right
+                    = @account.name
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Tipe Saldo:
+                  b.text-right
+                    | #{@account.balance_type.titlecase}
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 ISAK-16:
+                  b.text-right
+                    | #{@account.isak_16? ? 'OK' : 'NO'}
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 NON-ISAK:
+                  b.text-right
+                    | #{@account.non_isak? ? 'OK' : 'NO'}
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 FISKAL:
+                  b.text-right
+                    | #{@account.fiskal? ? 'OK' : 'NO'}
+              .pb-5.pt-3
+                fieldset
+                  legend
+                    | Informasi Kategori Akun
+                    a[
+                      href="#{admin_account_category_path(id: @account.account_category_id)}"
+                      target="_blank"
+                    ]
+                      i.fas.fa-external-link-alt.ml-2.font-size-sm
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Range Kode:
+                    b.text-right
+                      | #{@account.account_category.code}
+                  .d-flex.align-items-start.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Deskripsi:
+                    b.text-right
+                      | #{@account.account_category.description}
+        .flex-row-fluid.ml-lg-8
+          .card.card-custom.card-stretch.gutter-b
+            .card-header.border-0.pt-5
+              .card-title.font-weight-bolder
+                .card-label
+                  ul#myTab.nav.nav-tabs[role="tablist"]
+                    li.nav-item
+                      a#home-tab12a.nav-link[
+                        data-toggle="tab"
+                        href="#BeginningBalances"
+                        class="#{'active' if 1==1}"
+                      ]
+                        span.nav-icon
+                          i.flaticon2-layers-1
+                        span.nav-text
+                          | Saldo Awal
+            #myTabContent.tab-content.mt-5
+              #BeginningBalances.tab-pane.fade[
+                role="tabpanel" aria-labelledby="documents"
+                class="#{'active show' if 1==1}"
+              ]
+                .card-body.pt-0
+                  .table-responsive[
+                    style="max-height:65vh;"
+                  ]
+                    table.table.table-head-custom.table-head-bg.table-borderless.table-vertical-center
+                      thead
+                        tr.text-uppercase
+                          th.text-center[
+                            rowspan="2"
+                          ]
+                            span.font-size-lg
+                              | #
+                          th.pl-7.text-center[
+                            style="min-width: 100px"
+                            rowspan="2"
+                          ]
+                            span.font-size-lg
+                              | Tahun
+                          th.pl-7.text-center[
+                            style="min-width: 100px"
+                            colspan="2"
+                          ]
+                            span.font-size-lg
+                              | IDR
+                          th.pl-7.text-center[
+                            style="min-width: 100px"
+                            colspan="2"
+                          ]
+                            span.font-size-lg
+                              | USD
+                          th.pl-7.text-center[
+                            style="min-width: 100px"
+                            rowspan="2"
+                          ]
+                            span.font-size-lg
+                              | Saldo IDR
+                          th.pl-7.text-center[
+                            style="min-width: 100px"
+                            rowspan="2"
+                          ]
+                            span.font-size-lg
+                              | Saldo USD
+                        tr.text-uppercase
+                          th.pl-7.text-center[
+                          ]
+                            span.font-size-lg
+                              | Debit
+                          th.pl-7.text-center[
+                          ]
+                            span.font-size-lg
+                              | Kredit
+                          th.pl-7.text-center[
+                          ]
+                            span.font-size-lg
+                              | Debit
+                          th.pl-7.text-center[
+                          ]
+                            span.font-size-lg
+                              | Kredit
+                      tbody
+                        - AccountBeginningBalance.where(code: @account.code).each.with_index(1) do |account_beginning_balance, i|
+                          tr
+                            td.text-center #{i}.
+                            td.text-center.font-weight-bold = account_beginning_balance.year
+                            td.text-center = print_money account_beginning_balance.debit_idr
+                            td.text-center = print_money account_beginning_balance.credit_idr
+                            td.text-center = print_money account_beginning_balance.debit_usd
+                            td.text-center = print_money account_beginning_balance.credit_usd
+                            td.text-center = print_money account_beginning_balance.price_idr
+                            td.text-center = print_money account_beginning_balance.price_usd
+      .row.mt-5
+        .col-12
+          .card.card-custom.card-stretch.gutter-b
+            .card-header.border-0.py-5[
+              style="justify-content:space-between;"
+            ]
+              .text-dark.text-hover-primary.font-size-h5.font-weight-bolder.mb-4
+                |  List Journal
+              label.btn.btn-sm.btn-light.font-weight-bold.mr-2.my-0
+                span.text-primary.font-size-base.font-weight-bolder
+                  | All
+                input#kt_dashboard_datepicker_custom[
+                  type="text"
+                  class=""
+                  value=""
+                  readonly="readonly"
+                  placeholder="Select date"
+                  data-controller="picker--date-month-year"
+                  style="opacity:0;width:1px;"
+                ]
+            .card-body.pt-0.pb-3
+              #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
+                data-admin--journals--index-data-path="#{api_admin_journals_index_path(slug: current_company.slug, account_code: @account.code)}"
+                data-controller="admin--journals--index"
+              ]

@@ -1,5 +1,5 @@
 class Admin::AccountsController < AdminController
-  before_action :account, only: %i[edit]
+  before_action :account, only: %i[edit show]
 
   def index
     @account = Account.new
@@ -15,6 +15,8 @@ class Admin::AccountsController < AdminController
     flash[:success] = "Berhasil!"
     redirect_to admin_accounts_path(slug: params[:slug])
   end
+
+  def show; end
 
   def edit
     render partial: 'form'

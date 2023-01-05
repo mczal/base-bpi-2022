@@ -19,23 +19,28 @@ module Reports
 
     def action
       xlsx.sheets.each_with_index do |sheet_name, index|
-        get_report(sheet_name)
         sheet = xlsx.sheet(index)
+        get_report(sheet_name, sheet)
 
         sheet.each.with_index(1) do |row, i|
-          next if i < 2
+          next if i <= 2
           parse_and_save(row, i)
         end
       end
     end
 
-    def get_report name
+    def get_report name, sheet
       @report = Report.find_or_initialize_by(
         name: name,
-        company_id: @company_id
+        company_id: @company_id,
+        group: report_group(sheet),
       )
       @report.assign_attributes({shown: true})
       @report.save! if @report.new_record? || @report.changed?
+    end
+
+    def report_group sheet
+      sheet.cell(1,2).to_s.strip
     end
 
     def parse_and_save row, i
