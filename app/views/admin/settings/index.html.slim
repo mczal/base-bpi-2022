@@ -24,7 +24,7 @@
                       .text-primary.font-weight-bold.font-size-h6
                         | Edit Profile
 
-              .col-3
+              .col-md-3.mb-2
                 = link_to admin_settings_closed_journals_path(slug: current_company.slug) do
                   .card.card-custom.bg-light-primary.rounded-xl.bg-hover-secondary
                     .card-body.text-center
@@ -36,8 +36,20 @@
                             path[d="M10.3144829,18.7082217 C8.08859955,17.8189707 5.31710038,17.2495635 1.99998542,17 C1.99998542,16.9325178 1.99998542,13.1012863 1.99998542,5.50630526 L2.00000925,5.50630526 C2.00000925,5.23017604 2.22385621,5.00632908 2.49998542,5.00632908 C2.50420375,5.00632908 2.5084219,5.00638247 2.51263888,5.00648922 C5.34175439,5.07811173 8.17086991,5.74261533 10.9999854,7 C10.9999854,7.04449645 10.9999854,10.79246 10.9999854,18.2438906 L11,18.2438906 C11,18.520041 10.7761358,18.7439052 10.4999854,18.7439052 C10.4364457,18.7439052 10.3734882,18.7317946 10.3144829,18.7082217 Z" fill="#000000" opacity="0.3"]
                       .text-primary.font-weight-bold.font-size-h6
                         | Tutup Buku
+              .col-md-3.mb-2
+                = link_to admin_settings_rates_path(slug: current_company.slug) do
+                  .card.card-custom.bg-light-danger.rounded-xl.bg-hover-secondary
+                    .card-body.text-center
+                      span.svg-icon.svg-icon-3x.svg-icon-danger.d-block.my-2
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            rect[x="0" y="0" width="24" height="24"]
+                            path[d="M2,6 L21,6 C21.5522847,6 22,6.44771525 22,7 L22,17 C22,17.5522847 21.5522847,18 21,18 L2,18 C1.44771525,18 1,17.5522847 1,17 L1,7 C1,6.44771525 1.44771525,6 2,6 Z M11.5,16 C13.709139,16 15.5,14.209139 15.5,12 C15.5,9.790861 13.709139,8 11.5,8 C9.290861,8 7.5,9.790861 7.5,12 C7.5,14.209139 9.290861,16 11.5,16 Z" fill="#000000" opacity="0.3" transform="translate(11.500000, 12.000000) rotate(-345.000000) translate(-11.500000, -12.000000) "]
+                            path[d="M2,6 L21,6 C21.5522847,6 22,6.44771525 22,7 L22,17 C22,17.5522847 21.5522847,18 21,18 L2,18 C1.44771525,18 1,17.5522847 1,17 L1,7 C1,6.44771525 1.44771525,6 2,6 Z M11.5,16 C13.709139,16 15.5,14.209139 15.5,12 C15.5,9.790861 13.709139,8 11.5,8 C9.290861,8 7.5,9.790861 7.5,12 C7.5,14.209139 9.290861,16 11.5,16 Z M11.5,14 C12.6045695,14 13.5,13.1045695 13.5,12 C13.5,10.8954305 12.6045695,10 11.5,10 C10.3954305,10 9.5,10.8954305 9.5,12 C9.5,13.1045695 10.3954305,14 11.5,14 Z" fill="#000000"]
+                      .text-danger.font-weight-bold.font-size-h6
+                        | Kurs
               - if current_user.has_role?(:super_admin)
-                .col-3
+                .col-md-3.mb-2
                   = link_to admin_settings_general_importers_path(slug: params[:slug]) do
                     .card.card-custom.bg-light-success.rounded-xl.bg-hover-secondary
                       .card-body.text-center

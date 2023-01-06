@@ -34,12 +34,21 @@ module Rates
       end
 
       def save_kurs
-        Rate.create!(
+        rate = Rate.find_or_initialize_by(
           origin: origin,
-          buying: @buying_rate,
-          selling: @selling_rate,
           published_date: @published_date
         )
+        rate.assign_attributes(
+          buying: @buying_rate,
+          selling: @selling_rate,
+        )
+        rate.save!
+        # Rate.create!(
+          # origin: origin,
+          # buying: @buying_rate,
+          # selling: @selling_rate,
+          # published_date: @published_date
+        # )
       end
   end
 end

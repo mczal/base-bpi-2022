@@ -2,6 +2,21 @@
 
 module Rates
   class BankOfIndonesiaService < ::Rates::BaseService
+    LOCAL_MONTH_NAMES_MAPPING = {
+      'Januari' => 'January',
+      'Februari' => 'Februari',
+      'Maret' => 'March',
+      'April' => 'April',
+      'Mei' => 'May',
+      'Juni' => 'June',
+      'Juli' => 'July',
+      'Agustus' => 'August',
+      'September' => 'September',
+      'Oktober' => 'October',
+      'November' => 'November',
+      'Desember' => 'December',
+    }
+
     def action
       visit
       if !find_kurs
@@ -15,9 +30,14 @@ module Rates
     private
       def find_kurs currency=nil
         rate_text = docs.css(selector).first.css("td")[1].text
+        date_text = docs.css(selector).first.css("td")[0].text
+        LOCAL_MONTH_NAMES_MAPPING.each do |k,v|
+          date_text = date_text.downcase.gsub(k.downcase, v.downcase)
+        end
 
         @selling_rate = rate_text.gsub("Rp", "").to_money
         @buying_rate = rate_text.gsub("Rp", "").to_money
+        @published_date = Date.strptime(date_text, '%d %B %Y')
         return true
       rescue => e
         return false

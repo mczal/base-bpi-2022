@@ -22,6 +22,7 @@ module Rates
 
           @selling_rate = rate_row.css('td')[2].children[3].content.to_money
           @buying_rate = rate_row.css('td')[2].children[3].content.to_money
+          @published_date = DateTime.now.localtime.to_date
           return true
         end
 

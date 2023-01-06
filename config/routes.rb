@@ -116,9 +116,13 @@ Rails.application.routes.draw do
       resources :company_profiles, only: [:index, :create]
       resources :closed_journals, only: [:index, :create, :destroy]
       resources :general_importers, only: %i[index create]
+
+      resources :rates, only: %i[index update destroy create]
+      post 'rates/:id/edit',
+        to: 'rates#edit',
+        as: :edit_rate
     end
 
-    # resources :rates, only: %i[index]
     namespace :rates do
       post 'actions/get_select_options',
         to: 'actions#get_select_options',
@@ -170,6 +174,9 @@ Rails.application.routes.draw do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :clients do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :rates do
         post 'get-all', to: 'index#show', as: :index
       end
     end

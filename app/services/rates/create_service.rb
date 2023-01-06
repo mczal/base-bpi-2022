@@ -17,7 +17,7 @@ module Rates
     private
       def rate_attributes
         @params.require(:rate)
-          .permit(:origin)
+          .permit(:origin, :published_date)
           .merge({
             buying: buying,
             selling: selling

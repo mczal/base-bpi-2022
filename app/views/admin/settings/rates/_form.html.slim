@@ -1,0 +1,66 @@
+= form_for [:admin,:settings,@rate] do |f|
+  .modal-header
+    h5#exampleModalLabel.modal-title
+      span
+        - if @rate.new_record?
+          | New
+        - else
+          | Edit
+      span.mx-2
+        | |
+      span.font-weight-normal
+        | Kurs
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      i.ki.ki-close aria-hidden="true"
+  .modal-body
+    .form-grou.mb-5[
+      style="margin-bottom:5px;"
+    ]
+      label
+        | Tipe
+        span.text-danger.ml-1 *
+      .checkbox-inline
+        label.checkbox
+          = f.radio_button :origin,
+            :bank_of_indonesia,
+            required: 1
+          span
+          | BI (JISDOR)
+        label.checkbox
+          = f.radio_button :origin,
+            :ministry_of_finance,
+            required: 1
+          span
+          | KEMENKEU
+    .row
+      .col-lg-6
+        .form-group[
+          style="margin-bottom:5px;"
+        ]
+          label
+            | Tanggal
+            span.text-danger.ml-1 *
+          = f.text_field :published_date,
+            placeholder: 'Tanggal',
+            data: { controller: 'picker--date' },
+            class: 'form-control', required:1,
+            value: html_input_date(@rate.published_date)
+      .col-lg-6
+        .form-group[
+          style="margin-bottom:5px;"
+        ]
+          label
+            | Nominal
+            span.text-danger.ml-1 *
+          = f.text_field :middle,
+            class: 'form-control',
+            required:1,
+            data: { controller: 'base--input-price' },
+            placeholder: 'Nilai',
+            value: @rate.middle.amount
+  .modal-footer
+    button.btn.btn-light-primary.font-weight-bold[
+      data-dismiss="modal"
+      type="button"
+    ] Batal
+    = f.submit "Simpan", class: "btn btn-outline-success"

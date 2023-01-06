@@ -20,7 +20,9 @@ Capybara.register_driver :custom_chrome_headless do |app|
      app,
      browser: :chrome,
      options: opts,
-     desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome({ "chromeOptions" => { "binary" => ENV.fetch('GOOGLE_CHROME_SHIM', nil) } })
+     # desired_capabilities: Selenium::WebDriver::Remote::Capabilities.chrome(
+       # { "chromeOptions" => { "binary" => ENV.fetch('GOOGLE_CHROME_SHIM', nil) } }
+     # )
   )
 end
 Capybara.javascript_driver = :custom_chrome_headless
