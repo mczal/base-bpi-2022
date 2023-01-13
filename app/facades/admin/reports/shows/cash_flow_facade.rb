@@ -2,6 +2,36 @@ module Admin
   module Reports
     module Shows
       class CashFlowFacade < ::Admin::Reports::Shows::BaseFacade
+        def calculate_accumulation_idr_for report_line
+          if report_line.formula == '${cash_flow.last_month}'
+            formula = 666.to_money.amount.to_s
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_idr] = eval(formula).to_money
+            else
+              @results[report_line.name] = {
+                price_idr: eval(formula).to_money
+              }
+            end
+            return @results[report_line.name][:price_idr]
+          end
+
+          super(report_line)
+        end
+        def calculate_accumulation_usd_for report_line
+          if report_line.formula == '${cash_flow.last_month}'
+            formula = 666.to_money.amount.to_s
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_usd] = eval(formula).to_money.with_currency(:usd)
+            else
+              @results[report_line.name] = {
+                price_usd: eval(formula).to_money.with_currency(:usd)
+              }
+            end
+            return @results[report_line.name][:price_usd]
+          end
+          super(report_line)
+        end
+
         private
           def balance_idr codes, formula
             script = formula.dup

@@ -7,8 +7,10 @@ production:
 
 :queues:
   - default
+  - active_storage_analysis
+  - active_storage_purge
 
-# :schedule:
-#   notification_job_scheduler:
-#     cron: '0 12 * * *'   # Runs every day at 12:00 (cron notation)
-#     class: NotificationJob    
+:schedule:
+  scrap_rates_job:
+    cron: "0 0/1 * * *" # "At minute 0 past every hour from 0 through 23."
+    class: ScrapRatesJob
