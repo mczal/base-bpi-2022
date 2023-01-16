@@ -139,48 +139,119 @@
             ]
               table.table.table-hover.table-bordered
                 thead
-                  tr
-                    th[
-                      rowspan="2"
-                      style="position:sticky;top:-1px;background-color:#FFF;"
-                    ]
-                    th.text-center[
-                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
-                    ]
-                      | IDR
-                    th.text-center[
-                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
-                    ]
-                      | USD
+                  - if @report.balance_sheet?
+                    tr
+                      th[
+                        rowspan="2"
+                        style="position:sticky;top:-1px;background-color:#FFF;"
+                      ]
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
+                      ]
+                        | IDR
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
+                      ]
+                        | USD
+                  - else
+                    tr
+                      th[
+                        rowspan="2"
+                        style="position:sticky;top:-1px;background-color:#FFF;"
+                      ]
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;padding-top:0px;padding-bottom:0px;"
+                        colspan="2"
+                      ]
+                        | #{readable_month_2 @show_facade.start_date}
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;padding-top:0px;padding-bottom:0px;"
+                        colspan="2"
+                      ]
+                        | #{readable_month_3 @show_facade.start_date.beginning_of_year} s/d #{readable_month_2 @show_facade.start_date}
+                    tr
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+                      ]
+                        | IDR
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+                      ]
+                        | USD
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+                      ]
+                        | IDR
+                      th.text-center[
+                        style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+                      ]
+                        | USD
                 tbody
-                  - @report.report_lines.each.with_index(1) do |report_line,i|
-                    - if report_line.title?
-                      tr
-                        td[
-                          style="#{report_line.style}position:sticky;top:44px;z-index:#{i};"
-                          colspan="100%"
-                        ]
-                          = report_line.name
-                    - else
-                      tr
-                        td[
-                          style="#{report_line.style}"
-                        ]
-                          = report_line.name
-                        td.text-center[
-                          style="#{report_line.style}"
-                        ]
-                          - if report_line.value?
-                            = print_money @show_facade.calculate_value_idr_for(report_line)
-                          - elsif report_line.accumulation?
-                            = print_money @show_facade.calculate_accumulation_idr_for(report_line)
-                        td.text-center[
-                          style="#{report_line.style}"
-                        ]
-                          - if report_line.value?
-                            = print_money @show_facade.calculate_value_usd_for(report_line)
-                          - elsif report_line.accumulation?
-                            = print_money @show_facade.calculate_accumulation_usd_for(report_line)
+                  - if @report.balance_sheet?
+                    - @report.report_lines.each.with_index(1) do |report_line,i|
+                      - if report_line.title?
+                        tr
+                          td[
+                            style="#{report_line.style}position:sticky;top:63px;z-index:#{i};"
+                            colspan="100%"
+                          ]
+                            = report_line.name
+                      - else
+                        tr
+                          td[
+                            style="#{report_line.style}"
+                          ]
+                            = report_line.name
+                          td.text-center[
+                            style="#{report_line.style}"
+                          ]
+                            - if report_line.value?
+                              = print_money @show_facade.calculate_value_idr_for(report_line)
+                            - elsif report_line.accumulation?
+                              = print_money @show_facade.calculate_accumulation_idr_for(report_line)
+                          td.text-center[
+                            style="#{report_line.style}"
+                          ]
+                            - if report_line.value?
+                              = print_money @show_facade.calculate_value_usd_for(report_line)
+                            - elsif report_line.accumulation?
+                              = print_money @show_facade.calculate_accumulation_usd_for(report_line)
+                  - else
+                    - @report.report_lines.each.with_index(1) do |report_line,i|
+                      - if report_line.title?
+                        tr
+                          td[
+                            style="#{report_line.style}position:sticky;top:63px;z-index:#{i};"
+                            colspan="100%"
+                          ]
+                            = report_line.name
+                      - else
+                        / - saved = report_line.saved_report_lines.find_by(month: @show_facade.start_date.month, year: @show_facade.start_date.year)
+                        tr
+                          td[
+                            style="#{report_line.style}"
+                          ]
+                            = report_line.name
+                          td.text-center[
+                            style="#{report_line.style}"
+                          ]
+                            / - if saved.present?
+                              / = print_money saved.price_idr
+                            / - else
+                            - if report_line.value?
+                              = print_money @show_facade.calculate_value_idr_for(report_line)
+                            - elsif report_line.accumulation?
+                              = print_money @show_facade.calculate_accumulation_idr_for(report_line)
+                          td.text-center[
+                            style="#{report_line.style}"
+                          ]
+                            / - if saved.present?
+                              / = print_money saved.price_usd
+                            / - else
+                            - if report_line.value?
+                              = print_money @show_facade.calculate_value_usd_for(report_line)
+                            - elsif report_line.accumulation?
+                              = print_money @show_facade.calculate_accumulation_usd_for(report_line)
           #configurations.tab-pane.fade[
             role="tabpanel" aria-labelledby="approval"
             class="#{'active show' if params[:tag].to_s == 'configuration'}"

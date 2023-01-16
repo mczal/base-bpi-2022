@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_05_083542) do
+ActiveRecord::Schema.define(version: 2023_01_16_014256) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -293,6 +293,20 @@ ActiveRecord::Schema.define(version: 2023_01_05_083542) do
     t.index ["resource_type", "resource_id"], name: "index_roles_on_resource"
   end
 
+  create_table "saved_report_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.integer "month"
+    t.integer "year"
+    t.date "date"
+    t.uuid "report_line_id"
+    t.decimal "price_idr_cents", default: "0.0", null: false
+    t.string "price_idr_currency", default: "IDR", null: false
+    t.decimal "price_usd_cents", default: "0.0", null: false
+    t.string "price_usd_currency", default: "USD", null: false
+    t.index ["report_line_id"], name: "index_saved_report_lines_on_report_line_id"
+  end
+
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -333,5 +347,6 @@ ActiveRecord::Schema.define(version: 2023_01_05_083542) do
   add_foreign_key "report_lines", "reports"
   add_foreign_key "report_references", "reports"
   add_foreign_key "reports", "companies"
+  add_foreign_key "saved_report_lines", "report_lines"
   add_foreign_key "users", "companies"
 end

@@ -44,8 +44,35 @@ module Reports
     end
 
     def parse_and_save row, i
-      parse_and_save_report_line(row,i)
+      report_line = parse_and_save_report_line(row,i)
       parse_and_save_report_reference(row,i)
+
+      if report_line.present?
+        parse_and_save_saved_data(row,i, report_line)
+      end
+    end
+
+    def parse_and_save_saved_data row, i, report_line
+      start = 10
+      11.times.each.with_index(1) do |_,i|
+        srl = SavedReportLine.find_or_initialize_by(
+          report_line_id: report_line.id,
+          month: i, year: 2022,
+          date: Date.current.change(month:i,year:2022,day:10).end_of_month
+        )
+
+        price_idr = row[start].to_s.delete('-').gsub('.',',')
+        price_idr = price_idr.present? ? price_idr : 0.to_money
+        price_usd = row[start+1].to_s.delete('-').gsub('.',',')
+        price_usd = price_usd.present? ? price_usd : 0.to_money.with_currency(:usd)
+        srl.assign_attributes(
+          price_idr: price_idr,
+          price_usd: price_usd,
+        )
+        srl.save! if srl.new_record? || srl.changed?
+
+        start += 2
+      end
     end
 
     def parse_and_save_report_reference row, i
@@ -57,6 +84,7 @@ module Reports
       return unless is_row_valid_for_report_line?(row)
       report_line = get_report_line(row, i)
       report_line.save! if report_line.new_record? || report_line.changed?
+      report_line
     end
 
     def get_report_reference row, i

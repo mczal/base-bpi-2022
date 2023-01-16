@@ -4,6 +4,8 @@ class ReportLine < ApplicationRecord
   include ReportLines::References
 
   belongs_to :report
+  has_many :saved_report_lines, dependent: :destroy
+
   default_scope { order(order: :asc) }
 
   enum group: {
