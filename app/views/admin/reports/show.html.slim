@@ -54,7 +54,7 @@
             .text-muted.mt-3.font-weight-bold.font-size-sm              
               .mr-2 
                 | (#{readable_date_2 @show_facade.start_date} - #{readable_date_2 @show_facade.end_date})
-          .card-toolbar          
+          .card-toolbar
             .dropdown.dropdown-inline.mr-2.mb-2
               button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
                 aria-expanded="false"
@@ -192,7 +192,7 @@
                       - if report_line.title?
                         tr
                           td[
-                            style="#{report_line.style}position:sticky;top:63px;z-index:#{i};"
+                            style="#{report_line.style}position:sticky;top:44px;z-index:#{i};"
                             colspan="100%"
                           ]
                             = report_line.name
@@ -226,7 +226,6 @@
                           ]
                             = report_line.name
                       - else
-                        / - saved = report_line.saved_report_lines.find_by(month: @show_facade.start_date.month, year: @show_facade.start_date.year)
                         tr
                           td[
                             style="#{report_line.style}"
@@ -235,9 +234,6 @@
                           td.text-center[
                             style="#{report_line.style}"
                           ]
-                            / - if saved.present?
-                              / = print_money saved.price_idr
-                            / - else
                             - if report_line.value?
                               = print_money @show_facade.calculate_value_idr_for(report_line)
                             - elsif report_line.accumulation?
@@ -245,13 +241,20 @@
                           td.text-center[
                             style="#{report_line.style}"
                           ]
-                            / - if saved.present?
-                              / = print_money saved.price_usd
-                            / - else
                             - if report_line.value?
                               = print_money @show_facade.calculate_value_usd_for(report_line)
                             - elsif report_line.accumulation?
                               = print_money @show_facade.calculate_accumulation_usd_for(report_line)
+
+                          - accumulated_result = @show_facade.accumulated_facade.calculate_value_for(report_line)
+                          td.text-center[
+                            style="#{report_line.style}"
+                          ]
+                            = print_money accumulated_result[:price_idr]
+                          td.text-center[
+                            style="#{report_line.style}"
+                          ]
+                            = print_money accumulated_result[:price_usd]
           #configurations.tab-pane.fade[
             role="tabpanel" aria-labelledby="approval"
             class="#{'active show' if params[:tag].to_s == 'configuration'}"

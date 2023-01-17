@@ -9,6 +9,12 @@ module Admin
           @results = {}
         end
 
+        def accumulated_facade
+          @accumulated_facade ||= ::Admin::Reports::Shows::AccumulatedFacade.new(
+            start_date, end_date, self
+          )
+        end
+
         def start_date
           return @start_date if @start_date.present?
           if !@params[:date].present?
