@@ -1,0 +1,68 @@
+scss: 
+  .dropzone-msg.dz-message.needsclick {
+    margin:0;
+  }
+  .required {
+    color:#F44336;
+    margin-left:2px;
+  }
+  .select2.select2-container {
+    width: 100% !important;
+  }
+
+.modal.fade[
+  id="A-#{approval_configuration.id}"
+  aria-hidden="true" 
+  aria-labelledby="staticBackdrop" 
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1"
+] 
+  .modal-dialog.modal-dialog-centered.modal-lg role="document" 
+    .js-modal-content.modal-content[
+      data-controller="admin--approval-configurations--rule-adapter"
+      data-admin--approval-configurations--rule-adapter-path="#{admin_settings_approvals_path}"
+    ]
+      = hidden_field_tag 'id', approval_configuration.id,
+        data: { 'admin--approval-configurations--rule-adapter-target': 'id' }
+      .modal-header
+        div
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          i.ki.ki-close aria-hidden="true"
+      .modal-body
+        .form-group[style="margin-bottom:5px;position:relative;"]
+          label
+            | Batas Bawah (Batas < X)
+            span.text-danger.ml-1 *
+          div[style="margin-bottom:5px;position:relative;"]
+            .position-absolute.p-3 IDR
+            = text_field_tag 'bottom_treshold', approval_configuration.bottom_treshold.amount,
+            class: 'form-control pl-10 js-nominal',
+            data: {\
+              controller: "base--input-price",\
+              'admin--approval-configurations--rule-adapter-target': 'bottomTreshold'\
+            },
+            required: 1
+        .form-group[style="margin-bottom:5px;position:relative;"]
+          label
+            | Batas Atas (X <= Batas)
+            span.text-danger.ml-1 *
+          div[style="margin-bottom:5px;position:relative;"]
+            .position-absolute.p-3 IDR
+            = text_field_tag 'upper_treshold', approval_configuration.upper_treshold.amount,
+            class: 'form-control pl-10 js-nominal',
+            data: {\
+              controller: "base--input-price",\
+              'admin--approval-configurations--rule-adapter-target': 'upperTreshold'\
+            },
+            required: 1
+      .modal-footer
+        button.btn.btn-light-primary.font-weight-bold[
+          data-dismiss="modal"
+          type="button"
+        ] Batal
+        button.btn.btn-outline-success[
+          data-action='click->admin--approval-configurations--rule-adapter#save'
+          type="button"
+        ]
+          | Simpan

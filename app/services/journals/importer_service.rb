@@ -21,9 +21,9 @@ module Journals
     end
 
     def action
-      sheet_1.each_with_index do |row,i|
+      sheet_jakarta.each_with_index do |row,i|
         next if i == 0 || !is_row_valid?(row)
-        find_or_initialize_by_and_save(row)
+        find_or_initialize_by_and_save(row, :jakarta)
       end
       if @gt_params.present?
         params = ActionController::Parameters.new({general_transaction: @gt_params})
@@ -35,9 +35,9 @@ module Journals
       #########################################################
       #########################################################
 
-      sheet_2.each_with_index do |row,i|
+      sheet_site.each_with_index do |row,i|
         next if i == 0 || !is_row_valid?(row)
-        find_or_initialize_by_and_save(row)
+        find_or_initialize_by_and_save(row, :site)
       end
       if @gt_params.present?
         params = ActionController::Parameters.new({general_transaction: @gt_params})
@@ -48,13 +48,13 @@ module Journals
     end
 
     private
-      def find_or_initialize_by_and_save(row)
+      def find_or_initialize_by_and_save(row, location)
         number_evidence = get_number_evidence(row)
 
         if @gt_params.present? && @gt_params[:number_evidence] == number_evidence # for still same
           @gt_params[:general_transaction_lines_attributes] << line_params(row)
         elsif !@gt_params.present? # for new
-          @gt_params = gt_params(row)
+          @gt_params = gt_params(row, location)
           @gt_params[:general_transaction_lines_attributes] = [line_params(row)]
         elsif @gt_params[:number_evidence] != number_evidence  # for changed
           params = ActionController::Parameters.new({general_transaction: @gt_params})
@@ -62,15 +62,16 @@ module Journals
           service.run
           @gt_params = nil
 
-          @gt_params = gt_params(row)
+          @gt_params = gt_params(row, location)
           @gt_params[:general_transaction_lines_attributes] = [line_params(row)]
         end
       end
 
-      def gt_params row
+      def gt_params row, location
         {
           date: get_date(row),
           number_evidence: get_number_evidence(row),
+          location: location,
           input_option: :idr,
           rates_source: nil,
           rates_group: :fixed_rates,
@@ -157,11 +158,11 @@ module Journals
         row[FIELD_MAP[:number_evidence]].to_s.strip
       end
 
-      def sheet_1
-        @sheet_1 ||= xlsx.sheet('BUKU JURNAL')
+      def sheet_jakarta
+        @sheet_jakarta ||= xlsx.sheet('BUKU JURNAL')
       end
-      def sheet_2
-        @sheet_2 ||= xlsx.sheet('BUKU JURNAL Site')
+      def sheet_site
+        @sheet_site ||= xlsx.sheet('BUKU JURNAL Site')
       end
 
       def xlsx

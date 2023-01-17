@@ -99,6 +99,16 @@ export default class extends DatatablesController {
         }
       },
       {
+        field: 'location',
+        title: 'Lokasi',
+        autoHide: false,
+        overflow: 'visible',
+        textAlign: 'center',
+        template: function(data) {
+          return `${data.location}`;
+        }
+      },
+      {
         field: 'description',
         title: 'Deskripsi',
         autoHide: false,

@@ -17,6 +17,7 @@ module GeneralTransactionLines
         date: self.general_transaction.date,
         code: self.code,
         number_evidence: self.general_transaction.number_evidence,
+        location: self.general_transaction.location,
         company_id: self.general_transaction.company_id,
         description: self.description,
         debit_idr: (self.debit? ? self.idr : 0),

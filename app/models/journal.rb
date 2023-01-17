@@ -13,8 +13,13 @@ class Journal < ApplicationRecord
 
   default_scope { order(date: :desc, number_evidence: :desc, created_at: :desc) }
 
+  enum location: {
+    site: 'site',
+    jakarta: 'jakarta',
+  }
+
   pg_search_scope :search,
-    against: %i[number_evidence code],
+    against: %i[number_evidence code description],
     using: {
       tsearch: { prefix: true, any_word: true, negation: true }
     }

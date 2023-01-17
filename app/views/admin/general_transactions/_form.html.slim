@@ -23,27 +23,43 @@
           class: 'form-control',
           placeholder: 'Nomor Bukti',
           required: true
-    .form-group
-      label
-        | Pilih Mata Uang Input
-        span.text-danger.ml-1 *
-      .checkbox-inline
-        label.checkbox
-          = f.radio_button :input_option, 'idr',
-            data: {\
-              controller: 'admin--general-transactions--input-options-change',\
-              action: 'change->admin--general-transactions--input-options-change#handleChange'\
-            }, required: 1, checked: "#{!@general_transaction.input_option.present? ? 'checked' : (@general_transaction.idr? ? 'checked' : '')}"
-          span
-          | IDR
-        label.checkbox
-          = f.radio_button :input_option, 'usd',
-            data: {\
-              controller: 'admin--general-transactions--input-options-change',\
-              action: 'change->admin--general-transactions--input-options-change#handleChange'\
-            }, required: 1
-          span
-          | USD
+    .row
+      .form-group.col-lg-6
+        label
+          | Pilih Mata Uang Input
+          span.text-danger.ml-1 *
+        .checkbox-inline
+          label.checkbox
+            = f.radio_button :input_option, 'idr',
+              data: {\
+                controller: 'admin--general-transactions--input-options-change',\
+                action: 'change->admin--general-transactions--input-options-change#handleChange'\
+              }, required: 1, checked: "#{!@general_transaction.input_option.present? ? 'checked' : (@general_transaction.idr? ? 'checked' : '')}"
+            span
+            | IDR
+          label.checkbox
+            = f.radio_button :input_option, 'usd',
+              data: {\
+                controller: 'admin--general-transactions--input-options-change',\
+                action: 'change->admin--general-transactions--input-options-change#handleChange'\
+              }, required: 1
+            span
+            | USD
+      .form-group.col-lg-6
+        label
+          | Pilih Lokasi
+          span.text-danger.ml-1 *
+        .checkbox-inline
+          label.checkbox
+            = f.radio_button :location,
+              'jakarta', required: 1
+            span
+            | Jakarta
+          label.checkbox
+            = f.radio_button :location,
+              'site',required: 1
+            span
+            | Site
     fieldset
       legend KURS
       .row

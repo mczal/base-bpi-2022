@@ -104,6 +104,7 @@ module Api
                 updated_at: helpers.readable_timestamp_4(journal.updated_at.localtime),
                 date: date,
                 code: journal.code,
+                location: journal.location.titlecase,
                 account_name: journal.account.name,
                 account_category_description: journal.account.account_category.description,
                 account_category_range: journal.account.account_category.code,

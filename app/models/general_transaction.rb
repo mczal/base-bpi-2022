@@ -31,6 +31,10 @@ class GeneralTransaction < ApplicationRecord
     accepted: 'accepted',
     rejected: 'rejected',
   }
+  enum location: {
+    site: 'site',
+    jakarta: 'jakarta',
+  }
 
   accepts_nested_attributes_for :general_transaction_lines
 

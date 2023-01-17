@@ -1,0 +1,135 @@
+#kt_content.content.d-flex.flex-column.flex-column-fluid
+  #kt_subheader.subheader.py-2.py-lg-4.subheader-solid
+    .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+      .d-flex.align-items-center.flex-wrap.mr-2
+        h5.text-dark.font-weight-bold.mt-2.mb-2.mr-2 Setting Approval
+  .d-flex.flex-column-fluid
+    .container-fluid
+      .card.mb-2
+        .card-body
+          h4 Pengaturan Approval Transaksi
+          .text-muted
+            | Pengaturan approval transaksi akan berlaku untuk semua transaksi pada sistem ini dan bisa
+            |  dikelola secara dinamis oleh pengguna
+          br
+          .text-muted
+            | * Pengelolaan approval transaksi dapat lebih dari 1 user dan bisa dibuat berdasarkan nominal
+          .text-danger
+            | ** Jika suatu transaksi memiliki approval yang belum disetujui,
+            |  maka jurnal belum diterbitkan,
+            |  dan jika sudah disetujui seluruhnya maka sistem akan
+            |  menerbitkan jurnal secara otomatis yang bisa dilihat
+            |  pada halaman detil transaksi
+      .card.card-custom
+        .card-body
+          .container
+            = form_with url: admin_settings_approvals_path,
+              method: :post, id: 'kt_content',
+              class: 'content d-flex flex-column flex-column-fluid pt-0 pb-0 modal position-static' do |f|
+              - ac_1 = ApprovalConfiguration.find_by(bottom_treshold_cents: 0, upper_treshold_cents: 0)
+              fieldset
+                legend
+                  | Berlaku Untuk Seluruh Transaksi
+                .pb-8.position-relative[
+                  data-controller="base--dynamic-input-v2"
+                ]
+                  = hidden_field_tag 'approval_configuration[][id]', ac_1.id
+                  = hidden_field_tag 'approval_configuration[][bottom_treshold]', 0
+                  = hidden_field_tag 'approval_configuration[][upper_treshold]', 0
+                  .position-absolute.right-0.bottom-0[style="z-index:10;"]
+                    button.btn-sm.btn.btn-outline-primary.mr-3[
+                      type="button"
+                      data-action="click->base--dynamic-input-v2#add"
+                    ]
+                      i.fas.fa-plus.mr-1
+                      | Tambah
+                  - ac_1.roles.each do |r|
+                    .js-item-container.pl-5.position-relative.mb-1.pb-1[
+                      style=""
+                    ]
+                      .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                        | 1.
+                      .position-absolute.right-0.top-0[
+                        style="z-index:10;"
+                      ]
+                        button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                          type="button"
+                          data-action="click->base--dynamic-input-v2#remove"
+                        ]
+                          i.fas.fa-times
+                      .form-group[
+                        style="margin-bottom:15px;position:relative;"
+                      ]
+                        label
+                          | Role
+                          span.text-danger.ml-1 *
+                        = select_tag 'approval_configuration[][roles][]',
+                          options_for_select(Role.all.map{|x|[x.name.titlecase, x.name, {'data-code': x.id}]}, r),
+                          include_blank: '== Pilih ==',
+                          class: 'form-control',
+                          placeholder: 'user',
+                          data: {\
+                            controller: 'select2',\
+                          },
+                          id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+              - ApprovalConfiguration.where.not(id: ac_1.id).each do |ac|
+                fieldset.mt-5
+                  = render partial: 'edit_rule', locals: {approval_configuration: ac}
+                  = hidden_field_tag 'approval_configuration[][id]', ac.id
+                  = hidden_field_tag 'approval_configuration[][bottom_treshold]', ac.bottom_treshold.amount
+                  = hidden_field_tag 'approval_configuration[][upper_treshold]', ac.upper_treshold.amount
+                  legend
+                    | Approval tambahan berlaku jika transaksi bernilai
+                    span[
+                      style="margin-left:10px;font-family:none;background-color:#f3f3f3;padding:3px 4px;border-radius:4px;cursor:pointer;"
+                      data-title="Ubah ketentuan"
+                      data-controller="base--popover"
+                      data-base--popover-trigger="hover"
+                      data-base--popover-html="1"
+                      data-content="#{ac.readable_rule}"
+                      data-toggle="modal"
+                      data-target="#A-#{ac.id}"
+                    ]
+                      = ac.readable_rule
+                  .pb-8.position-relative[
+                    data-controller="base--dynamic-input-v2"
+                  ]
+                    .position-absolute.right-0.bottom-0[style="z-index:10;"]
+                      button.btn-sm.btn.btn-outline-primary.mr-3[
+                        type="button"
+                        data-action="click->base--dynamic-input-v2#add"
+                      ]
+                        i.fas.fa-plus.mr-1
+                        | Tambah
+                    - ac.roles.each do |r|
+                      .js-item-container.pl-5.position-relative.mb-1.pb-1[
+                        style=""
+                      ]
+                        .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                          | 1.
+                        .position-absolute.right-0.top-0[
+                          style="z-index:10;"
+                        ]
+                          button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                            type="button"
+                            data-action="click->base--dynamic-input-v2#remove"
+                          ]
+                            i.fas.fa-times
+                        .form-group[
+                          style="margin-bottom:15px;position:relative;"
+                        ]
+                          label
+                            | Role
+                            span.text-danger.ml-1 *
+                          = select_tag 'approval_configuration[][roles][]',
+                            options_for_select(Role.all.map{|x|[x.name.titlecase, x.name, {'data-code': x.id}]}, r),
+                            include_blank: '== Pilih ==',
+                            class: 'form-control',
+                            placeholder: 'user',
+                            data: {\
+                              controller: 'select2',\
+                            },
+                            id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+              .mt-10
+                .text-right
+                  = f.submit "Simpan", class: "btn btn-success"

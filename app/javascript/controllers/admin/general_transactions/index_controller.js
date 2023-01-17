@@ -55,6 +55,13 @@ export default class extends DatatablesController {
         }
       },
       {
+        field: 'location',
+        title: 'Lokasi',
+        template: function(data) {
+          return `<span class="font-weight-bolder">${data.location}</span>`;
+        }
+      },
+      {
         field: 'status',
         title: 'Status',
         template: function(data) {

@@ -121,6 +121,8 @@ Rails.application.routes.draw do
       post 'rates/:id/edit',
         to: 'rates#edit',
         as: :edit_rate
+
+      resources :approvals, only: %i[index create]
     end
 
     namespace :rates do

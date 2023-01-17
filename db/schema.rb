@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_16_014256) do
+ActiveRecord::Schema.define(version: 2023_01_17_104004) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -87,6 +87,16 @@ ActiveRecord::Schema.define(version: 2023_01_16_014256) do
     t.uuid "blob_id", null: false
     t.string "variation_digest", null: false
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
+  end
+
+  create_table "approval_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "roles", default: [], array: true
+    t.decimal "bottom_treshold_cents", default: "0.0", null: false
+    t.string "bottom_treshold_currency", default: "IDR", null: false
+    t.decimal "upper_treshold_cents", default: "0.0", null: false
+    t.string "upper_treshold_currency", default: "IDR", null: false
   end
 
   create_table "approvals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -205,6 +215,7 @@ ActiveRecord::Schema.define(version: 2023_01_16_014256) do
     t.json "end_of_period_rates_options", default: {}
     t.json "fixed_rates_options", default: {}
     t.string "status"
+    t.string "location"
     t.index ["company_id"], name: "index_general_transactions_on_company_id"
   end
 
@@ -227,6 +238,7 @@ ActiveRecord::Schema.define(version: 2023_01_16_014256) do
     t.decimal "credit_usd_cents", default: "0.0", null: false
     t.string "credit_usd_currency", default: "USD", null: false
     t.json "rates_options", default: {}
+    t.string "location"
     t.index ["company_id"], name: "index_journals_on_company_id"
     t.index ["journalable_type", "journalable_id"], name: "index_journals_on_journalable"
   end

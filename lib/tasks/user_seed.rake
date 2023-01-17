@@ -17,6 +17,10 @@ namespace :user do
     user.password = "admin123"
     user.company = company
     user.save!
+
     user.add_role :super_admin
+    user.add_role :manager_finance
+    user.add_role :evp_finance
+    user.add_role :director_finance
   end
 end
