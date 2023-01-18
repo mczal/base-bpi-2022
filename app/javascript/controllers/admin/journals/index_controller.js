@@ -1,8 +1,61 @@
 import DatatablesController from '../../datatables_controller';
 
 export default class extends DatatablesController {
+  initialize(){
+    super.initialize();
+    this.filter = document.querySelector('[data-controller="admin--index-filter"]');
+    this.filterTriggerer = this.filter.querySelector('[data-admin--index-filter-target="filterTriggerer"]');
+  }
+
   connect(){
     super.connect();
+    this.bindDateChange();
+    this.bindFilter();
+  }
+
+  bindFilter(){
+    this.filterTriggerer.addEventListener('click', (e) => {
+      window.KTApp.blockPage();
+      const params = [];
+
+      const inputs = this.filter.querySelectorAll('input,select');
+      for(let i=0 ;i<inputs.length; i++){
+        if(inputs[i].type === 'radio'){
+          if(inputs[i].checked){
+            params.push({
+              name: inputs[i].name,
+              value: inputs[i].value
+            });
+          }
+        } else if(inputs[i].tagName === 'SELECT'){
+          const selectedOption = inputs[i].selectedOptions[0]
+          if(selectedOption){
+            params.push({
+              name: inputs[i].name,
+              value: selectedOption.value
+            });
+          }
+        } else {
+          params.push({
+            name: inputs[i].name,
+            value: inputs[i].value
+          });
+        }
+      }
+
+      if(params.length > 0){
+        params.forEach((entry) => {
+          this.datatable.setDataSourceParam(entry.name, entry.value);
+          this.datatable.load();
+        });
+      }
+
+      window.KTApp.unblockPage();
+      this.filter.click();
+    });
+  }
+
+  bindDateChange(){
     $('#kt_dashboard_datepicker_custom').on('change', function(e) {
       this.datatable.setDataSourceParam('date', e.currentTarget.value);
       this.datatable.load();

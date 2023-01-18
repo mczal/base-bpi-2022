@@ -40,6 +40,27 @@ module Api
                 code: params[:account_code]
               )
             end
+
+            if params[:number_evidence].present?
+              @journals = @journals.where(
+                number_evidence: params[:number_evidence]
+              )
+            end
+            if params[:code].present?
+              @journals = @journals.where(
+                code: params[:code]
+              )
+            end
+            if params[:location].present?
+              @journals = @journals.where(
+                location: params[:location]
+              )
+            end
+            if params[:description].present?
+              @journals = @journals.where(
+                description: params[:description]
+              )
+            end
           end
 
           def apply_sort
