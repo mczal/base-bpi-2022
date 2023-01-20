@@ -83,5 +83,10 @@ module DateHelper
     return '' unless date.present?
     I18n.l(date, format: '%d/%m/%Y')
   end
+
+  def daydiff date_1, date_2
+    return '-' if !date_1.present? || !date_2.present?
+    (date_2.to_date - date_1.to_date).to_i
+  end
 end
 

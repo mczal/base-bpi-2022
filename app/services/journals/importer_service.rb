@@ -75,6 +75,7 @@ module Journals
           input_option: :idr,
           rates_source: nil,
           rates_group: :fixed_rates,
+          source: :import,
           status: :accepted,
           fixed_rates_options: {
             id: nil

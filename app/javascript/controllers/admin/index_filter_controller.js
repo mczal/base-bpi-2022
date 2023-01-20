@@ -23,15 +23,22 @@ export default class extends Controller {
   }
 
   reset(){
-    this.numberEvidenceTarget.value = '';
-    this.descriptionTarget.value = '';
-    this.locationTargets.forEach((x) => {
-      if(!x.value){
-        x.checked = true;
-      }
-    });
-    $(this.codeTarget).val('').trigger('change');
-
+    if(this.hasNumberEvidenceTarget){
+      this.numberEvidenceTarget.value = '';
+    }
+    if(this.hasDescriptionTarget){
+      this.descriptionTarget.value = '';
+    }
+    if(this.hasLocationTargets){
+      this.locationTargets.forEach((x) => {
+        if(!x.value){
+          x.checked = true;
+        }
+      });
+    }
+    if(this.hasCodeTarget){
+      $(this.codeTarget).val('').trigger('change');
+    }
     this.filterTriggererTarget.click();
   }
 }

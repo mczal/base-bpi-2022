@@ -1,56 +1,51 @@
-class Admin::UsersController < AdminController
-  before_action :user, only: [:show, :edit, :update, :destroy]
+module Admin
+  class UsersController < AdminController
+    before_action :user, only: %i[show edit]
 
-  def index
-    @total_users = User
-      .where(company: current_company)
-      .count
-      
-    @users = User
-      .where(company: current_company)
-      .order(:email)
-      .page(params[:page])
-      .per(10)
-  end
-
-  def show
-  end
-  
-  def edit
-  end
-
-  def create
-    new_user = User.new(user_params)
-    new_user.company = current_company
-    if new_user.save
-      return redirect_to admin_users_path, notice: "User Behasil dibuat"
+    def index
+      @user = User.new(company: current_company)
+    end
+    def show; end
+    def edit
+      render partial: 'form'
     end
 
-    redirect_to admin_users_path, alert: new_user.errors.full_messages.join(", ")
-  end
+    def create
+      service = ::Users::CreateService.new(params, current_company)
+      if !service.run
+        flash[:danger] = "Gagal. #{service.error_messages.to_sentence}"
+        return redirect_to admin_users_path
+      end
 
-  def update
-    if user.update(user_params)
-      return redirect_to admin_users_path, notice: "User Behasil diupdate"
+      flash[:success] = "Berhasil!"
+      redirect_to admin_users_path
+    end
+    def update
+      service = ::Users::UpdateService.new(params, current_company)
+      if !service.run
+        flash[:danger] = "Gagal. #{service.error_messages.to_sentence}"
+        return redirect_to admin_users_path
+      end
+
+      flash[:success] = "Berhasil!"
+      redirect_to admin_users_path
     end
 
-    redirect_to admin_users_path, alert: user.errors.full_messages.join(", ")
-  end
+    def destroy
+      ActiveRecord::Base.transaction do
+        if user.destroy
+          flash[:success] = "Berhasil!"
+          return redirect_to admin_users_path
+        end
 
-  def destroy
-    if user.destroy
-      return redirect_to admin_users_path, notice: "User berghasil dihapus"
+        flash[:danger] = "Gagal. #{user.errors.full_messages.join(", ")}"
+        return redirect_back fallback_location: admin_users_path
+      end
     end
 
-    redirect_to admin_users_path, alert: user.errors.full_messages.join(", ")
-  end
-
-  private
-  def user
-    @user = User.find(params[:id])
-  end
-
-  def user_params
-    params.require(:user).permit(:email, :password)
+    private
+      def user
+        @user = User.find_by(id: params[:id])
+      end
   end
 end

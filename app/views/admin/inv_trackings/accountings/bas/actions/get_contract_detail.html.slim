@@ -1,0 +1,92 @@
+.col-7.form-group
+  table
+    thead
+    tbody
+      tr
+        td
+          | Perihal
+        td.pl-1
+          | :
+        td.pl-3
+          = @contract&.description
+      tr
+        td
+          | Nilai
+        td.pl-1
+          | :
+        td.pl-3
+          = @contract&.price&.format
+      tr
+        td
+          | Tanggal kontrak
+        td.pl-1
+          | :
+        td.pl-3
+          | #{readable_date_4 @contract&.started_at} - #{readable_date_4 @contract&.ended_at}
+      tr
+        td
+          | Jangka Waktu
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.time_period} Hari
+      tr
+        td
+          | Jangka Waktu Bayar
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.payment_time_period} Hari #{t(@contract&.payment_time_period_group)&.titlecase}
+      tr
+        td
+          | Debit (Cost Center)
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.accrued_debit&.readable_name}
+.col-5.form-group
+  table
+    thead
+    tbody
+      tr
+        td
+          | No #{@contract&.started_with_group.to_s.upcase}:
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.started_with_ref_number}
+      tr
+        td
+          | Tanggal
+        td.pl-1
+          | :
+        td.pl-3
+          | #{readable_date_4 @contract&.started_with_date}
+      tr
+        td
+          | Client
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.client&.name}
+      tr
+        td
+          | Bank
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.bank&.name}
+      tr
+        td
+          | No. Rekening
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.account_number}
+      tr
+        td
+          | Nama Pemilik Rekening
+        td.pl-1
+          | :
+        td.pl-3
+          | #{@contract&.account_holder}

@@ -1,0 +1,19 @@
+.card-body.pt-0
+  - @contract.bas.each.with_index(1) do |ba,i|
+    .mb-5[
+    ]
+      .d-flex.align-items-center
+        .symbol.symbol-45.symbol-light.mr-5
+          span.symbol-label
+            | #{i}.
+        .d-flex.flex-column.flex-grow-1
+          a.font-weight-bold.text-dark-75.text-hover-primary.font-size-lg.mb-1[
+            href="#{admin_inv_trackings_accountings_ba_path(id: ba.id)}"
+          ]
+            = ba.reference_number
+            span.ml-2
+              = ba.status_html.html_safe
+          span.text-muted.font-weight-bold
+            = readable_date_4 ba.date
+      p.text-dark-50.m-0.pt-5.font-weight-normal
+        = ba.description

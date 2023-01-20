@@ -1,0 +1,72 @@
+fieldset
+  legend Rincian Invoice
+  table.table.table-borderless.table-vertical-center
+    tbody
+      tr
+        td.px-3.py-2.text-left
+          | Nilai Denda
+        td.px-3.py-2.text-right
+          = print_money @invoice.fine
+      tr
+        td.px-3.py-2.text-left
+          | Nilai DPP
+        td.px-3.py-2.text-right
+          - if @invoice.is_dpp_rounded?
+            .text-muted[
+              style="font-style:italic;font-size:12px;"
+              title="Pembulatan kebawah"
+              data-controller="tooltip"
+            ]
+              | (#{print_money @invoice.dpp_price_original})
+          = print_money @invoice.dpp_price
+      tr
+        td.px-3.py-2.text-left
+          | Nilai PPN
+          .text-muted[
+            style="font-size:12px;font-style:italic;"
+          ]
+            - if @invoice.ppn_cost_biaya?
+              | #{@invoice.ppn_biaya_account.code_name} (#{@invoice.ppn_percentage}%)
+            - elsif @invoice.ppn_cost_non_biaya?
+              span[
+                title="+Added to cost center"
+                data-controller="tooltip"
+              ]
+                | #{@invoice.ba.contract.accrued_debit.code_name} (#{@invoice.ppn_percentage}%)
+        td.px-3.py-2.text-right
+          - if @invoice.is_ppn_rounded?
+            .text-muted[
+              style="font-style:italic;font-size:12px;"
+              title="Pembulatan kebawah"
+              data-controller="tooltip"
+            ]
+              | (#{print_money @invoice.ppn_price_original})
+          = print_money @invoice.ppn_price
+      tr
+        td.px-3.py-2.text-left
+          | Nilai Potongan Pajak
+          .text-muted[
+            style="font-size:12px;font-style:italic;"
+          ]
+            | #{@invoice.pph&.code_name} (#{@invoice.pph_percentage.present? ? "#{@invoice.pph_percentage}%" : ''})
+        td.px-3.py-2.text-right
+          - if @invoice.is_pph_rounded?
+            .text-muted[
+              style="font-style:italic;font-size:12px;"
+              title="Pembulatan kebawah"
+              data-controller="tooltip"
+            ]
+              | (#{print_money @invoice.pph_price_original})
+          = print_money @invoice.pph_price
+      tr
+        td.px-3.py-2.text-left
+          | Nilai Harus Dibayar
+        td.px-3.py-2.text-right
+          = print_money (@invoice.payable_price)
+  .form-group.mt-3.text-right
+    button.btn.btn-sm.btn-success[
+      type="submit"
+      value="Verifikasi"
+    ]
+      .fa.fa-check.mr-4
+      | Verifikasi

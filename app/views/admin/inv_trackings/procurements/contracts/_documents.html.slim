@@ -1,0 +1,21 @@
+.card-body.pt-0
+  = render partial: 'shared/document_v2',
+    locals: { file_name: 'Kontrak', file: @contract.contract_file }
+  = render partial: 'shared/document_v2',
+    locals: {\
+      file_name: @contract.started_with_group.to_s.upcase,\
+      file: @contract.started_with_file\
+    }
+  = render partial: 'shared/document_v2',
+    collection: @contract.other_files, as: :file,
+    locals: { file_name: 'Dokumen Lainnya' }
+
+  - if @contract.addendums.present?
+    h4.m-5.text-center
+      | == ADDENDUM ==
+    - @contract.addendums.each do |addendum|
+      h5
+        | ADDENDUM #{addendum.ref_number} - #{readable_date addendum.date}
+      = render partial: 'shared/document_v2',
+        collection: addendum.files, as: :file,
+        locals: { file_name: "Dokumen Addendum #{addendum.ref_number}" }

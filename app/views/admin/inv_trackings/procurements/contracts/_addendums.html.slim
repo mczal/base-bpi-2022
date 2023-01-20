@@ -1,0 +1,40 @@
+= render partial: 'new_addendum'
+.card-body.pt-0
+  - @contract.addendums.each.with_index(1) do |addendum,i|
+    .mb-5[
+    ]
+      .d-flex.align-items-center
+        .symbol.symbol-45.symbol-light.mr-5
+          span.symbol-label
+            | #{i}.
+        .d-flex.flex-column.flex-grow-1
+          a.font-weight-bold.text-dark-75.text-hover-primary.font-size-lg.mb-1[
+            href="#{admin_procurements_addendum_path(id: addendum.id)}"
+          ]
+            = addendum.ref_number
+            span.ml-2[
+              data-title="Adendum #{addendum.ref_number} - Perubahan Data"
+              data-content="#{addendum.pretty_contract_changes_html}"
+              data-controller="popover"
+              data-popover-trigger="hover"
+              data-popover-html="1"
+            ]
+              svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                  rect[x="0" y="0" width="24" height="24"]
+                  circle[fill="#000000" opacity="0.3" cx="12" cy="12" r="10"]
+                  rect[fill="#000000" x="11" y="10" width="2" height="7" rx="1"]
+                  rect[fill="#000000" x="11" y="7" width="2" height="2" rx="1"]
+          span.text-muted.font-weight-bold
+            = readable_date_4 addendum.date
+      p.text-dark-50.m-0.pt-5.font-weight-normal
+        = addendum.description
+
+.card-footer
+  button.btn.btn-primary[
+    data-target="#add-addendum"
+    data-toggle="modal"
+    type="button"
+  ]
+    .fa.fa-pencil-alt.mr-4
+    | Buat Addendum

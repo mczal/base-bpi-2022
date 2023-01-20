@@ -1,0 +1,314 @@
+scss: 
+  .select2-selection__rendered {
+    font-weight:normal;
+    font-size:12px;
+  }
+  .remove-document {
+    position: absolute;
+    right: -8px;
+    top: -7px;
+    font-size: 4px;
+    z-index: 2;
+
+    & > i {
+      font-size: 14px !important;
+      color: #F44336 !important;
+    }
+    &:hover {
+      & > i {
+        color: #FFF !important;
+      }
+    }
+  }
+
+#update.modal.fade aria-hidden="true" aria-labelledby="staticBackdrop" data-backdrop="static" role="dialog" tabindex="-1" 
+  .modal-dialog.modal-dialog-centered.modal-lg role="document" 
+    .modal-content
+      = form_with url: '#',
+        method: :post do |f|
+        .modal-header
+          h5#addPaymentModalLabel.modal-title List Pembayaran
+          button.close[
+            aria-label="Close"
+            data-dismiss="modal"
+            type="button" 
+          ]
+            i.ki.ki-close[
+              aria-hidden="true"
+            ]
+        .modal-body
+          span.text-dark-75.font-weight-bolder.d-block.font-size-lg.mb-2
+            | Total Nilai Kontrak :&nbsp;
+            span.text-success.font-weight-bolder.font-size-lg
+              = @contract.price.to_money.format
+          span.text-dark-75.font-weight-bolder.d-block.font-size-lg.mb-2
+            | Sub Total Invoice :&nbsp;
+            span.text-success.font-weight-bolder.font-size-lg
+              = @contract.invoices.sum(&:price).to_money.format
+          / span.text-dark-75.font-weight-bolder.d-block.font-size-lg.mb-2
+            | Total Purchase Order :&nbsp;
+            span.text-success.font-weight-bolder.font-size-lg
+              | Rp.5.000,00
+          - @contract.invoices.each.with_index do |invoice,i|
+            = hidden_field_tag "invoice[#{i}][id]", invoice.id
+            .separator.separator-solid.my-4
+            .form-group.row[
+              style="margin-bottom: 5px;border-radius:5px;"
+            ]
+              label.col-12.mt-2.font-weight-bold
+                | Pembayaran Ke-#{i+1}
+              .col-xl-3.col-sm-6.mb-2
+                input.form-control.form-control-solid.font-weight-bolder[
+                  class="text-#{invoice.paid? ? 'primary':'danger'}"
+                  required="required"
+                  data-controller="tooltip"
+                  data-original-title=""
+                  data-title=("No. Referensi")
+                  name="invoice[#{i}][ref_number]"
+                  title=""
+                  type="text"
+                  value="#{invoice.ref_number}"
+                ]
+              .col-xl-3.col-sm-6.mb-2
+                .input-group.input-group-solid
+                  .input-group-prepend
+                    span.input-group-text.font-weight-bolder[
+                      class="text-#{invoice.paid? ? 'primary':'danger'}"
+                    ] Rp
+                  input.form-control.form-control-solid.font-weight-bolder[
+                    class="text-#{invoice.paid? ? 'primary':'danger'}"
+                    data-controller=("tooltip input-price")
+                    required="required"
+                    data-original-title=""
+                    data-title=("Jumlah Pembayaran")
+                    name="invoice[#{i}][price]"
+                    title=""
+                    type="text"
+                    value="#{invoice.price}"
+                  ]
+              .col-xl-3.col-sm-6.mb-2
+                input.form-control.form-control-solid.font-weight-bolder[
+                  readonly='readonly'
+                  class="text-#{invoice.paid? ? 'primary':'danger'}"
+                  data-controller=("picker--date tooltip")
+                  data-original-title=""
+                  data-title=("Tanggal Jatuh Tempo")
+                  name="invoice[#{i}][due_date]"
+                  placeholder="Tanggal Jatuh Tempo"
+                  required="required"
+                  title=""
+                  type="text"
+                  value="#{html_input_date invoice.due_date}"
+                ]
+              .col-xl-3.col-sm-6.mb-2.d-flex
+                = select_tag "invoice[#{i}][status]", options_for_select(['LUNAS','BELUM LUNAS','HAPUS'], (invoice.paid? ? 'LUNAS':'BELUM LUNAS')),
+                  class: "text-#{invoice.paid? ? 'primary':'danger'} form-control form-control-solid",
+                  id: "#Status-#{invoice.id}",
+                  required: 1,
+                  'aria-hidden': 'true',
+                  'data-controller': 'select2',
+                  tabindex: '-1'
+
+              .form-group.col-xl-3.col-sm-6.mb-2
+                label Invoice
+                .input-group.d-block
+                  #kt_dropzone_2.dropzone.dropzone-default[
+                    data-controller='dropzone'
+                    data-dropzone-max-files="10"
+                    data-dropzone-max-file-size="5"
+                    data-dropzone-accepted-files=".pdf,application/pdf"
+                    data-dropzone-add-remove-links='1'
+                    data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                    data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                  ]
+                    input[
+                      type="file"
+                      style="display:none"
+                      name="invoice[#{i}][invoice_file]"
+                      data-target="dropzone.input"
+                      data-direct-upload-url="#{rails_direct_uploads_path}"
+                    ]
+                    .dropzone-msg.dz-message.needsclick
+                      span.dropzone-msg-desc
+                        | Letakan dokumen disini atau
+                        |  klik untuk unggah dokumen.
+                .m-1
+                  - file = invoice.invoice_file
+                  - if file.attached?
+                    a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                      data-title="Invoice"
+                      data-content="Nama: #{file.blob.filename}<br/>Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                      data-popover-html=1
+                      data-controller="popover"
+                      data-popover-trigger="hover"
+                      style="cursor:pointer;position:relative;"
+                      target="_blank"
+                      href="#{url_for file}"
+                    ]
+                      button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                        data-controller='admin--invoice-trackings--actions--remove-documents'
+                        data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                        data-admin--invoice-trackings--actions--remove-documents-url="#{admin_invoice_trackings_actions_remove_document_path(id: @contract.id, attachment_id: file.id)}"
+                      ]
+                        i.fas.fa-times
+                      span.svg-icon.svg-icon-primary.svg-icon-2x
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            polygon[points="0 0 24 0 24 24 0 24"]
+                            path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                            rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                            rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+
+              .form-group.col-xl-3.col-sm-6.mb-2
+                label Kwitansi
+                .input-group.d-block
+                  #kt_dropzone_2.dropzone.dropzone-default[
+                    data-controller='dropzone'
+                    data-dropzone-max-files="10"
+                    data-dropzone-max-file-size="5"
+                    data-dropzone-accepted-files=".pdf,application/pdf"
+                    data-dropzone-add-remove-links='1'
+                    data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                    data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                  ]
+                    input[
+                      type="file"
+                      style="display:none"
+                      name="invoice[#{i}][kwitansi_file]"
+                      data-target="dropzone.input"
+                      data-direct-upload-url="#{rails_direct_uploads_path}"
+                    ]
+                    .dropzone-msg.dz-message.needsclick
+                      span.dropzone-msg-desc
+                        | Letakan dokumen disini atau
+                        |  klik untuk unggah dokumen.
+                .m-1
+                  - file = invoice.kwitansi_file
+                  - if file.attached?
+                    a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                      data-title="Kwitansi"
+                      data-content="Nama: #{file.blob.filename}<br/>Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                      data-popover-html=1
+                      data-controller="popover"
+                      data-popover-trigger="hover"
+                      style="cursor:pointer;position:relative;"
+                      target="_blank"
+                      href="#{url_for file}"
+                    ]
+                      button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                        data-controller='admin--invoice-trackings--actions--remove-documents'
+                        data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                        data-admin--invoice-trackings--actions--remove-documents-url="#{admin_invoice_trackings_actions_remove_document_path(id: @contract.id, attachment_id: file.id)}"
+                      ]
+                        i.fas.fa-times
+                      span.svg-icon.svg-icon-primary.svg-icon-2x
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            polygon[points="0 0 24 0 24 24 0 24"]
+                            path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                            rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                            rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+
+              .form-group.col-xl-3.col-sm-6.mb-2
+                label Faktur Pajak
+                .input-group.d-block
+                  #kt_dropzone_2.dropzone.dropzone-default[
+                    data-controller='dropzone'
+                    data-dropzone-max-files="10"
+                    data-dropzone-max-file-size="5"
+                    data-dropzone-accepted-files=".pdf,application/pdf"
+                    data-dropzone-add-remove-links='1'
+                    data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                    data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                  ]
+                    input[
+                      type="file"
+                      style="display:none"
+                      name="invoice[#{i}][faktur_pajak_file]"
+                      data-target="dropzone.input"
+                      data-direct-upload-url="#{rails_direct_uploads_path}"
+                    ]
+                    .dropzone-msg.dz-message.needsclick
+                      span.dropzone-msg-desc
+                        | Letakan dokumen disini atau
+                        |  klik untuk unggah dokumen.
+                .m-1
+                  - file = invoice.faktur_pajak_file
+                  - if file.attached?
+                    a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                      data-title="Faktur Pajak"
+                      data-content="Nama: #{file.blob.filename}<br/>Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                      data-popover-html=1
+                      data-controller="popover"
+                      data-popover-trigger="hover"
+                      style="cursor:pointer;position:relative;"
+                      target="_blank"
+                      href="#{url_for file}"
+                    ]
+                      button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                        data-controller='admin--invoice-trackings--actions--remove-documents'
+                        data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                        data-admin--invoice-trackings--actions--remove-documents-url="#{admin_invoice_trackings_actions_remove_document_path(id: @contract.id, attachment_id: file.id)}"
+                      ]
+                        i.fas.fa-times
+                      span.svg-icon.svg-icon-primary.svg-icon-2x
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            polygon[points="0 0 24 0 24 24 0 24"]
+                            path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                            rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                            rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+
+              .form-group.col-xl-3.col-sm-6.mb-2
+                label Berita Acara
+                .input-group.d-block
+                  #kt_dropzone_2.dropzone.dropzone-default[
+                    data-controller='dropzone'
+                    data-dropzone-max-files="10"
+                    data-dropzone-max-file-size="5"
+                    data-dropzone-accepted-files=".pdf,application/pdf"
+                    data-dropzone-add-remove-links='1'
+                    data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                    data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                  ]
+                    input[
+                      type="file"
+                      style="display:none"
+                      name="invoice[#{i}][berita_acara_file]"
+                      data-target="dropzone.input"
+                      data-direct-upload-url="#{rails_direct_uploads_path}"
+                    ]
+                    .dropzone-msg.dz-message.needsclick
+                      span.dropzone-msg-desc
+                        | Letakan dokumen disini atau
+                        |  klik untuk unggah dokumen.
+                .m-1
+                  - file = invoice.berita_acara_file
+                  - if file.attached?
+                    a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                      data-title="Berita Acara"
+                      data-content="Nama: #{file.blob.filename}<br/>Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                      data-popover-html=1
+                      data-controller="popover"
+                      data-popover-trigger="hover"
+                      style="cursor:pointer;position:relative;"
+                      target="_blank"
+                      href="#{url_for file}"
+                    ]
+                      button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                        data-controller='admin--invoice-trackings--actions--remove-documents'
+                        data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                        data-admin--invoice-trackings--actions--remove-documents-url="#{admin_invoice_trackings_actions_remove_document_path(id: @contract.id, attachment_id: file.id)}"
+                      ]
+                        i.fas.fa-times
+                      span.svg-icon.svg-icon-primary.svg-icon-2x
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            polygon[points="0 0 24 0 24 24 0 24"]
+                            path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                            rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                            rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+
+        .modal-footer
+          button.btn.btn-primary.font-weight-bold type="submit"  Simpan
+

@@ -21,28 +21,45 @@ module Api
 
             @general_transactions = GeneralTransaction
               .where(company_id: current_company.id)
-              .order(date: :desc)
-            if date_range.present?
-              @general_transactions = @general_transactions
-                .where(date: date_range)
-            end
 
-            if sort.present?
-              @general_transactions = @general_transactions
-                .reorder("#{sort[:field]}": sort[:sort])
-            end
-
-            if query.present?
-              apply_filter_from_query
-            end
+            apply_query
+            apply_sort
 
             @general_transactions
           end
 
-          def apply_filter_from_query
-            if query.dig(:search).present?
+          def apply_query
+            if date_range.present?
+              @general_transactions = @general_transactions
+                .where(date: date_range)
+            end
+            if query.present? && query.dig(:search).present?
               @general_transactions = @general_transactions
                 .search(query[:search])
+            end
+
+            if params[:number_evidence].present?
+              @general_transactions = @general_transactions.where(
+                number_evidence: params[:number_evidence]
+              )
+            end
+            if params[:location].present?
+              @general_transactions = @general_transactions.where(
+                location: params[:location]
+              )
+            end
+          end
+
+          def apply_sort
+            if sort.present?
+              @general_transactions = @general_transactions
+                .reorder(
+                  "#{sort[:field]}": sort[:sort],
+                  number_evidence: sort[:sort]
+                )
+            else
+              @general_transactions = @general_transactions
+                .reorder(date: :desc, number_evidence: :desc)
             end
           end
 

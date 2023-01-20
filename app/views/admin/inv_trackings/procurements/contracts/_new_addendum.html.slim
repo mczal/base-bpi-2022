@@ -1,0 +1,305 @@
+scss: 
+  .dropzone-msg.dz-message.needsclick {
+    margin:0;
+  }
+  .required {
+    color:#F44336;
+    margin-left:2px;
+  }
+
+#add-addendum.modal.fade[
+  aria-hidden="true" 
+  aria-labelledby="staticBackdrop" 
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1"
+] 
+  .modal-dialog.modal-dialog-centered.modal-lg role="document" 
+    .modal-content
+      = form_for [:admin,:inv_trackings,:procurements,@contract],
+        url: admin_inv_trackings_procurements_addendums_path(contract_id: @contract.id),
+        method: :post,
+        html: {\
+          data: {\
+            controller: 'admin--contracts--submit-handler',\
+            action: 'submit->admin--contracts--submit-handler#handleSubmit'\
+          }\
+        } do |f|
+        .modal-header
+          h5#exampleModalLabel.modal-title Tambah Addendum
+          button.close aria-label="Close" data-dismiss="modal" type="button" 
+            i.ki.ki-close aria-hidden="true"
+        .modal-body
+          fieldset
+            legend INFORMASI ADDENDUM
+            .form-group[style="margin-bottom:5px;"]
+            .row
+              .col-6.form-group[style="margin-top:10px;"]
+                label No. Reference Addendum
+                = text_field_tag 'addendum[ref_number]', '',
+                  placeholder: 'No. Addendum',
+                  class: 'form-control',
+                  required:1, required: 1
+              .col-6.form-group[style="margin-top:10px;"]
+                label
+                  | Tanggal Addendum
+                = text_field_tag 'addendum[date]', '',
+                  class: 'form-control',
+                  data: { controller: 'picker--date' },
+                  required: 1, readonly: 1
+            .form-group
+              label Deskripsi
+              = text_area_tag 'addendum[description]', '',
+                placeholder: 'Deskripsi',
+                class: 'form-control',
+                required:1, required: 1
+            .form-group
+              label Dokumen (maks. 10 Dokumen)
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='dropzone'
+                  data-dropzone-max-files="10"
+                  data-dropzone-max-file-size="20"
+                  data-dropzone-accepted-files=".pdf,application/pdf"
+                  data-dropzone-add-remove-links='1'
+                  data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="addendum[files][]"
+                    type="file"
+                    data-target="dropzone.input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              .m-1.d-flex
+                / - @addendum.files.each do |file|
+                  .mr-1
+                    a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                      data-title="#{file.blob.filename}"
+                      data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                      data-popover-html=1
+                      data-controller="popover"
+                      data-popover-trigger="hover"
+                      style="cursor:pointer;position:relative;"
+                      target="_blank"
+                      href="#{url_for file}"
+                    ]
+                      button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                        data-controller='admin--invoice-trackings--actions--remove-documents'
+                        data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                        data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                      ]
+                        i.fas.fa-times
+                      span.svg-icon.svg-icon-primary.svg-icon-2x
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            polygon[points="0 0 24 0 24 24 0 24"]
+                            path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                            rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                            rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+          h4.mt-5.text-center
+            | == PERUBAHAN ==
+
+          fieldset
+            legend INFORMASI CLIENT
+            .row
+              .form-group.col-6
+                label
+                  | Client
+                  span.required *
+                .input-group
+                  = f.select :client_id, options_from_collection_for_select(\
+                      Client.select(:id,:name).where(id: @contract.client_id),\
+                      'id',\
+                      'name',\
+                      @contract.client_id\
+                    ),
+                    {include_blank: '== Pilih =='},
+                    class: 'form-control',
+                    disabled: 1,
+                    data: {\
+                      controller: 'select2',\
+                      required: 1\
+                    }
+            .row[
+              style="min-height:100px;"
+              data-controller="admin--contracts--get-client-detail"
+              data-admin--contracts--get-client-detail-path="#{admin_inv_trackings_procurements_contracts_get_client_detail_path(client_id: '-1')}"
+            ]
+              .col-6.form-group
+                table
+                  thead
+                  tbody
+                    tr
+                      td
+                        | Alamat
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = @contract.client&.address
+                    tr
+                      td
+                        | NPWP
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        |
+                    tr
+                      td
+                        | Jenis PKP
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = @contract.client&.pkp_group.to_s.titlecase.upcase
+              .col-6
+                .form-group
+                  label.mr-1 Bank
+                  = f.select :bank_id,
+                    options_from_collection_for_select(Bank.all, :id, :name, @contract.bank_id),
+                    {include_blank: '== Pilih =='},
+                    class: 'form-control',
+                    data: { controller: 'select2' },
+                    required: 1, disabled: !@contract.client.present?
+                .form-group
+                  label No Rekening
+                  = f.text_field :account_number,
+                    placeholder: 'No. Rekening Bank',
+                    class: 'form-control',
+                    required: 1, disabled: !@contract.client.present?
+                .form-group
+                  label A/N
+                  = f.text_field :account_holder,
+                    placeholder: 'Nama pemilik rekening',
+                    class: 'form-control',
+                    required: 1, disabled: !@contract.client.present?
+          fieldset
+            legend KONTRAK
+            .form-group[style="margin-bottom:5px;"]
+              label No. Kontrak
+              = f.text_field :ref_number,
+                placeholder: 'No. Kontrak',
+                class: 'form-control',
+                required:1, required: 1,
+                disabled: 1
+            .form-group[style="margin-bottom:5px;"]
+              label Perihal
+              = f.text_area :description,
+                placeholder: 'Perihal',
+                class: 'form-control',
+                required:1, required: 1
+            .row
+              .col-6.form-group[style="margin-top:10px;"]
+                label
+                  | Tanggal Mulai Kontrak
+                = f.text_field :started_at,
+                  class: 'form-control',
+                  data: { controller: 'picker--date' },
+                  required: 1, readonly: 1,
+                  value: html_input_date(@contract.started_at)
+              .col-6.form-group[style="margin-top:10px;"]
+                label
+                  | Tanggal Selesai Kontrak
+                = f.text_field :ended_at,
+                  class: 'form-control',
+                  data: { controller: 'picker--date' },
+                  required: 1, readonly: 1,
+                  value: html_input_date(@contract.ended_at)
+            .row[style="margin-top:10px;"]
+              .col-3.form-group[style="margin-bottom:5px;"]
+                label
+                  | SPMK/BAMP?
+                = f.select :started_with_group,
+                  options_for_select([['SPMK','spmk'],['BAMP','bamp']], @contract.started_with_group || 'spmk'),
+                  {include_blank: '== Pilih =='},
+                  class: 'form-control',
+                  data: { controller: 'select2' }
+              .col-9.form-group[style="margin-bottom:5px;"]
+                label
+                  | No. SPMK / BAMP
+                = f.text_field :started_with_ref_number,
+                  class: 'form-control',
+                  required: 1
+            .form-group
+              label
+                | Tanggal SPMK / BAMP
+              = f.text_field :started_with_date,
+                class: 'form-control',
+                data: { controller: 'picker--date' },
+                required: 1, readonly: 1,
+                value: html_input_date(@contract.started_with_date)
+            .form-group[style="margin-top:30px;;margin-bottom:5px;"]
+              label
+                | Jangka Waktu (Hari)
+              = f.number_field :time_period,
+                class: 'form-control',
+                required: 1
+            .row
+              .form-group.col-8
+                label
+                  | Jangka Waktu Bayar (Hari)
+                = f.number_field :payment_time_period,
+                  class: 'form-control',
+                  required: 1
+              .form-group.col-4
+                label
+                  | Kalender/Kerja?
+                = f.select :payment_time_period_group,
+                  options_for_select([['Kerja','work_time'],['Kalender','calendar']], @contract.payment_time_period_group || 'calendar'),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+          fieldset
+            legend NILAI KONTRAK
+            .row
+              .col-2.form-group
+                label
+                  | Nilai
+                  span.required *
+                = f.select :price_currency,
+                  options_for_select([['Rp','IDR'],['$','USD']], @contract.price_currency || 'IDR'),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+              .col-10.form-group
+                label
+                  | &nbsp;
+                .input-group
+                  = f.text_field :price,
+                    class: 'form-control',
+                    data: { controller: 'input-price' },
+                    required: 1,
+                    placeholder: 'Nilai Kontrak',
+                    value: @contract.price.amount
+            .row
+              / .col-6.form-group
+                label
+                  | Debit (Cost Center)
+                  span.required *
+                = f.select :accrued_debit_id,
+                  options_from_collection_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%',), :id, :code_name, @contract.accrued_debit_id),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+              / .col-6.form-group
+                label
+                  | Kredit
+                  span.required *
+                = f.select :accrued_credit_id,
+                  options_from_collection_for_select(Account.select(:id,:name,:code).where(code: '44020'), :id, :code_name, @contract.accrued_credit_id),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+        .modal-footer
+          button.btn.btn-light-primary.font-weight-bold[
+            data-dismiss="modal"
+            type="button"
+          ] Batal
+          = f.submit "Simpan", class: "btn btn-outline-info"

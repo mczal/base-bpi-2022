@@ -1,0 +1,141 @@
+scss:
+  .select2.select2-container {
+    width: 100%;
+  }
+
+= form_for [:admin, :finances, @invoice],
+  html: {class: 'card-body pt-0'} do |f|
+  .form-group
+    label
+      | PPN
+      span.required *
+    .radio-inline
+      label.radio
+        input[
+          type="radio" name="invoice[ppn_cost_group]" value="biaya"
+          required="required"
+          checked=(@invoice.ppn_cost_biaya?)
+        ]
+        span
+        | Biaya (25140)
+      label.radio
+        input[
+          type="radio" name="invoice[ppn_cost_group]" value="non_biaya"
+          required="required"
+          checked=(@invoice.ppn_cost_non_biaya?)
+        ]
+        span
+        | Non Biaya (...)
+  .row
+    .col-6.form-group
+      label
+        | Cost Center
+        span.required *
+        = select_tag :dummy,
+          options_from_collection_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%',), :id, :code_name, @invoice.ba.contract.accrued_debit_id),
+          include_blank: '== Pilih ==',
+          class: 'form-control',
+          data: { controller: 'select2' },
+          disabled: 1
+    .col-6.form-group
+      label
+        | Hutang
+        span.required *
+        = f.select :accrued_credit_id,
+          options_from_collection_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','%utang%',), :id, :code_name, @invoice.accrued_credit_id),
+          {include_blank: '== Pilih =='},
+          class: 'form-control',
+          data: { controller: 'select2' },
+          required: 1
+  .form-group
+    label
+      | Pajak Pph
+    .row
+      .col-6.form-group.mb-0
+        = f.select :pph_id,
+          options_from_collection_for_select(Account.all, :id, :name, @invoice.pph_id),
+          {include_blank: '== Pilih =='},
+          class: 'form-control',
+          data: { controller: 'select2' }
+      .col-4.form-group.mb-0
+        = f.number_field :pph_percentage,
+          placeholder: '%',
+          class: 'form-control',
+          step: '0.1'
+      .col-2.form-group.mb-0
+        = text_field_tag :tdt, '%',
+          class: 'form-control text-center p-0',
+          disabled: 1
+  .form-group.mb-0
+    label
+      | Denda (Rp)
+    = f.text_field :fine,
+      class: 'form-control',
+      data: { controller: 'input-price' },
+      value: @invoice.fine.amount
+
+  .form-group.mt-3.text-center
+    button.btn.btn-sm.btn-primary[
+      type="button"
+      data-controller="admin--finances--invoices--verification-retriever"
+      data-action="click->admin--finances--invoices--verification-retriever#handleClick"
+      data-admin--finances--invoices--verification-retriever-path="#{admin_finances_invoices_get_verification_path(id: @invoice.id)}"
+    ]
+      .fa.fa-calculator.mr-4
+      | Calculate
+
+  .js-verification-result-container
+    fieldset
+      legend Rincian Invoice
+      table.table.table-borderless.table-vertical-center
+        tbody
+          tr
+            td.px-3.py-2.text-left
+              | Nilai Denda
+            td.px-3.py-2.text-right
+              = print_money @invoice.fine
+          tr
+            td.px-3.py-2.text-left
+              | Nilai DPP
+            td.px-3.py-2.text-right
+              - if @invoice.is_dpp_rounded?
+                .text-muted[
+                  style="font-style:italic;font-size:12px;"
+                  title="Pembulatan kebawah"
+                  data-controller="tooltip"
+                ]
+                  | (#{print_money @invoice.dpp_price_original})
+              = print_money @invoice.dpp_price
+          tr
+            td.px-3.py-2.text-left
+              | Nilai PPN
+            td.px-3.py-2.text-right
+              - if @invoice.is_ppn_rounded?
+                .text-muted[
+                  style="font-style:italic;font-size:12px;"
+                  title="Pembulatan kebawah"
+                  data-controller="tooltip"
+                ]
+                  | (#{print_money @invoice.ppn_price_original})
+              = print_money @invoice.ppn_price
+          tr
+            td.px-3.py-2.text-left
+              | Nilai Potongan Pajak
+              .text-muted[
+                style="font-size:12px;font-style:italic;"
+              ]
+                | #{@invoice.pph&.code_name} (#{@invoice.pph_percentage}%)
+            td.px-3.py-2.text-right
+              - if @invoice.is_pph_rounded?
+                .text-muted[
+                  style="font-style:italic;font-size:12px;"
+                  title="Pembulatan kebawah"
+                  data-controller="tooltip"
+                ]
+                  | (#{print_money @invoice.pph_price_original})
+              = print_money @invoice.pph_price
+          tr
+            td.px-3.py-2.text-left
+              | Nilai Harus Dibayar
+            td.px-3.py-2.text-right
+              = print_money (@invoice.payable_price)

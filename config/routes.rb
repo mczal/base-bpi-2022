@@ -18,7 +18,10 @@ Rails.application.routes.draw do
   end
 
   namespace :admin, path: ":slug" do
-    resources :users
+    resources :users, only: %i[index show update destroy create]
+    post 'users/:id/edit',
+      to: 'users#edit',
+      as: :edit_user
 
     resources :general_transactions, only: %i[index show update destroy create]
     post 'general_transactions/:id/edit',
@@ -136,6 +139,40 @@ Rails.application.routes.draw do
       to: 'approvals#send_notification',
       as: :approval_send_notification
 
+    namespace :inv_trackings do
+      namespace :procurements do
+        resources :contracts, only: %i[index show create update destroy]
+        namespace :contracts do
+          post 'actions/:client_id/get_client_detail',
+            to: 'actions#get_client_detail',
+            as: 'get_client_detail'
+        end
+
+        resources :addendums, only: %i[show create update destroy]
+      end
+
+      namespace :accountings do
+        resources :bas, only: %i[index show create update destroy]
+        namespace :bas do
+          post 'actions/:contract_id/get_contract_detail',
+            to: 'actions#get_contract_detail',
+            as: 'get_contract_detail'
+        end
+      end
+
+      namespace :finances do
+        resources :invoices, only: %i[index show create update destroy]
+        namespace :invoices do
+          post 'actions/:ba_id/get_ba_detail',
+            to: 'actions#get_ba_detail',
+            as: 'get_ba_detail'
+          post ':id/actions/get_verification',
+            to: 'actions#get_verification',
+            as: 'get_verification'
+        end
+      end
+    end
+
     post 'active_storages/:resource_id/:resource_type/:registered_name/upload_document',
       to: 'active_storages#upload_document',
       as: :active_storages_upload_document
@@ -179,6 +216,19 @@ Rails.application.routes.draw do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :rates do
+        post 'get-all', to: 'index#show', as: :index
+      end
+
+      namespace :data_histories do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :contracts do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :bas do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :invoices do
         post 'get-all', to: 'index#show', as: :index
       end
     end

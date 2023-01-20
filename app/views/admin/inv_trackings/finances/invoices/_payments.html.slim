@@ -1,0 +1,83 @@
+= form_for [:admin, :finances, @invoice],
+  html: {class: 'card-body mt-0 pt-2'} do |f|
+  fieldset
+    legend Rincian Invoice
+    table.table.table-borderless.table-vertical-center
+      tbody
+        tr
+          td.px-3.py-2.text-left
+            | Nilai DPP
+          td.px-3.py-2.text-right
+            - if @invoice.is_dpp_rounded?
+              .text-muted[
+                style="font-style:italic;font-size:12px;"
+                title="Pembulatan kebawah"
+                data-controller="tooltip"
+              ]
+                | (#{print_money @invoice.dpp_price_original})
+            = print_money @invoice.dpp_price
+        tr
+          td.px-3.py-2.text-left
+            | Nilai PPN
+          td.px-3.py-2.text-right
+            - if @invoice.is_ppn_rounded?
+              .text-muted[
+                style="font-style:italic;font-size:12px;"
+                title="Pembulatan kebawah"
+                data-controller="tooltip"
+              ]
+                | (#{print_money @invoice.ppn_price_original})
+            = print_money @invoice.ppn_price
+        tr
+          td.px-3.py-2.text-left
+            | Nilai Potongan Pajak
+            .text-muted[
+              style="font-size:12px;font-style:italic;"
+            ]
+              | #{@invoice.pph&.code_name} (#{@invoice.pph_percentage}%)
+          td.px-3.py-2.text-right
+            - if @invoice.is_pph_rounded?
+              .text-muted[
+                style="font-style:italic;font-size:12px;"
+                title="Pembulatan kebawah"
+                data-controller="tooltip"
+              ]
+                | (#{print_money @invoice.pph_price_original})
+            = print_money @invoice.pph_price
+        tr
+          td.px-3.py-2.text-left
+            | Nilai Denda
+          td.px-3.py-2.text-right
+            = print_money @invoice.fine
+        tr
+          td.px-3.py-2.text-left
+            | Nilai Harus Dibayar
+          td.px-3.py-2.text-right
+            = print_money (@invoice.payable_price)
+    .form-group
+      label
+        | Kas / Bank
+        span.required *
+      = f.select :bank_account_id,
+        options_from_collection_for_select(Account.select(:id,:name,:code).where('code ILIKE ?','2%',), :id, :code_name, @invoice.bank_account_id),
+        {include_blank: '== Pilih =='},
+        class: 'form-control',
+        data: { controller: 'select2' },
+        required: 1,
+        disabled: @invoice.paid?
+    - if @invoice.paid?
+      .form-group.mt-3.text-right
+        button.btn.btn-sm.btn-success[
+          type="button"
+          value="Pay"
+        ]
+          .fa.fa-check.mr-4
+          | Sudah Lunas
+    - else
+      .form-group.mt-3.text-right
+        button.btn.btn-sm.btn-success[
+          type="submit"
+          value="Pay"
+        ]
+          .fa.fa-check.mr-4
+          | Bayar Sekarang

@@ -1,0 +1,6 @@
+.card-body.pt-0
+  = render partial: 'shared/document_v2',
+    locals: { file_name: 'BA', file: @ba.file }
+  = render partial: 'shared/document_v2',
+    collection: @ba.other_files, as: :file,
+    locals: { file_name: 'Dokumen Lainnya' }

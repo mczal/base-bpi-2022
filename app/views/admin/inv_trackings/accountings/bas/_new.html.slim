@@ -1,0 +1,248 @@
+scss: 
+  .dropzone-msg.dz-message.needsclick {
+    margin:0;
+  }
+  .required {
+    color:#F44336;
+    margin-left:2px;
+  }
+
+- if params[:page].to_s == 'new'
+  javascript:
+    window.setTimeout(function(){
+      $('#add').modal('show');
+    }, 1000);
+
+#add.add-contract.modal.fade[
+  aria-hidden="true" 
+  aria-labelledby="staticBackdrop" 
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1"
+] 
+  .modal-dialog.modal-dialog-centered.modal-lg role="document" 
+    .modal-content
+      = form_for [:admin,:inv_trackings,:accountings,@ba],
+        html: {\
+          data: {\
+            controller: 'admin--contracts--submit-handler',\
+            action: 'submit->admin--contracts--submit-handler#handleSubmit'\
+          }\
+        } do |f|
+        - contract_id = @ba.contract_id || params[:contract_id]
+        - @ba.contract = Contract.find_by(id: contract_id)
+
+        .modal-header
+          h5#exampleModalLabel.modal-title Tambah BA
+          button.close aria-label="Close" data-dismiss="modal" type="button" 
+            i.ki.ki-close aria-hidden="true"
+        .modal-body
+          fieldset
+            legend INFORMASI KONTRAK
+            .row
+              .form-group.col-6
+                label
+                  | Kontrak (No. Kontrak | Client)
+                  span.required *
+                .input-group
+                  = f.select :contract_id, options_from_collection_for_select(\
+                      Contract.select(:id,:client_id,:ref_number).where.not(status: 'draft'),\
+                      'id',\
+                      'name_for_select',\
+                      @ba.contract_id\
+                    ),
+                    {include_blank: '== Pilih =='},
+                    class: 'form-control',
+                    data: {\
+                      controller: 'select2',\
+                      required: 1\
+                    }
+            .row[
+              style="min-height:100px;"
+              data-controller="admin--bas--get-contract-detail"
+              data-admin--bas--get-contract-detail-path="#{admin_inv_trackings_accountings_bas_get_contract_detail_path(contract_id: '-1')}"
+            ]
+              - @contract = @ba.contract
+              = render template: 'admin/inv_trackings/accountings/bas/actions/get_contract_detail'
+          fieldset
+            legend Berita Acara
+            .form-group[style="margin-bottom:5px;"]
+              label No. BA
+              = f.text_field :reference_number,
+                placeholder: 'No. BA',
+                class: 'form-control',
+                required:1, required: 1
+            .form-group[style="margin-bottom:5px;"]
+              label Perihal
+              = f.text_area :description,
+                placeholder: 'Perihal',
+                class: 'form-control',
+                required:1, required: 1
+            .row
+              .col-6.form-group
+                label
+                  | Tanggal BA
+                  span.required *
+                = f.text_field :date, class: 'form-control',
+                  value: html_input_date(@ba.date),
+                  readonly: 1, required: 1,
+                  data: { controller: 'picker--date' }
+              .col-6.form-group
+                label
+                  | Tanggal Levering
+                  span.required *
+                = f.text_field :levered_at, class: 'form-control',
+                  value: html_input_date(@ba.levered_at),
+                  readonly: 1, required: 1,
+                  data: { controller: 'picker--date' }
+            .row
+              .col-6.form-group[style="margin-top:10px;"]
+                label
+                  | Tanggal Realisasi
+                = f.text_field :realized_at,
+                  class: 'form-control',
+                  data: { controller: 'picker--date' },
+                  required: 1, readonly: 1,
+                  value: html_input_date(@ba.realized_at)
+          fieldset
+            legend NILAI BA
+            .row
+              .col-2.form-group
+                label
+                  | Nilai
+                  span.required *
+                = f.select :price_currency,
+                  options_for_select([['Rp','IDR'],['$','USD']], @ba.price_currency || 'IDR'),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+              .col-10.form-group
+                label
+                  | &nbsp;
+                .input-group
+                  = f.text_field :price,
+                    class: 'form-control',
+                    data: { controller: 'base--input-price' },
+                    required: 1,
+                    placeholder: 'Nilai Kontrak',
+                    value: @ba.price.amount
+            .row
+              .col-6.form-group
+                label
+                  | Kredit
+                  span.required *
+                = f.select :accrued_credit_id,
+                  options_from_collection_for_select(Account.select(:id,:name,:code).where(code: '44020'), :id, :readable_name, @ba.accrued_credit_id),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+          hr
+          .row
+            .form-group.col-6
+              label BA (1 Dokumen)
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='base--dropzone'
+                  data-base--dropzone-max-files="1"
+                  data-base--dropzone-max-file-size="20"
+                  data-base--dropzone-accepted-files=".pdf,application/pdf"
+                  data-base--dropzone-add-remove-links='1'
+                  data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="ba[file]"
+                    type="file"
+                    data-base--dropzone-target="input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                    required="1"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              - if @ba.file.attached?
+                .m-1
+                  - file = @ba.file
+                  a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                    data-title="#{file.blob.filename}"
+                    data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                    data-popover-html=1
+                    data-controller="popover"
+                    data-popover-trigger="hover"
+                    style="cursor:pointer;position:relative;"
+                    target="_blank"
+                    href="#{url_for file}"
+                  ]
+                    button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                      data-controller='admin--invoice-trackings--actions--remove-documents'
+                      data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                      data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                    ]
+                      i.fas.fa-times
+                    span.svg-icon.svg-icon-primary.svg-icon-2x
+                      svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                        g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                          polygon[points="0 0 24 0 24 24 0 24"]
+                          path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                          rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                          rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+            .form-group.col-6
+              label Dokumen Lainnya (maks. 10 Dokumen)
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='base--dropzone'
+                  data-base--dropzone-max-files="10"
+                  data-base--dropzone-max-file-size="20"
+                  data-base--dropzone-accepted-files=".pdf,application/pdf"
+                  data-base--dropzone-add-remove-links='1'
+                  data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="ba[other_files][]"
+                    type="file"
+                    data-base--dropzone-target="input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              .m-1.d-flex
+                - @ba.other_files.each do |file|
+                  .mr-1
+                    a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                      data-title="#{file.blob.filename}"
+                      data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                      data-popover-html=1
+                      data-controller="popover"
+                      data-popover-trigger="hover"
+                      style="cursor:pointer;position:relative;"
+                      target="_blank"
+                      href="#{url_for file}"
+                    ]
+                      button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                        data-controller='admin--invoice-trackings--actions--remove-documents'
+                        data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                        data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                      ]
+                        i.fas.fa-times
+                      span.svg-icon.svg-icon-primary.svg-icon-2x
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            polygon[points="0 0 24 0 24 24 0 24"]
+                            path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                            rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                            rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+
+        .modal-footer
+          button.btn.btn-light-primary.font-weight-bold[
+            data-dismiss="modal"
+            type="button"
+          ] Batal
+          = f.submit "Simpan as Draft", class: "btn btn-outline-warning"
+          = f.submit "Simpan", class: "btn btn-outline-info"
+          = f.submit "Simpan & Lanjut ke Invoice", class: "btn btn-outline-primary"

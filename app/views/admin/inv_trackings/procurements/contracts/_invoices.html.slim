@@ -1,0 +1,87 @@
+scss:
+  tr.anchored {
+    & > td {
+      background-color: #FFDD9A;
+    }
+  }
+
+.d-flex.align-items-center.flex-wrap.mr-1.justify-content-between
+  h5.font-weight-bold.font-size-lg.m-6.d-flex.align-items-center.flex-wrap.mr-1[style="margin-left:23px !important;"]
+    | List Pembayaran
+  .font-weight-bold.font-size-lg.m-6.d-flex.align-items-right[style="margin-left:23px !important;"]
+    button.btn.btn-sm.btn-light-primary.font-weight-bolder.text-uppercase[
+      data-target="#add-invoice"
+      data-toggle="modal"
+      type="button"
+    ]
+      i.la.la-plus-circle
+      | Pembayaran
+    button.ml-2.btn.btn-sm.btn-light-warning.font-weight-bolder.text-uppercase[
+      data-target="#update"
+      data-toggle="modal"
+      type="button"
+    ]
+      i.la.la-pencil
+      | Update
+    = render partial: 'pay_invoice'
+    = render partial: 'update_invoice'
+
+.table-responsive
+  table.table.table-head-custom.table-vertical-center.table-head-bg.table-borderless
+    thead
+      tr.text-left
+        th.pl-7[style="min-width: 100px"]
+          | No.Bukti Pembayaran
+        th[style="min-width: 100px"]
+          | Jumlah
+        th[style="min-width: 100px"]
+          | Tanggal Jatuh Tempo
+        th[style="min-width: 100px"]
+          | Status
+        th[style="min-width: 100px"]
+          | Files
+    tbody[
+      data-controller="admin--contracts--anchored-invoice"
+    ]
+      - @contract.invoices.each do |invoice|
+        tr[
+          id="I#{invoice.id.upcase.gsub('-','')}"
+        ]
+          td.pl-7.py-5
+            span.text-dark-75.font-weight-bolder.d-block.font-size-sm
+              = invoice.ref_number
+          td.px-2.py-5
+            span.text-dark-75.font-weight-bolder.d-block.font-size-sm
+              = invoice.price.to_money.format
+          td.px-2
+            span.text-dark-75.font-weight-bolder.d-block.font-size-sm
+              = invoice.due_date_html.html_safe
+          td.px-2
+            span.font-weight-bolder.d-block.font-size-sm.text-success[
+              class="text-#{invoice.status == 'pending' ? 'light-dark' : 'success'}"
+            ]
+              = t invoice.status
+            span[style="font-size:9px;"]
+              = readable_date_4 invoice.paid_at
+          td.px-2
+            span.text-dark-75.font-weight-bolder.d-block.font-size-sm
+              - invoice.all_grouped_files.each do |entry|
+                - entry[:files].each do |file|
+                  a.btn.btn-icon.btn-clean.btn-dropdown.btn-sm.mr-1[
+                    data-title="#{entry[:name]}"
+                    data-content="Nama: #{file.blob.filename}<br/>Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                    data-popover-html=1
+                    data-controller="popover"
+                    data-popover-trigger="hover"
+                    style="cursor:pointer;"
+                    target="_blank"
+                    href="#{url_for file}"
+                  ]
+                    span.svg-icon.svg-icon-danger.svg-icon-2x
+                      svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                        g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                          polygon[points="0 0 24 0 24 24 0 24"]
+                          path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                          rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                          rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+

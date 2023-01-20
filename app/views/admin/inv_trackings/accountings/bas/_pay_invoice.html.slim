@@ -1,0 +1,168 @@
+#add-invoice.modal.fade[
+  aria-labelledby="staticBackdrop"
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1"
+  aria-modal="true"
+]
+  .modal-dialog.modal-dialog-centered.modal-lg[role="document"]
+    .modal-content
+      = form_with url: '#',
+        method: :post do |f|
+        = f.hidden_field :contract_id, 
+          value: @contract.id
+        .modal-header
+          h5#exampleModalLabel.modal-title
+            | Invoice
+          button.close[
+            aria-label="Close"
+            data-dismiss="modal"
+            type="button"
+          ]
+            i.ki.ki-close[
+              aria-hidden="true"
+            ]
+        .modal-body
+          .form-group.row
+            .col-9
+              label
+                | No. Invoice
+              .input-group
+                = f.text_field :ref_number,
+                  placeholder: 'e.g. IWG/XXI/012/33',
+                  class: 'form-control'
+            .col-3
+              label
+                | Status
+              .input-group
+                = f.select :status, options_for_select(['LUNAS', 'BELUM LUNAS'], 'BELUM LUNAS'),
+                  {},
+                  class: 'form-control',
+                  data: {\
+                    controller: 'select2'\
+                  }
+          .form-group.row
+            .col-6
+              label
+                | Nilai
+              .input-group
+                = f.text_field :price,
+                  placeholder: 'e.g. 20000000',
+                  class: 'form-control',
+                  value: nil,
+                  data: {\
+                    controller: 'input-price'\
+                  }
+            .col-6
+              label
+                | Jatuh Tempo
+              .input-group
+                = f.text_field :due_date,
+                  class: 'form-control',
+                  value: nil,
+                  readonly: 1,
+                  data: {\
+                    controller: 'picker--date'\
+                  }
+
+          hr
+          .row
+            .form-group.col-6
+              label Invoice
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='dropzone'
+                  data-dropzone-max-files="10"
+                  data-dropzone-max-file-size="5"
+                  data-dropzone-accepted-files=".pdf,application/pdf"
+                  data-dropzone-add-remove-links='1'
+                  data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input[
+                    type="file"
+                    style="display:none"
+                    name="invoice[invoice_file]"
+                    data-target="dropzone.input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+            .form-group.col-6
+              label Kwitansi
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='dropzone'
+                  data-dropzone-max-files="10"
+                  data-dropzone-max-file-size="5"
+                  data-dropzone-accepted-files=".pdf,application/pdf"
+                  data-dropzone-add-remove-links='1'
+                  data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input[
+                    type="file"
+                    style="display:none"
+                    name="invoice[kwitansi_file]"
+                    data-target="dropzone.input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+            .form-group.col-6
+              label Faktur Pajak
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='dropzone'
+                  data-dropzone-max-files="10"
+                  data-dropzone-max-file-size="5"
+                  data-dropzone-accepted-files=".pdf,application/pdf"
+                  data-dropzone-add-remove-links='1'
+                  data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input[
+                    type="file"
+                    style="display:none"
+                    name="invoice[faktur_pajak_file]"
+                    data-target="dropzone.input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+            .form-group.col-6
+              label Berita Acara
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='dropzone'
+                  data-dropzone-max-files="10"
+                  data-dropzone-max-file-size="5"
+                  data-dropzone-accepted-files=".pdf,application/pdf"
+                  data-dropzone-add-remove-links='1'
+                  data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input[
+                    type="file"
+                    style="display:none"
+                    name="invoice[berita_acara_file]"
+                    data-target="dropzone.input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+
+        .modal-footer
+          a.btn.btn-light-primary.font-weight-bold[data-dismiss="modal" href="/admin/accounts" type="button"]
+            |  Batal
+          = f.submit 'Simpan',
+            class: 'btn btn-primary'
+

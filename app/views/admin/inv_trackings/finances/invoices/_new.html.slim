@@ -1,0 +1,521 @@
+scss: 
+  .dropzone-msg.dz-message.needsclick {
+    margin:0;
+  }
+  .required {
+    color:#F44336;
+    margin-left:2px;
+  }
+
+#add.add-contract.modal.fade[
+  aria-hidden="true" 
+  aria-labelledby="staticBackdrop" 
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1"
+] 
+  .modal-dialog.modal-dialog-centered.modal-lg role="document" 
+    .modal-content
+      = form_for [:admin,:inv_trackings,:finances,@invoice],
+        html: {\
+          data: {\
+            controller: 'admin--finances--invoices--submit-summary-verification',\
+            action: 'submit>admin--finances--invoices--submit-summary-verification#handleSubmit'\
+          }\
+        } do |f|
+        .modal-header
+          h5#exampleModalLabel.modal-title Tambah Invoice
+          button.close aria-label="Close" data-dismiss="modal" type="button" 
+            i.ki.ki-close aria-hidden="true"
+        .modal-body
+          fieldset
+            legend INFORMASI BA
+            .row
+              .form-group.col-6
+                label
+                  | No. BA
+                  span.required *
+                .input-group
+                  = hidden_field_tag 'invoice[invoiceable_type]', 'Ba'
+                  = f.select :invoiceable_id, options_from_collection_for_select(\
+                      Ba.select(:id,:reference_number).where.not(status: 'draft'),\
+                      'id',\
+                      'reference_number',\
+                      @invoice.ba_id\
+                    ),
+                    {include_blank: '== Pilih =='},
+                    class: 'form-control',
+                    data: {\
+                      controller: 'select2',\
+                      required: 1\
+                    }
+            .row[
+              style="min-height:100px;"
+              data-controller="admin--invoices--get-ba-detail"
+              data-admin--invoices--get-ba-detail-path="#{admin_inv_trackings_finances_invoices_get_ba_detail_path(ba_id: '-1')}"
+            ]
+              .col-6.form-group
+                table
+                  thead
+                  tbody
+                    tr
+                      td
+                        | No. BA
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = @invoice.ba&.reference_number
+                    tr
+                      td
+                        | Perihal BA
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = @invoice.ba&.description
+                    tr
+                      td
+                        | Tanggal BA
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = readable_date_2 @invoice.ba&.date
+                    tr
+                      td
+                        | Tanggal Levering BA
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = readable_date_2 @invoice.ba&.levered_at
+                    tr
+                      td
+                        | Tanggal Realisasi BA
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = readable_date_2 @invoice.ba&.realized_at
+              .col-6.form-group
+                table
+                  thead
+                  tbody
+                    tr
+                      td
+                        | Client
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        | #{@invoice.ba&.contract&.client&.name}
+                    tr
+                      td
+                        | No. Kontrak
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        | #{@invoice.ba&.contract&.ref_number}
+                    tr
+                      td
+                        | Perihal Kontrak
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        | #{@invoice.ba&.contract&.description}
+                    tr
+                      td
+                        | Nilai Kontrak
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        | #{@invoice.ba&.contract&.price&.format}
+          fieldset
+            legend Invoice
+            .form-group[style="margin-bottom:5px;"]
+              label
+                | No. Surat Permintaan Bayar
+                span.required *
+              = f.text_field :spp_number,
+                placeholder: 'No. Surat Permintaan Bayar',
+                class: 'form-control',
+                required:1, required: 1
+            .row
+              .col-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | Tanggal Invoice
+                  span.required *
+                = f.text_field :date, class: 'form-control',
+                  value: html_input_date(@invoice.date),
+                  required: 1,
+                  data: { controller: 'picker--date' },
+                  readonly: 1
+              .col-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | No. Invoice
+                  span.required *
+                = f.text_field :ref_number, class: 'form-control',
+                  required: 1
+            .row
+              .col-6.form-group[style="margin-bottom:5px;"]
+              .col-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | No. Kwitansi
+                  span.required *
+                = f.text_field :receipt_number,
+                  class: 'form-control',
+                  required: 1
+            .row
+              .col-2.form-group
+                label
+                  | Nilai
+                  span.required *
+                .form-control.js-price-currency
+                  | #{@invoice.ba&.price_currency.present? ? @invoice.ba.price_currency : 'IDR'}
+              .col-10.form-group
+                label
+                  | &nbsp;
+                .input-group
+                  .form-control.js-price
+                    | #{@invoice.ba&.price.to_money.format}
+            
+            .row
+              .col-12.form-group.mt-n5
+                label
+                  | PPN
+                  span.required *
+                .radio-inline
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice[ppn_percentage]"
+                      value="10"
+                      required="required"
+                      checked=(@invoice.ppn_percentage.to_i == 10)
+                    ]
+                    span
+                    | 10%
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice[ppn_percentage]"
+                      value="11"
+                      required="required"
+                      checked=(@invoice.ppn_percentage.to_i == 11)
+                    ]
+                    span
+                    | 11%
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice[ppn_percentage]"
+                      value="12"
+                      required="required"
+                      checked=(@invoice.ppn_percentage.to_i == 12)
+                    ]
+                    span
+                    | 12%
+                .radio-inline
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice[ppn_group]"
+                      value="include"
+                      required="required"
+                      checked=(@invoice.ppn_include?)
+                    ]
+                    span
+                    | Include
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice[ppn_group]"
+                      value="exclude"
+                      required="required"
+                      checked=(@invoice.ppn_exclude?)
+                    ]
+                    span
+                    | Exclude
+            .row
+              .col-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | Tanggal Faktur Pajak
+                  span.required *
+                = f.text_field :tax_receipt_date, class: 'form-control',
+                  value: html_input_date(@invoice.date),
+                  required: 1,
+                  data: { controller: 'picker--date' },
+                  readonly: 1
+              .col-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | No. Faktur Pajak
+                  span.required *
+                = f.text_field :tax_receipt_number, class: 'form-control',
+                  required: 1
+          hr
+          .row
+            .form-group.col-6
+              label.checkbox.mb-1
+                b.mr-2
+                  | SPP (1 Dokumen)
+                = f.check_box :spp_checked
+                span
+
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='base--dropzone'
+                  data-base--dropzone-max-files="1"
+                  data-base--dropzone-max-file-size="20"
+                  data-base--dropzone-accepted-files=".pdf,application/pdf"
+                  data-base--dropzone-add-remove-links='1'
+                  data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="invoice[spp_file]"
+                    type="file"
+                    data-base--dropzone-target="input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                    required="1"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              - if @invoice.spp_file.attached?
+                .m-1
+                  - file = @invoice.spp_file
+                  a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                    data-title="#{file.blob.filename}"
+                    data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                    data-popover-html=1
+                    data-controller="popover"
+                    data-popover-trigger="hover"
+                    style="cursor:pointer;position:relative;"
+                    target="_blank"
+                    href="#{url_for file}"
+                  ]
+                    button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                      data-controller='admin--invoice-trackings--actions--remove-documents'
+                      data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                      data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                    ]
+                      i.fas.fa-times
+                    span.svg-icon.svg-icon-primary.svg-icon-2x
+                      svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                        g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                          polygon[points="0 0 24 0 24 24 0 24"]
+                          path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                          rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                          rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+            .form-group.col-6
+              label.checkbox.mb-1
+                b.mr-2
+                  | Invoice (1 Dokumen)
+                = f.check_box :invoice_checked
+                span
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='base--dropzone'
+                  data-base--dropzone-max-files="1"
+                  data-base--dropzone-max-file-size="20"
+                  data-base--dropzone-accepted-files=".pdf,application/pdf"
+                  data-base--dropzone-add-remove-links='1'
+                  data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="invoice[file]"
+                    type="file"
+                    data-base--dropzone-target="input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                    required="1"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              - if @invoice.file.attached?
+                .m-1
+                  - file = @invoice.file
+                  a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                    data-title="#{file.blob.filename}"
+                    data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                    data-popover-html=1
+                    data-controller="popover"
+                    data-popover-trigger="hover"
+                    style="cursor:pointer;position:relative;"
+                    target="_blank"
+                    href="#{url_for file}"
+                  ]
+                    button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                      data-controller='admin--invoice-trackings--actions--remove-documents'
+                      data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                      data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                    ]
+                      i.fas.fa-times
+                    span.svg-icon.svg-icon-primary.svg-icon-2x
+                      svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                        g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                          polygon[points="0 0 24 0 24 24 0 24"]
+                          path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                          rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                          rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+            .form-group.col-6
+              label.checkbox.mb-1
+                b.mr-2
+                  | Kwitansi (1 Dokumen)
+                = f.check_box :kwitansi_checked
+                span
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='base--dropzone'
+                  data-base--dropzone-max-files="1"
+                  data-base--dropzone-max-file-size="20"
+                  data-base--dropzone-accepted-files=".pdf,application/pdf"
+                  data-base--dropzone-add-remove-links='1'
+                  data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="invoice[receipt_file]"
+                    type="file"
+                    data-base--dropzone-target="input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                    required="1"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              - if @invoice.receipt_file.attached?
+                .m-1
+                  - file = @invoice.receipt_file
+                  a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                    data-title="#{file.blob.filename}"
+                    data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                    data-popover-html=1
+                    data-controller="popover"
+                    data-popover-trigger="hover"
+                    style="cursor:pointer;position:relative;"
+                    target="_blank"
+                    href="#{url_for file}"
+                  ]
+                    button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                      data-controller='admin--invoice-trackings--actions--remove-documents'
+                      data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                      data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                    ]
+                      i.fas.fa-times
+                    span.svg-icon.svg-icon-primary.svg-icon-2x
+                      svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                        g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                          polygon[points="0 0 24 0 24 24 0 24"]
+                          path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                          rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                          rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+            .form-group.col-6
+              label.checkbox.mb-1
+                b.mr-2
+                  | Faktur Pajak (1 Dokumen)
+                = f.check_box :faktur_pajak_checked
+                span
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='base--dropzone'
+                  data-base--dropzone-max-files="1"
+                  data-base--dropzone-max-file-size="20"
+                  data-base--dropzone-accepted-files=".pdf,application/pdf"
+                  data-base--dropzone-add-remove-links='1'
+                  data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="invoice[tax_receipt_file]"
+                    type="file"
+                    data-base--dropzone-target="input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                    required="1"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              - if @invoice.tax_receipt_file.attached?
+                .m-1
+                  - file = @invoice.tax_receipt_file
+                  a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                    data-title="#{file.blob.filename}"
+                    data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                    data-popover-html=1
+                    data-controller="popover"
+                    data-popover-trigger="hover"
+                    style="cursor:pointer;position:relative;"
+                    target="_blank"
+                    href="#{url_for file}"
+                  ]
+                    button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                      data-controller='admin--invoice-trackings--actions--remove-documents'
+                      data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                      data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                    ]
+                      i.fas.fa-times
+                    span.svg-icon.svg-icon-primary.svg-icon-2x
+                      svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                        g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                          polygon[points="0 0 24 0 24 24 0 24"]
+                          path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                          rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                          rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+            .form-group.col-6
+              label Dokumen Lainnya (maks. 10 Dokumen)
+              .input-group.d-block
+                #kt_dropzone_2.dropzone.dropzone-default[
+                  data-controller='base--dropzone'
+                  data-base--dropzone-max-files="10"
+                  data-base--dropzone-max-file-size="20"
+                  data-base--dropzone-accepted-files=".pdf,application/pdf"
+                  data-base--dropzone-add-remove-links='1'
+                  data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                  data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                ]
+                  input.d-none[
+                    name="invoice[other_files][]"
+                    type="file"
+                    data-base--dropzone-target="input"
+                    data-direct-upload-url="#{rails_direct_uploads_path}"
+                  ]
+                  .dropzone-msg.dz-message.needsclick
+                    span.dropzone-msg-desc
+                      | Letakan dokumen disini atau
+                      |  klik untuk unggah dokumen.
+              .m-1.d-flex
+                - @invoice.other_files.each do |file|
+                  .mr-1
+                    a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                      data-title="#{file.blob.filename}"
+                      data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                      data-popover-html=1
+                      data-controller="popover"
+                      data-popover-trigger="hover"
+                      style="cursor:pointer;position:relative;"
+                      target="_blank"
+                      href="#{url_for file}"
+                    ]
+                      button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                        data-controller='admin--invoice-trackings--actions--remove-documents'
+                        data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                        data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                      ]
+                        i.fas.fa-times
+                      span.svg-icon.svg-icon-primary.svg-icon-2x
+                        svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                          g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                            polygon[points="0 0 24 0 24 24 0 24"]
+                            path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                            rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                            rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+
+        .modal-footer
+          button.btn.btn-light-primary.font-weight-bold[
+            data-dismiss="modal"
+            type="button"
+          ] Batal
+          = f.submit "Simpan as Draft", class: "btn btn-outline-warning"
+          = f.submit "Simpan", class: "btn btn-outline-info"
+          = f.submit "Simpan & Lanjut ke Invoice", class: "btn btn-outline-primary"

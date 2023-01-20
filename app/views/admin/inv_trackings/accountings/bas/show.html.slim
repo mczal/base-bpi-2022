@@ -1,0 +1,228 @@
+= render partial: 'new'
+#kt_content.content.d-flex.flex-column.flex-column-fluid
+  #kt_subheader.subheader.py-2.py-lg-6.subheader-solid
+    .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+      .d-flex.align-items-center.flex-wrap.mr-1
+        button#kt_subheader_mobile_toggle.burger-icon.burger-icon-left.mr-4.d-inline-block.d-lg-none data-controller="mobile-mode"
+          span
+        .d-flex.align-items-baseline.flex-wrap.mr-5
+          h5.text-dark.font-weight-bold.my-1.mr-5
+            span[style="display:inline-block;vertical-align:middle;"]
+              | BA #{@ba.reference_number}
+            span.ml-2[style="display:inline-block;vertical-align:middle;"]
+              | #{@ba.status_html.html_safe}
+      #kt_subheader_search.d-flex.align-items-center
+        .ml-0.ml-sm-2
+          button.btn.btn-primary[
+            data-target="#add.add-contract"
+            data-toggle="modal"
+            type="button"
+          ]
+            .fa.fa-pencil-alt.mr-4
+            | Edit
+
+  .d-flex.flex-column-fluid.mb-3
+    .container
+      .d-flex.flex-row
+        #kt_profile_aside.flex-row-auto.offcanvas-mobile.w-300px.w-xl-400px
+          .fixed_position_card.card.card-custom
+            .card-header
+              .card-title
+                | #{@contract.client.name}
+            .card-body.pt-4
+              .pt-5.pb-3
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  span.font-weight-bold.mr-2 No. BA:
+                  p
+                    = @ba.reference_number
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  span.font-weight-bold.mr-2 Perihal:
+                  p
+                    = @ba.description
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  span.font-weight-bold.mr-2 Tanggal BA:
+                  p
+                    = readable_date_2 @ba.date
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  span.font-weight-bold.mr-2 Tanggal Levering:
+                  p
+                    = readable_date_2 @ba.levered_at
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  span.font-weight-bold.mr-2 Tanggal Realisasi:
+                  p
+                    = readable_date_2 @ba.realized_at
+                .d-flex.align-items-center.justify-content-between.mb-2
+                  span.font-weight-bold.mr-2 Hari Terlambat:
+                  p[
+                    title="Tanggal (Realisasi - Levering)"
+                    data-controller="tooltip"
+                  ]
+                    - ddiff = daydiff(@ba.levered_at, @ba.realized_at)
+                    - if ddiff > 0
+                      | #{ddiff} Hari
+                    - else
+                      | -
+              .pb-5.pt-3
+                fieldset
+                  legend
+                    | Informasi Kontrak
+                    a[
+                      href="#{admin_inv_trackings_procurements_contract_path(id: @ba.contract_id)}"
+                    ]
+                      i.fas.fa-external-link-alt.ml-2.font-size-sm
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Perihal:
+                    p
+                      = @contract.description
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Nilai:
+                    b
+                      = @contract.price.format
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 No. Kontrak:
+                    a.text-muted.text-hover-primary
+                      = @contract.ref_number
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Tanggal Kontrak:
+                    a.text-muted.text-hover-primary
+                      | #{readable_date_4 @contract.started_at} - #{readable_date_4 @contract.ended_at}
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Jangka Waktu:
+                    a.text-muted.text-hover-primary
+                      | #{@contract.time_period} Hari
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Jangka Waktu Bayar:
+                    a.text-muted.text-hover-primary
+                      | #{@contract.payment_time_period} Hari #{t(@contract.payment_time_period_group).titlecase}
+                  hr
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 No #{@contract.started_with_group.to_s.upcase}:
+                    a.text-muted.text-hover-primary
+                      | #{@contract.started_with_ref_number}
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Tanggal
+                    a.text-muted.text-hover-primary
+                      | #{readable_date_4 @contract.started_with_date}
+                  hr
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Client:
+                    a.text-muted.text-hover-primary[
+                      href="#"
+                      data-controller="popover"
+                      data-title="#{@contract.client.name}"
+                      data-content="#{@contract.client_description.html_safe}"
+                      data-popover-trigger="hover"
+                      data-popover-html="1"
+                    ]
+                      | #{@contract.client.name}
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Bank
+                    a.text-muted.text-hover-primary
+                      | #{@contract.bank.name}
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 No. Rekening
+                    a.text-muted.text-hover-primary
+                      | #{@contract.account_number}
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Nama Pemilik Rekening
+                    a.text-muted.text-hover-primary
+                      | #{@contract.account_holder}
+                  / hr
+                  / .d-flex.align-items-center.justify-content-between.mb-2
+                    / span.font-weight-bold.mr-2 Total invoice:
+                    / a.text-muted.text-hover-primary
+                      / | #{@contract.invoices.count}
+                  / .d-flex.align-items-center.justify-content-between.mb-2
+                    / span.font-weight-bold.mr-2 Total invoice dibayar:
+                    / a.text-muted.text-hover-primary
+                      / | #{@contract.paid_invoices.count}
+                  / .d-flex.align-items-center.justify-content-between.mb-2
+                    / span.font-weight-bold.mr-2 Total invoice belum dibayar:
+                    / a.text-muted.text-hover-primary
+                      / | #{@contract.unpaid_invoices.count}
+                  / hr
+                  / .d-flex.align-items-center.justify-content-between.mb-2
+                    / span.font-weight-bold.mr-2 Total nilai invoice:
+                    / a.text-muted.text-hover-primary
+                      / | #{@contract.invoices.sum(&:price).to_money.format}
+                  / .d-flex.align-items-center.justify-content-between.mb-2
+                    / span.font-weight-bold.mr-2 Total nilai invoice dibayar:
+                    / a.text-muted.text-hover-primary
+                      / | #{@contract.paid_invoices.sum(&:price).to_money.format}
+                  / .d-flex.align-items-center.justify-content-between.mb-2
+                    / span.font-weight-bold.mr-2 Total nilai invoice belum dibayar:
+                    / a.text-muted.text-hover-primary
+                      / | #{@contract.unpaid_invoices.sum(&:price).to_money.format}
+
+            .card-header
+              .card-title
+                | Log
+            .card-body.pt-4
+              .timeline.timeline-2
+                .timeline-bar
+                - @contract.own_and_associated_audits.each_with_index do |audit,i|
+                  .timeline-item
+                    .timeline-badge[
+                      class="#{'bg-success' if i == 0}"
+                      data-controller="popover"
+                      data-title="#{audit.action}"
+                      data-content="#{audit.audited_changes}"
+                      data-popover-trigger="hover"
+                    ]
+                    .timeline-content.d-flex.align-items-center.flex-wrap
+                      span.font-weight-bold.text-center.mr-2 Diubah Oleh :
+                      span.text-muted.text-center.mr-1
+                        | #{audit.user&.email || '[SysAdmin]'}, #{readable_hour_2 audit.created_at.localtime}
+                      span.text-muted
+                        | #{readable_date audit.created_at.localtime}
+
+        .flex-row-fluid.ml-lg-8
+          .row
+            .col-lg-12
+              .card.card-custom.card-stretch.gutter-b
+                .card-header.border-0.pt-5
+                  .card-title.font-weight-bolder
+                    .card-label
+                      ul#myTab.nav.nav-tabs[role="tablist"]
+                        li.nav-item
+                          a#home-tab12.nav-link.active[
+                            data-toggle="tab"
+                            href="#documents"
+                          ]
+                            span.nav-icon
+                              i.flaticon2-layers-1
+                            span.nav-text
+                              | Documents
+                        li.nav-item
+                          a#profile-tab12.nav-link[
+                            data-toggle="tab"
+                            href="#journals"
+                            aria-controls="journals"
+                          ]
+                            span.nav-icon
+                              i.fas.fa-random
+                            span.nav-text
+                              | Transaksi
+                        li.nav-item
+                          a#profile-tab13.nav-link[
+                            data-toggle="tab"
+                            href="#invoice"
+                            aria-controls="invoice"
+                          ]
+                            span.nav-icon
+                              i.flaticon2-chat-1
+                            span.nav-text
+                              | Invoice
+                #myTabContent.tab-content.mt-5
+                  #documents.tab-pane.fade.active.show[
+                    role="tabpanel" aria-labelledby="documents"
+                  ]
+                    = render partial: 'documents'
+                  #invoice.tab-pane.fade[
+                    role="tabpanel" aria-labelledby="invoice"
+                  ]
+                    = render partial: 'invoices'
+                  #journals.tab-pane.fade[
+                    role="tabpanel" aria-labelledby="journals"
+                  ]
+                    = render partial: 'journals'

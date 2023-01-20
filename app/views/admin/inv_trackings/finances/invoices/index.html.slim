@@ -1,0 +1,77 @@
+scss:
+  .btn-custom-opt {
+    &.active {
+      color: #3699FF;
+      background-color: #E1F0FF !important;
+    }
+    &:hover {
+      color: #3699FF;
+      background-color: #E1F0FF !important;
+    }
+  }
+
+#kt_content.content.d-flex.flex-column.flex-column-fluid
+  #kt_subheader.subheader.py-2.py-lg-4.subheader-solid
+    .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+      /! begin::Details
+      .d-flex.align-items-center.flex-wrap.mr-2
+        /! begin::Title
+        h5.text-dark.font-weight-bold.mt-2.mb-2.mr-2 Invoices
+
+      #kt_subheader_search.d-flex.align-items-center
+        .d-flex.align-items-center[
+          data-controller="picker--daterange-v2"
+          data-picker--daterange-v2-prevent-default=1
+        ]
+          a#kt_dashboard_daterangepicker_custom.btn.btn-sm.btn-light.font-weight-bold.mr-2[
+            href="javascript:void(0)"
+            data-placement="left"
+            data-toggle="tooltip"
+            title="Select Date Range"
+            data-start-date="#{params[:start_date]}"
+            data-end-date="#{params[:end_date]}"
+          ]
+            span#kt_dashboard_daterangepicker_title_custom.text-muted.font-size-base.font-weight-bold.mr-2 Today
+            span#kt_dashboard_daterangepicker_date_custom.text-primary.font-size-base.font-weight-bolder Aug 6
+
+        .ml-0.ml-sm-2
+          .input-group.input-group-sm.input-group-solid style=("max-width: 600px") 
+            input#kt_datatable_search_query.form-control placeholder="Cari..." type="text" 
+            .input-group-append
+              span.input-group-text
+                span.svg-icon
+                  /! begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/General/Search.svg
+                  svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                    g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
+                      rect height="24" width="24" x="0" y="0" 
+                      path d="M14.2928932,16.7071068 C13.9023689,16.3165825 13.9023689,15.6834175 14.2928932,15.2928932 C14.6834175,14.9023689 15.3165825,14.9023689 15.7071068,15.2928932 L19.7071068,19.2928932 C20.0976311,19.6834175 20.0976311,20.3165825 19.7071068,20.7071068 C19.3165825,21.0976311 18.6834175,21.0976311 18.2928932,20.7071068 L14.2928932,16.7071068 Z" fill="#000000" fill-rule="nonzero" opacity="0.3" 
+                      path d="M11,16 C13.7614237,16 16,13.7614237 16,11 C16,8.23857625 13.7614237,6 11,6 C8.23857625,6 6,8.23857625 6,11 C6,13.7614237 8.23857625,16 11,16 Z M11,18 C7.13400675,18 4,14.8659932 4,11 C4,7.13400675 7.13400675,4 11,4 C14.8659932,4 18,7.13400675 18,11 C18,14.8659932 14.8659932,18 11,18 Z" fill="#000000" fill-rule="nonzero" 
+  .d-flex.flex-column-fluid
+    .container-fluid
+      = render "new"
+      #Contract.card.card-custom.mt-4.d-none.d-block
+        .card-header
+          .card-title
+            span.card-icon
+              i.flaticon2-favourite.text-primary
+            h3.card-label List Invoices
+          .card-toolbar.justify-content-end
+            button.btn.btn-primary.font-weight-bolder.mb-2[
+              data-target="#add"
+              data-toggle="modal"
+              type="button"
+            ]
+              i.la.la-plus
+              | Tambah Invoice
+
+        .card-body
+          css:
+            .datatable.datatable-default.datatable-loaded > .datatable-table {
+              overflow-x: scroll;
+              width: 100%;
+            }
+          #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
+            data-admin--invoices--index-data-path=api_admin_invoices_index_path
+            data-controller="admin--invoices--index"
+            data-admin--invoices--index-reload-subject-id="Contract"
+          ]

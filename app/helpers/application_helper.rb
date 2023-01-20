@@ -27,4 +27,20 @@ module ApplicationHelper
   def years_for_select
     [2022, 2023, 2024, 2025, 2026]
   end
+
+  def convert_bytesize_to_readable_bytetypes bytesize
+    types = %w(B KB MB GB)
+    i = 0
+    type = types[i]
+    result = bytesize
+    divided = result.to_f / 1024.to_f
+    while (result > 1 && divided > 1) || i == (types.count-1)
+      result = divided.dup
+      i = i + 1
+      type = types[i]
+      divided = result.to_f / 1024.to_f
+    end
+
+    "#{result.round(2)}#{type}"
+  end
 end

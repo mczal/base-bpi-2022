@@ -1,24 +1,44 @@
-.modal-body
-  .form-group
-    label Email
-    .input-group
-      input.form-control[
-        name="user[email]"
-        placeholder=("Email User")
-        type="text"
-        value="#{@user&.email}"
-      ]
-
-  .form-group
-    label Password
-    .input-group
-      input.form-control[
-        name="user[password]"
-        placeholder=("Password User")
-        type="password"
-        value=""
-      ]
-      
-.modal-footer
-  a.btn.btn-light-primary.font-weight-bold href="#{admin_users_path(slug: current_company.slug)}" data-dismiss="modal" type="button"  Batal
-  = f.submit "Simpan", class: "btn btn-primary"
+= form_for [:admin, @user] do |f|   
+  .modal-header
+    h5#exampleModalLabel.modal-title
+      | #{@user.new_record? ? 'Buat' : 'Ubah'}
+      |  User
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      i.ki.ki-close aria-hidden="true"        
+  .modal-body
+    .form-group
+      label Email
+      .input-group
+        input.form-control[
+          name="user[email]"
+          placeholder=("Email User")
+          type="text"
+          value="#{@user&.email}"
+        ]
+    .form-group
+      label Hak Akses
+      .input-group
+        = select_tag 'role[]',
+          options_from_collection_for_select(Role.select(:name), :name, :readable_name, @user.roles_name),
+          include_blank: '== Pilih ==',
+          class: 'form-control',
+          multiple: 1,
+          data: {\
+            controller: 'select2',\
+            'select2-tags': '1'\
+          }, id: "U-#{SecureRandom.uuid}"
+    .form-group
+      label Password
+      .input-group
+        input.form-control[
+          name="user[password]"
+          placeholder=("Password User")
+          type="password"
+          value=""
+        ]
+  .modal-footer
+    button.btn.btn-light-primary.font-weight-bold[
+      data-dismiss="modal"
+      type="button"
+    ] Batal
+    = f.submit "Simpan", class: "btn btn-primary"

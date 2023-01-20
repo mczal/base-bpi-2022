@@ -1,0 +1,278 @@
+.card-body.px-0
+  .ml-5.pl-3
+    h4.card-label.font-size-lg Dokumen
+    br
+    .row.m-3
+      - if @invoice.spp_file.attached?
+        - file = @invoice.spp_file
+        .col-xl-3.col-lg-6.col-md-6.col-sm-6
+          .card.card-custom.gutter-b.card-stretch
+            .card-header.border-0 style="min-height: unset;"
+              h3.card-title
+              .card-toolbar
+                .dropdown.dropdown-inline data-placement="left" data-toggle="tooltip" title=("Quick actions") 
+                  a.btn.btn-clean.btn-hover-light-primary.btn-sm.btn-icon aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#" 
+                    i.ki.ki-bold-more-hor
+                  .dropdown-menu.dropdown-menu-md.dropdown-menu-right
+                    ul.navi.navi-hover.py-5
+                      li.navi-item
+                        a.navi-link[
+                          href="#{url_for file}"
+                          target="_blank"
+                        ]
+                          span.navi-icon
+                            i.flaticon-download
+                          span.navi-text Download
+                      li.navi-item
+                        = form_with url: admin_active_storages_remove_document_path(attachment_id: file.id),
+                          method: :post do |f|
+                          button.navi-link[
+                            style="display:block;border:none;background:none;width:100%;padding:0.75rem 1.5rem;text-align:left;"
+                          ]
+                            span.navi-icon
+                              i.flaticon2-trash[style="margin-right:11px;"]
+                            span.navi-text
+                              | Remove
+            .card-body[
+              style="position:relative;"
+            ]
+              span.label.label-light-primary.label-pill.label-inline.mr-2[
+                style="position:absolute;top:-32px;left:10px;width:50%;overflow-wrap:anywhere;height:auto;"
+              ]
+                | SPP
+
+              .d-flex.flex-column.align-items-center
+                a[
+                  href="#{url_for file}"
+                  target="_blank"
+                ]
+                  = image_tag "files/pdf.png", class: "max-h-65px"
+                  .text-dark-75.font-weight-bold.mt-15.font-size-lg[
+                    style="word-break:break-all;"
+                  ]
+                    = file.blob.filename
+      - if @invoice.file.attached?
+        - file = @invoice.file
+        .col-xl-3.col-lg-6.col-md-6.col-sm-6
+          .card.card-custom.gutter-b.card-stretch
+            .card-header.border-0 style="min-height: unset;"
+              h3.card-title
+              .card-toolbar
+                .dropdown.dropdown-inline data-placement="left" data-toggle="tooltip" title=("Quick actions") 
+                  a.btn.btn-clean.btn-hover-light-primary.btn-sm.btn-icon aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#" 
+                    i.ki.ki-bold-more-hor
+                  .dropdown-menu.dropdown-menu-md.dropdown-menu-right
+                    ul.navi.navi-hover.py-5
+                      li.navi-item
+                        a.navi-link[
+                          href="#{url_for file}"
+                          target="_blank"
+                        ]
+                          span.navi-icon
+                            i.flaticon-download
+                          span.navi-text Download
+                      li.navi-item
+                        = form_with url: admin_active_storages_remove_document_path(attachment_id: file.id),
+                          method: :post do |f|
+                          button.navi-link[
+                            style="display:block;border:none;background:none;width:100%;padding:0.75rem 1.5rem;text-align:left;"
+                          ]
+                            span.navi-icon
+                              i.flaticon2-trash[style="margin-right:11px;"]
+                            span.navi-text
+                              | Remove
+            .card-body[
+              style="position:relative;"
+            ]
+              span.label.label-light-primary.label-pill.label-inline.mr-2[
+                style="position:absolute;top:-32px;left:10px;width:50%;overflow-wrap:anywhere;height:auto;"
+              ]
+                | Invoice
+
+              .d-flex.flex-column.align-items-center
+                a[
+                  href="#{url_for file}"
+                  target="_blank"
+                ]
+                  = image_tag "files/pdf.png", class: "max-h-65px"
+                  .text-dark-75.font-weight-bold.mt-15.font-size-lg[
+                    style="word-break:break-all;"
+                  ]
+                    = file.blob.filename
+      - if @invoice.receipt_file.attached?
+        - file = @invoice.receipt_file
+        .col-xl-3.col-lg-6.col-md-6.col-sm-6
+          .card.card-custom.gutter-b.card-stretch
+            .card-header.border-0 style="min-height: unset;"
+              h3.card-title
+              .card-toolbar
+                .dropdown.dropdown-inline data-placement="left" data-toggle="tooltip" title=("Quick actions") 
+                  a.btn.btn-clean.btn-hover-light-primary.btn-sm.btn-icon aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#" 
+                    i.ki.ki-bold-more-hor
+                  .dropdown-menu.dropdown-menu-md.dropdown-menu-right
+                    ul.navi.navi-hover.py-5
+                      li.navi-item
+                        a.navi-link[
+                          href="#{url_for file}"
+                          target="_blank"
+                        ]
+                          span.navi-icon
+                            i.flaticon-download
+                          span.navi-text Download
+                      li.navi-item
+                        = form_with url: admin_active_storages_remove_document_path(attachment_id: file.id),
+                          method: :post do |f|
+                          button.navi-link[
+                            style="display:block;border:none;background:none;width:100%;padding:0.75rem 1.5rem;text-align:left;"
+                          ]
+                            span.navi-icon
+                              i.flaticon2-trash[style="margin-right:11px;"]
+                            span.navi-text
+                              | Remove
+            .card-body[
+              style="position:relative;"
+            ]
+              span.label.label-light-primary.label-pill.label-inline.mr-2[
+                style="position:absolute;top:-32px;left:10px;width:50%;overflow-wrap:anywhere;height:auto;"
+              ]
+                | Kwitansi
+
+              .d-flex.flex-column.align-items-center
+                a[
+                  href="#{url_for file}"
+                  target="_blank"
+                ]
+                  = image_tag "files/pdf.png", class: "max-h-65px"
+                  .text-dark-75.font-weight-bold.mt-15.font-size-lg[
+                    style="word-break:break-all;"
+                  ]
+                    = file.blob.filename
+      - if @invoice.tax_receipt_file.attached?
+        - file = @invoice.tax_receipt_file
+        .col-xl-3.col-lg-6.col-md-6.col-sm-6
+          .card.card-custom.gutter-b.card-stretch
+            .card-header.border-0 style="min-height: unset;"
+              h3.card-title
+              .card-toolbar
+                .dropdown.dropdown-inline data-placement="left" data-toggle="tooltip" title=("Quick actions") 
+                  a.btn.btn-clean.btn-hover-light-primary.btn-sm.btn-icon aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#" 
+                    i.ki.ki-bold-more-hor
+                  .dropdown-menu.dropdown-menu-md.dropdown-menu-right
+                    ul.navi.navi-hover.py-5
+                      li.navi-item
+                        a.navi-link[
+                          href="#{url_for file}"
+                          target="_blank"
+                        ]
+                          span.navi-icon
+                            i.flaticon-download
+                          span.navi-text Download
+                      li.navi-item
+                        = form_with url: admin_active_storages_remove_document_path(attachment_id: file.id),
+                          method: :post do |f|
+                          button.navi-link[
+                            style="display:block;border:none;background:none;width:100%;padding:0.75rem 1.5rem;text-align:left;"
+                          ]
+                            span.navi-icon
+                              i.flaticon2-trash[style="margin-right:11px;"]
+                            span.navi-text
+                              | Remove
+            .card-body[
+              style="position:relative;"
+            ]
+              span.label.label-light-primary.label-pill.label-inline.mr-2[
+                style="position:absolute;top:-32px;left:10px;width:50%;overflow-wrap:anywhere;height:auto;"
+              ]
+                | Faktur Pajak
+
+              .d-flex.flex-column.align-items-center
+                a[
+                  href="#{url_for file}"
+                  target="_blank"
+                ]
+                  = image_tag "files/pdf.png", class: "max-h-65px"
+                  .text-dark-75.font-weight-bold.mt-15.font-size-lg[
+                    style="word-break:break-all;"
+                  ]
+                    = file.blob.filename
+      - @invoice.other_files.each do |file|
+        .col-xl-3.col-lg-6.col-md-6.col-sm-6
+          .card.card-custom.gutter-b.card-stretch
+            .card-header.border-0 style="min-height: unset;"
+              h3.card-title
+              .card-toolbar
+                .dropdown.dropdown-inline data-placement="left" data-toggle="tooltip" title=("Quick actions") 
+                  a.btn.btn-clean.btn-hover-light-warning.btn-sm.btn-icon aria-expanded="false" aria-haspopup="true" data-toggle="dropdown" href="#" 
+                    i.ki.ki-bold-more-hor
+                  .dropdown-menu.dropdown-menu-md.dropdown-menu-right
+                    ul.navi.navi-hover.py-5
+                      li.navi-item
+                        a.navi-link[
+                          href="#{url_for file}"
+                          target="_blank"
+                        ]
+                          span.navi-icon
+                            i.flaticon-download
+                          span.navi-text Download
+                      li.navi-item
+                        = form_with url: admin_active_storages_remove_document_path(attachment_id: file.id),
+                          method: :post do |f|
+                          button.navi-link[
+                            style="display:block;border:none;background:none;width:100%;padding:0.75rem 1.5rem;text-align:left;"
+                          ]
+                            span.navi-icon
+                              i.flaticon2-trash[style="margin-right:11px;"]
+                            span.navi-text
+                              | Remove
+            .card-body[
+              style="position:relative;"
+            ]
+              span.label.label-light-warning.label-pill.label-inline.mr-2[
+                style="position:absolute;top:-32px;left:10px;width:50%;overflow-wrap:anywhere;height:auto;"
+              ]
+                | Dokumen Lainnya
+              .d-flex.flex-column.align-items-center
+                a[
+                  href="#{url_for file}"
+                  target="_blank"
+                ]
+                  = image_tag "files/pdf.png", class: "max-h-65px"
+                  .text-dark-75.font-weight-bold.mt-15.font-size-lg[
+                    style="word-break:break-all;"
+                  ]
+                    = file.blob.filename
+
+/ .card-footer.px-0
+  .ml-5.pl-3
+    h4.card-label.font-size-lg Upload Dokumen
+    br
+    = form_for @contract,
+      url: admin_invoice_trackings_contracts_upload_document_path(id: @contract.id),
+      method: :post, multipart: true do |f|
+      .row.m-3
+        .col-12
+          .form-group
+            #kt_dropzone_2.dropzone.dropzone-default[
+              data-controller='dropzone'
+              data-dropzone-max-files="1"
+              data-dropzone-max-file-size="5"
+              data-dropzone-accepted-files=".pdf,application/pdf"
+              data-dropzone-add-remove-links='1'
+              data-dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+              data-dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+              data-dropzone-once-upload-auto-submit-form='1'
+            ]
+              = f.file_field :file,
+                style: 'display:none;',
+                data: {\
+                  target: 'dropzone.input',\
+                  'direct-upload-url': rails_direct_uploads_path\
+                }
+              .dropzone-msg.dz-message.needsclick
+                span.dropzone-msg-desc
+                  | Letakan dokumen disini atau
+                  |  klik untuk unggah dokumen.
+      .row
+        .col-md-1.mx-auto
+          = f.submit "Upload", class: "btn btn-primary"
+

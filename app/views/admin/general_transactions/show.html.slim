@@ -61,6 +61,10 @@ scss:
                     = readable_timestamp_2 @general_transaction.created_at.localtime
               .pt-3.pb-3
                 .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Lokasi:
+                  b.text-right
+                    = @general_transaction.location.titlecase
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
                   span.font-weight-bold.mr-2 Tanggal:
                   b.text-right
                     = readable_date_2 @general_transaction.date
@@ -123,6 +127,29 @@ scss:
                         |  :
                       b.text-right
                         | #{@general_transaction.end_of_period_rates_options['month']} / #{@general_transaction.end_of_period_rates_options['year']}
+              .pb-5.pt-3
+                fieldset
+                  legend
+                    | SUMBER
+                    a[
+                      href="#{'javascript:void(0);'}"
+                    ]
+                      i.fas.fa-external-link-alt.ml-2.font-size-sm
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Sumber:
+                    b.text-right
+                      - if @general_transaction.ba?
+                        | Akrual Berita Acara
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 No.:
+                    b.text-right
+                      - if @general_transaction.ba?
+                        | #{@general_transaction.transactionable.reference_number}
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Deskripsi:
+                    b.text-right
+                      - if @general_transaction.ba?
+                        | #{@general_transaction.transactionable.description}
         .flex-row-fluid.ml-lg-8          
           .card.card-custom.card-stretch.gutter-b
             .card-header.border-0.pt-5

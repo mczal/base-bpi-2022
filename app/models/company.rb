@@ -23,7 +23,11 @@ class Company < ApplicationRecord
   before_save :set_slug
 
   def set_slug
-    return if slug.present?    
+    return if slug.present?
     self.slug = self.name.parameterize
+  end
+
+  def self.bpi
+    Company.find_by slug: :bpi
   end
 end

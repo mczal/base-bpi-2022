@@ -1,0 +1,12 @@
+.card-body.pt-0
+  = render partial: 'shared/document_v2',
+    locals: { file_name: 'Surat Permohonan Pembayaran', file: @invoice.spp_file, checked: @invoice.spp_checked? }
+  = render partial: 'shared/document_v2',
+    locals: { file_name: 'Invoice', file: @invoice.file, checked: @invoice.invoice_checked? }
+  = render partial: 'shared/document_v2',
+    locals: { file_name: 'Kwitansi', file: @invoice.receipt_file, checked: @invoice.kwitansi_checked? }
+  = render partial: 'shared/document_v2',
+    locals: { file_name: 'Faktur Pajak', file: @invoice.tax_receipt_file, checked: @invoice.faktur_pajak_checked? }
+  = render partial: 'shared/document_v2',
+    collection: @invoice.other_files, as: :file,
+    locals: { file_name: 'Dokumen Lainnya' }

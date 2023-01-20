@@ -14,6 +14,9 @@ module GeneralTransactions
       if !self.status.present?
         self.status = :waiting_for_approval
       end
+      if !self.source.present?
+        self.source = :original
+      end
     end
   end
 end

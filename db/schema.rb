@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_17_104004) do
+ActiveRecord::Schema.define(version: 2023_01_20_061854) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -89,6 +89,17 @@ ActiveRecord::Schema.define(version: 2023_01_17_104004) do
     t.index ["blob_id", "variation_digest"], name: "index_active_storage_variant_records_uniqueness", unique: true
   end
 
+  create_table "addendums", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "ref_number"
+    t.uuid "contract_id"
+    t.json "contract_changes"
+    t.date "date"
+    t.text "description"
+    t.index ["contract_id"], name: "index_addendums_on_contract_id"
+  end
+
   create_table "approval_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -143,6 +154,24 @@ ActiveRecord::Schema.define(version: 2023_01_17_104004) do
     t.string "code"
   end
 
+  create_table "bas", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "contract_id"
+    t.text "description"
+    t.string "reference_number"
+    t.date "date"
+    t.date "levered_at"
+    t.date "realized_at"
+    t.integer "_number_of_days_late"
+    t.string "status"
+    t.decimal "price_cents", default: "0.0", null: false
+    t.string "price_currency", default: "IDR", null: false
+    t.uuid "accrued_credit_id"
+    t.index ["accrued_credit_id"], name: "index_bas_on_accrued_credit_id"
+    t.index ["contract_id"], name: "index_bas_on_contract_id"
+  end
+
   create_table "clients", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -176,6 +205,43 @@ ActiveRecord::Schema.define(version: 2023_01_17_104004) do
     t.string "address"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "contracts", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.date "started_at"
+    t.date "ended_at"
+    t.string "ref_number"
+    t.decimal "price_cents", default: "0.0", null: false
+    t.string "price_currency", default: "IDR", null: false
+    t.string "status"
+    t.uuid "client_id"
+    t.uuid "bank_id"
+    t.string "account_number"
+    t.string "account_holder"
+    t.string "description"
+    t.string "started_with_group"
+    t.string "started_with_ref_number"
+    t.date "started_with_date"
+    t.integer "time_period"
+    t.integer "payment_time_period"
+    t.string "payment_time_period_group"
+    t.uuid "accrued_debit_id"
+    t.string "location"
+    t.boolean "is_master_business_units_enabled", default: false
+    t.uuid "master_business_unit_id"
+    t.uuid "master_business_unit_location_id"
+    t.uuid "master_business_unit_area_id"
+    t.uuid "master_business_unit_activity_id"
+    t.index ["accrued_debit_id"], name: "index_contracts_on_accrued_debit_id"
+    t.index ["bank_id"], name: "index_contracts_on_bank_id"
+    t.index ["client_id"], name: "index_contracts_on_client_id"
+    t.index ["master_business_unit_activity_id"], name: "contract_mbuact"
+    t.index ["master_business_unit_area_id"], name: "contract_mbuare"
+    t.index ["master_business_unit_id"], name: "contract_mbu"
+    t.index ["master_business_unit_location_id"], name: "contract_mbul"
+    t.index ["status"], name: "index_contracts_on_status"
   end
 
   create_table "general_transaction_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -216,7 +282,46 @@ ActiveRecord::Schema.define(version: 2023_01_17_104004) do
     t.json "fixed_rates_options", default: {}
     t.string "status"
     t.string "location"
+    t.string "source"
+    t.string "transactionable_type"
+    t.uuid "transactionable_id"
     t.index ["company_id"], name: "index_general_transactions_on_company_id"
+    t.index ["transactionable_type", "transactionable_id"], name: "index_general_transactions_on_transactionable"
+  end
+
+  create_table "invoices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "spp_number"
+    t.string "ref_number"
+    t.date "date"
+    t.string "receipt_number"
+    t.decimal "price_cents", default: "0.0", null: false
+    t.string "price_currency", default: "IDR", null: false
+    t.string "ppn_group"
+    t.date "tax_receipt_date"
+    t.string "tax_receipt_number"
+    t.string "invoiceable_type"
+    t.uuid "invoiceable_id"
+    t.string "status"
+    t.string "ppn_cost_group"
+    t.decimal "pph_percentage"
+    t.decimal "fine_cents", default: "0.0", null: false
+    t.string "fine_currency", default: "IDR", null: false
+    t.date "debt_age_started_at"
+    t.decimal "ppn_percentage"
+    t.boolean "spp_checked", default: false
+    t.boolean "invoice_checked", default: false
+    t.boolean "kwitansi_checked", default: false
+    t.boolean "faktur_pajak_checked", default: false
+    t.datetime "received_at"
+    t.uuid "pph_id"
+    t.uuid "accrued_credit_id"
+    t.uuid "bank_account_id"
+    t.index ["accrued_credit_id"], name: "index_invoices_on_accrued_credit_id"
+    t.index ["bank_account_id"], name: "index_invoices_on_bank_account_id"
+    t.index ["invoiceable_type", "invoiceable_id"], name: "index_invoices_on_invoiceable"
+    t.index ["pph_id"], name: "index_invoices_on_pph_id"
   end
 
   create_table "journals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -346,15 +451,28 @@ ActiveRecord::Schema.define(version: 2023_01_17_104004) do
   add_foreign_key "accounts", "companies"
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
+  add_foreign_key "addendums", "contracts"
   add_foreign_key "approvals", "users"
+  add_foreign_key "bas", "accounts", column: "accrued_credit_id"
+  add_foreign_key "bas", "contracts"
   add_foreign_key "clients", "banks"
   add_foreign_key "clients", "companies"
+  add_foreign_key "contracts", "accounts", column: "accrued_debit_id"
+  add_foreign_key "contracts", "banks"
+  add_foreign_key "contracts", "clients"
+  add_foreign_key "contracts", "master_business_units"
+  add_foreign_key "contracts", "master_business_units", column: "master_business_unit_activity_id"
+  add_foreign_key "contracts", "master_business_units", column: "master_business_unit_area_id"
+  add_foreign_key "contracts", "master_business_units", column: "master_business_unit_location_id"
   add_foreign_key "general_transaction_lines", "general_transactions"
   add_foreign_key "general_transaction_lines", "master_business_units"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_activity_id"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_area_id"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_location_id"
   add_foreign_key "general_transactions", "companies"
+  add_foreign_key "invoices", "accounts", column: "accrued_credit_id"
+  add_foreign_key "invoices", "accounts", column: "bank_account_id"
+  add_foreign_key "invoices", "accounts", column: "pph_id"
   add_foreign_key "journals", "companies"
   add_foreign_key "report_lines", "reports"
   add_foreign_key "report_references", "reports"

@@ -6,8 +6,10 @@ class GeneralTransaction < ApplicationRecord
   include GeneralTransactions::AssignDefaultValues
   include GeneralTransactions::Price
   include GeneralTransactions::Statuses
+  extend GeneralTransactions::NumberEvidenceRetrievers
 
   belongs_to :company
+  belongs_to :transactionable, polymorphic: true, optional: true
   has_many :general_transaction_lines, dependent: :destroy
   has_many :approvals, as: :approvable, dependent: :destroy
   has_many_attached :files
@@ -34,6 +36,12 @@ class GeneralTransaction < ApplicationRecord
   enum location: {
     site: 'site',
     jakarta: 'jakarta',
+  }
+  enum source: {
+    import: 'import',
+    original: 'original',
+    ba: 'ba',
+    invoice: 'invoice'
   }
 
   accepts_nested_attributes_for :general_transaction_lines
