@@ -81,8 +81,8 @@ module Api
                 index: i,
                 id: invoice.id,
 
-                created_at: readable_timestamp_2(invoice.created_at.localtime),
-                updated_at: readable_timestamp_2(invoice.updated_at.localtime),
+                created_at: helpers.readable_timestamp_2(invoice.created_at.localtime),
+                updated_at: helpers.readable_timestamp_2(invoice.updated_at.localtime),
                 price: invoice.ba.price.to_money.format,
 
                 status: invoice.status_html,
@@ -90,12 +90,12 @@ module Api
                 spp_number: invoice.spp_number,
                 ref_number: invoice.ref_number,
                 receipt_number: invoice.receipt_number,
-                date: readable_date_4(invoice.date),
+                date: helpers.readable_date_4(invoice.date),
 
                 tax_receipt_number: invoice.tax_receipt_number,
-                tax_receipt_date: readable_date_4(invoice.tax_receipt_date),
+                tax_receipt_date: helpers.readable_date_4(invoice.tax_receipt_date),
 
-                show_path: admin_finances_invoice_path(id: invoice.id)
+                show_path: admin_inv_trackings_finances_invoice_path(id: invoice.id, slug: params[:slug])
               }
             end
 

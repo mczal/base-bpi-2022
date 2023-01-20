@@ -3,7 +3,7 @@ scss:
     width: 100%;
   }
 
-= form_for [:admin, :finances, @invoice],
+= form_for [:admin,:inv_trackings,:finances,@invoice],
   html: {class: 'card-body pt-0'} do |f|
   .form-group
     label
@@ -17,7 +17,11 @@ scss:
           checked=(@invoice.ppn_cost_biaya?)
         ]
         span
-        | Biaya (25140)
+        div
+          | Biaya
+          span.text-muted.text-hover-primary[
+          ]
+            |  (Cost Center - #{@invoice.ba.contract.accrued_debit.code})
       label.radio
         input[
           type="radio" name="invoice[ppn_cost_group]" value="non_biaya"
@@ -25,14 +29,17 @@ scss:
           checked=(@invoice.ppn_cost_non_biaya?)
         ]
         span
-        | Non Biaya (...)
+        div
+          | Non Biaya
+          span.text-muted.text-hover-primary
+            |  (25140)
   .row
     .col-6.form-group
       label
         | Cost Center
         span.required *
         = select_tag :dummy,
-          options_from_collection_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%',), :id, :code_name, @invoice.ba.contract.accrued_debit_id),
+          options_from_collection_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%',), :id, :readable_name, @invoice.ba.contract.accrued_debit_id),
           include_blank: '== Pilih ==',
           class: 'form-control',
           data: { controller: 'select2' },
@@ -42,7 +49,7 @@ scss:
         | Hutang
         span.required *
         = f.select :accrued_credit_id,
-          options_from_collection_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','%utang%',), :id, :code_name, @invoice.accrued_credit_id),
+          options_from_collection_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','%utang%',), :id, :readable_name, @invoice.accrued_credit_id),
           {include_blank: '== Pilih =='},
           class: 'form-control',
           data: { controller: 'select2' },
@@ -79,7 +86,7 @@ scss:
       type="button"
       data-controller="admin--finances--invoices--verification-retriever"
       data-action="click->admin--finances--invoices--verification-retriever#handleClick"
-      data-admin--finances--invoices--verification-retriever-path="#{admin_finances_invoices_get_verification_path(id: @invoice.id)}"
+      data-admin--finances--invoices--verification-retriever-path="#{admin_inv_trackings_finances_invoices_get_verification_path(id: @invoice.id)}"
     ]
       .fa.fa-calculator.mr-4
       | Calculate
@@ -124,7 +131,7 @@ scss:
               .text-muted[
                 style="font-size:12px;font-style:italic;"
               ]
-                | #{@invoice.pph&.code_name} (#{@invoice.pph_percentage}%)
+                | #{@invoice.pph&.readable_name} (#{@invoice.pph_percentage}%)
             td.px-3.py-2.text-right
               - if @invoice.is_pph_rounded?
                 .text-muted[

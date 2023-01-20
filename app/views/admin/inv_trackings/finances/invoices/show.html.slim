@@ -79,7 +79,7 @@
                   legend
                     | Informasi BA
                     a[
-                      href="#{admin_accountings_ba_path(id: @invoice.ba_id)}"
+                      href="#{admin_inv_trackings_accountings_ba_path(id: @invoice.ba_id)}"
                     ]
                       i.fas.fa-external-link-alt.ml-2.font-size-sm
                   .d-flex.align-items-center.justify-content-between.mb-2
@@ -119,7 +119,7 @@
                   legend
                     | Informasi Kontrak
                     a[
-                      href="#{admin_procurements_contract_path(id: @invoice.ba.contract_id)}"
+                      href="#{admin_inv_trackings_procurements_contract_path(id: @invoice.ba.contract_id)}"
                     ]
                       i.fas.fa-external-link-alt.ml-2.font-size-sm
                   .d-flex.align-items-center.justify-content-between.mb-2
@@ -331,4 +331,4 @@
                     role="tabpanel" aria-labelledby="journals"
                     class="#{'active show' if @invoice.paid? }"
                   ]
-                    = render partial: 'journals'
+                    / = render partial: 'journals'
