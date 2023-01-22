@@ -150,12 +150,14 @@ scss:
                         | Akrual Berita Acara
                       - if @general_transaction.invoice_approved?
                         | Invoice Approved - Akrual Hutang
+                      - if @general_transaction.invoice_paid?
+                        | Invoice Lunas 
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 No.:
                     b.text-right
                       - if @general_transaction.ba?
                         | #{@general_transaction.transactionable.reference_number}
-                      - if @general_transaction.invoice_approved?
+                      - if @general_transaction.invoice_approved? || @general_transaction.invoice_paid?
                         | #{@general_transaction.transactionable.ref_number}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Deskripsi:

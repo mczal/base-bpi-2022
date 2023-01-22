@@ -293,7 +293,7 @@
                             span.nav-icon
                               i.fas.fa-random
                             span.nav-text
-                              | Jurnal
+                              | Transaksi Invoice Lunas
                 #myTabContent.tab-content.mt-5
                   #documents.tab-pane.fade[
                     role="tabpanel" aria-labelledby="documents"
@@ -331,4 +331,4 @@
                     role="tabpanel" aria-labelledby="journals"
                     class="#{'active show' if @invoice.paid? }"
                   ]
-                    / = render partial: 'journals'
+                    = render partial: 'journals'
