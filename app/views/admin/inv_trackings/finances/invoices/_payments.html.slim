@@ -1,4 +1,4 @@
-= form_for [:admin, :finances, @invoice],
+= form_for [:admin,:inv_trackings,:finances, @invoice],
   html: {class: 'card-body mt-0 pt-2'} do |f|
   fieldset
     legend Rincian Invoice
@@ -34,7 +34,7 @@
             .text-muted[
               style="font-size:12px;font-style:italic;"
             ]
-              | #{@invoice.pph&.code_name} (#{@invoice.pph_percentage}%)
+              | #{@invoice.pph&.readable_name} (#{@invoice.pph_percentage}%)
           td.px-3.py-2.text-right
             - if @invoice.is_pph_rounded?
               .text-muted[
@@ -59,7 +59,7 @@
         | Kas / Bank
         span.required *
       = f.select :bank_account_id,
-        options_from_collection_for_select(Account.select(:id,:name,:code).where('code ILIKE ?','2%',), :id, :code_name, @invoice.bank_account_id),
+        options_from_collection_for_select(Account.select(:id,:name,:code).where('code ILIKE ?','2%',), :id, :readable_name, @invoice.bank_account_id),
         {include_blank: '== Pilih =='},
         class: 'form-control',
         data: { controller: 'select2' },

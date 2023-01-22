@@ -6,6 +6,7 @@ module Bas
       after_save :synchronize_to_general_transactions_after_save
     end
 
+    # TODO: Handle price if price currency is USD
     def synchronize_to_general_transactions_after_save
       general_transaction.assign_attributes(gt_params)
       general_transaction.save!

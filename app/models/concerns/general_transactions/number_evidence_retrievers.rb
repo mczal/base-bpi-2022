@@ -2,7 +2,7 @@
 
 module GeneralTransactions
   module NumberEvidenceRetrievers extend ActiveSupport::Concern
-    def retrieve_new_number_evidence location, group
+    def retrieve_new_number_evidence location, group, cash_account:nil
       return nil unless location.present?
 
       if group == :bj
@@ -22,6 +22,17 @@ module GeneralTransactions
         end
 
         return "BJ#{loc_text}#{(latest+1).to_s.rjust(4,'0')}"
+      end
+      if group == :cash
+        c = cash_account.name.last(3)
+        latest = GeneralTransaction.select(:number_evidence).distinct
+          .where('number_evidence ILIKE ?', "BNI-#{c}-%")
+          .reorder(number_evidence: :desc)
+          .limit(1)
+          .first&.number_evidence
+        latest = latest.last(3).to_i + 1
+
+        return "BNI-#{c}-#{latest.to_s.rjust(3, '0')}"
       end
     end
   end

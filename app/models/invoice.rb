@@ -8,7 +8,9 @@ class Invoice < ApplicationRecord
 
   # include Invoices::SynchronizeToJournalsAfterSaveForApproved
   include Invoices::SynchronizeToGeneralTransactionsAfterSaveForApproved
+
   # include Invoices::SynchronizeToJournalsAfterSaveForPaid
+  include Invoices::SynchronizeToGeneralTransactionsAfterSaveForPaid
 
   include Invoices::SynchronizeToDebtAgeStartedAtBeforeSave
   include Invoices::SynchronizeToReceivedAtBeforeSave
@@ -19,6 +21,7 @@ class Invoice < ApplicationRecord
   belongs_to :bank_account, class_name: "Account", optional: true
 
   has_many :approvals, as: :approvable, dependent: :destroy
+  has_many :general_transactions, as: :transactionable, dependent: :destroy
 
   has_one_attached :file
   has_one_attached :receipt_file

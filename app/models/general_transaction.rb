@@ -41,7 +41,8 @@ class GeneralTransaction < ApplicationRecord
     import: 'import',
     original: 'original',
     ba: 'ba',
-    invoice: 'invoice'
+    invoice_approved: 'invoice_approved',
+    invoice_paid: 'invoice_paid',
   }
 
   accepts_nested_attributes_for :general_transaction_lines

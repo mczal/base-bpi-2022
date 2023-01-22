@@ -18,10 +18,7 @@ scss:
         ]
         span
         div
-          | Biaya
-          span.text-muted.text-hover-primary[
-          ]
-            |  (Cost Center - #{@invoice.ba.contract.accrued_debit.code})
+          | 25140
       label.radio
         input[
           type="radio" name="invoice[ppn_cost_group]" value="non_biaya"
@@ -30,9 +27,7 @@ scss:
         ]
         span
         div
-          | Non Biaya
-          span.text-muted.text-hover-primary
-            |  (25140)
+          | Cost Center - #{@invoice.ba.contract.accrued_debit.code}
   .row
     .col-6.form-group
       label
@@ -78,7 +73,7 @@ scss:
       | Denda (Rp)
     = f.text_field :fine,
       class: 'form-control',
-      data: { controller: 'input-price' },
+      data: { controller: 'base--input-price' },
       value: @invoice.fine.amount
 
   .form-group.mt-3.text-center

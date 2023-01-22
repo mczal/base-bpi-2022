@@ -75,7 +75,7 @@ scss:
                 .d-flex.align-items-center.justify-content-between.mb-1.mt-1
                   span.font-weight-bold.mr-2 Sumber:
                   b.text-right
-                    | Akunting
+                    = @general_transaction.source.to_s.titlecase
                 .d-flex.align-items-center.justify-content-between.mb-1.mt-1
                   span.font-weight-bold.mr-2 Mata Uang Input:
                   b.text-right
@@ -131,25 +131,39 @@ scss:
                 fieldset
                   legend
                     | SUMBER
-                    a[
-                      href="#{'javascript:void(0);'}"
-                    ]
-                      i.fas.fa-external-link-alt.ml-2.font-size-sm
+                    - if @general_transaction.ba?
+                      a[
+                        href="#{admin_inv_trackings_accountings_ba_path(id: @general_transaction.transactionable_id)}"
+                        target="_blank"
+                      ]
+                        i.fas.fa-external-link-alt.ml-2.font-size-sm
+                    - if @general_transaction.invoice_approved? || @general_transaction.invoice_paid?
+                      a[
+                        href="#{admin_inv_trackings_finances_invoice_path(id: @general_transaction.transactionable_id)}"
+                        target="_blank"
+                      ]
+                        i.fas.fa-external-link-alt.ml-2.font-size-sm
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Sumber:
                     b.text-right
                       - if @general_transaction.ba?
                         | Akrual Berita Acara
+                      - if @general_transaction.invoice_approved?
+                        | Invoice Approved - Akrual Hutang
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 No.:
                     b.text-right
                       - if @general_transaction.ba?
                         | #{@general_transaction.transactionable.reference_number}
+                      - if @general_transaction.invoice_approved?
+                        | #{@general_transaction.transactionable.ref_number}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Deskripsi:
                     b.text-right
                       - if @general_transaction.ba?
                         | #{@general_transaction.transactionable.description}
+                      - if @general_transaction.invoice_approved?
+                        | 
         .flex-row-fluid.ml-lg-8          
           .card.card-custom.card-stretch.gutter-b
             .card-header.border-0.pt-5

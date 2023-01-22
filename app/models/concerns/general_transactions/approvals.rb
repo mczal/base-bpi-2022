@@ -54,6 +54,9 @@ module GeneralTransactions
       general_transaction_lines.each do |line|
         line.setup_journals
       end
+      if self.invoice_approved?
+        self.transactionable.approved!
+      end
     end
   end
 end

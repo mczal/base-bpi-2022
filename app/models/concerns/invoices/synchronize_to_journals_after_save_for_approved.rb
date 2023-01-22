@@ -65,7 +65,10 @@ module Invoices
     end
     def credit_cost_center_for_ppn_if_biaya_and_ppn_include!
       if ppn_cost_biaya? && ppn_include?
-        accrued_credit_cost_center_for_ppn_if_biaya_and_ppn_include.save! if accrued_credit_cost_center_for_ppn_if_biaya_and_ppn_include.new_record? || accrued_credit_cost_center_for_ppn_if_biaya_and_ppn_include.changed?
+        if accrued_credit_cost_center_for_ppn_if_biaya_and_ppn_include.new_record? ||
+            accrued_credit_cost_center_for_ppn_if_biaya_and_ppn_include.changed?
+          accrued_credit_cost_center_for_ppn_if_biaya_and_ppn_include.save!
+        end
         return
       end
       Journal.where(
