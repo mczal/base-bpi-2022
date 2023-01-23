@@ -62,8 +62,14 @@ module Reports
         )
 
         price_idr = row[start].to_s.gsub('.',',')
+        if price_idr.strip == '-'
+          price_idr = ''
+        end
         price_idr = price_idr.present? ? price_idr : 0.to_money
         price_usd = row[start+1].to_s.gsub('.',',')
+        if price_usd.strip == '-'
+          price_usd = ''
+        end
         price_usd = price_usd.present? ? price_usd : 0.to_money.with_currency(:usd)
         srl.assign_attributes(
           price_idr: price_idr,
