@@ -21,8 +21,8 @@ module GeneralTransactions
         }
       end
 
-      total_debit = self.general_transaction_lines.debit.sum(&:price_idr)
-      total_credit = self.general_transaction_lines.credit.sum(&:price_idr)
+      total_debit = self.general_transaction_lines.filter(&:debit?).sum(&:price_idr)
+      total_credit = self.general_transaction_lines.filter(&:credit?).sum(&:price_idr)
       max_value = [total_debit,total_credit].max
 
       acs = ApprovalConfiguration.where.not(id: ac_1.id).filter{|x|x.bottom_treshold < max_value}

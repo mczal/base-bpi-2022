@@ -13,7 +13,6 @@ export default class extends Controller {
       return;
     }
     if(!this.accountForNumberEvidenceTarget.value){
-      this.accountForNumberEvidenceTarget.reportValidity();
       return;
     }
     const path = this.path
