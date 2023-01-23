@@ -61,9 +61,9 @@ module Reports
           date: Date.current.change(month:i,year:2022,day:10).end_of_month
         )
 
-        price_idr = row[start].to_s.delete('-').gsub('.',',')
+        price_idr = row[start].to_s.gsub('.',',')
         price_idr = price_idr.present? ? price_idr : 0.to_money
-        price_usd = row[start+1].to_s.delete('-').gsub('.',',')
+        price_usd = row[start+1].to_s.gsub('.',',')
         price_usd = price_usd.present? ? price_usd : 0.to_money.with_currency(:usd)
         srl.assign_attributes(
           price_idr: price_idr,
