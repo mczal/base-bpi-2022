@@ -54,7 +54,7 @@ module Reports
 
     def parse_and_save_saved_data row, i, report_line
       start = 10
-      11.times.each.with_index(1) do |_,i|
+      12.times.each.with_index(1) do |_,i|
         srl = SavedReportLine.find_or_initialize_by(
           report_line_id: report_line.id,
           month: i, year: 2022,
