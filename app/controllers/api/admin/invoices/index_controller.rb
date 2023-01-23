@@ -36,7 +36,7 @@ module Api
               start_date = Date.strptime(daterange[0], '%d/%m/%Y')
               end_date  = Date.strptime(daterange[1], '%d/%m/%Y')
               @invoices = @invoices
-                .where('date::date BETWEEN ? AND ?', start_date, end_date)
+                .where('date BETWEEN ? AND ?', start_date, end_date)
             end
 
             if query.dig(:search).present?

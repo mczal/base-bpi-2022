@@ -13,13 +13,22 @@
               | #{@invoice.status_html.html_safe}
       #kt_subheader_search.d-flex.align-items-center
         .ml-0.ml-sm-2
-          button.btn.btn-primary[
+          a.btn.btn-light-primary.font-weight-bold.ml-2[
+            href="javascript:void(0);"
             data-target="#add.add-contract"
             data-toggle="modal"
             type="button"
           ]
-            .fa.fa-pencil-alt.mr-4
-            | Edit
+            i.fa.fa-pencil-alt
+            |  Ubah 
+          a.btn.btn-light-danger.font-weight-bold.ml-2[
+            href="#{admin_inv_trackings_finances_invoice_path(id: @invoice.id)}"
+            data-method="delete"
+            data-confirm="Apakah anda yakin ingin menghapus data ini?"
+            title="Delete"
+          ]
+            i.la.la-trash
+            |  Hapus
 
   .d-flex.flex-column-fluid.mb-3
     .container

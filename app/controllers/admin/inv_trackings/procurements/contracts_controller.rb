@@ -41,6 +41,18 @@ module Admin
           redirect_to admin_inv_trackings_procurements_contract_path(id: service.contract.id)
         end
 
+        def destroy
+          ActiveRecord::Base.transaction do
+            if contract.destroy
+              flash[:success] = "Berhasil!"
+              return redirect_to admin_inv_trackings_procurements_contracts_path(slug: current_company.slug)
+            end
+
+            flash[:danger] = "Gagal. #{contract.errors.full_messages.join(", ")}"
+            return redirect_back fallback_location: admin_inv_trackings_procurements_contract_path(id: contract.id,slug: current_company.slug)
+          end
+        end
+
         private
           def contract
             @contract ||= Contract.find_by(id: params[:id])

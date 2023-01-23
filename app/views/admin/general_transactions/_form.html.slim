@@ -17,12 +17,19 @@
         value: html_input_date(@general_transaction.date)
       .form-group.col-lg-6
         label
-          | Nomor Bukti
+          | Pilih Lokasi
           span.text-danger.ml-1 *
-        = f.text_field :number_evidence,
-          class: 'form-control',
-          placeholder: 'Nomor Bukti',
-          required: true
+        .checkbox-inline
+          label.checkbox
+            = f.radio_button :location,
+              'jakarta', required: 1
+            span
+            | Jakarta
+          label.checkbox
+            = f.radio_button :location,
+              'site',required: 1
+            span
+            | Site
     .row
       .form-group.col-lg-6
         label
@@ -47,19 +54,95 @@
             | USD
       .form-group.col-lg-6
         label
-          | Pilih Lokasi
+          | Nomor Bukti
           span.text-danger.ml-1 *
-        .checkbox-inline
-          label.checkbox
-            = f.radio_button :location,
-              'jakarta', required: 1
-            span
-            | Jakarta
-          label.checkbox
-            = f.radio_button :location,
-              'site',required: 1
-            span
-            | Site
+        .dropdown.dropdown-inline.mr-4.ml-1
+          button.btn.btn-light-primary.btn-icon.btn-sm[
+            type="button"
+            data-toggle="dropdown"
+            aria-haspopup="true"
+            aria-expanded="false"
+            title="Generate nomor bukti"
+            data-controller="base--tooltip"
+          ]
+            i.ki.ki-bold-more-hor
+          .dropdown-menu.dropdown-menu-lg[
+            data-controller="base--stop-propagator admin--general-transactions--number-evidence-generator"
+            data-admin--general-transactions--number-evidence-generator-path="#{admin_general_transactions_get_number_evidence_path(location:-1,group:-2,cash_account_id:-3)}"
+          ]
+            .px-8.py-4
+              b
+                | Generate Nomor Bukti Otomatis
+            .dropdown-divider
+            div.px-8.py-3
+              .form-group.mb-2
+                label
+                  | 1. BNI
+                = select_tag "account_for_number_evidence",
+                  options_from_collection_for_select(Account.where('name ILIKE ?','%bni%'), :id, :readable_name),
+                  include_blank: '== Pilih ==',
+                  class: 'form-control',
+                  placeholder: 'Kode Akun',
+                  data: {\
+                    'admin--general-transactions--number-evidence-generator-target': 'accountForNumberEvidence',\
+                    controller: "select2"\
+                  },
+                  id: "B-#{SecureRandom.uuid}", required: 1
+              .row
+                .col-8.form-group.pr-1
+                  = text_field_tag 'result_number_evidence_for_bni', '',
+                    placeholder: 'Nomor Bukti BNI...',
+                    class: 'form-control form-control-solid', readonly: 1,
+                    data: {\
+                      'admin--general-transactions--number-evidence-generator-target': 'resultForBni'\
+                    }
+                .col-4.form-group.pl-1
+                  button.btn.btn-icon.btn-light-primary.btn-circle.btn-sm[
+                    type="button"
+                    title="Generate Nomor Bukti BNI"
+                    data-controller="base--tooltip"
+                    data-action="click->admin--general-transactions--number-evidence-generator#generateForBni"
+                  ]
+                    i.flaticon-cogwheel-1
+                  button.btn.btn-icon.btn-light-success.btn-circle.btn-sm.ml-1[
+                    type="button"
+                    title="Salin"
+                    data-controller="base--tooltip"
+                    data-action="click->admin--general-transactions--number-evidence-generator#copyForBni"
+                  ]
+                    i.flaticon2-copy
+            .dropdown-divider
+            div.px-8.py-3
+              .form-group.mb-1
+                label
+                  | 2. BJ
+              .row
+                .col-8.form-group.pr-1
+                  = text_field_tag 'result_number_evidence_for_bj', '',
+                    placeholder: 'Nomor Bukti BJ...',
+                    class: 'form-control form-control-solid', readonly: 1,
+                    data: {\
+                      'admin--general-transactions--number-evidence-generator-target': 'resultForBj'\
+                    }
+                .col-4.form-group.pl-1
+                  button.btn.btn-icon.btn-light-primary.btn-circle.btn-sm[
+                    type="button"
+                    title="Generate Nomor Bukti BJ"
+                    data-controller="base--tooltip"
+                    data-action="click->admin--general-transactions--number-evidence-generator#generateForBj"
+                  ]
+                    i.flaticon-cogwheel-1
+                  button.btn.btn-icon.btn-light-success.btn-circle.btn-sm.ml-1[
+                    type="button"
+                    title="Salin"
+                    data-controller="base--tooltip"
+                    data-action="click->admin--general-transactions--number-evidence-generator#copyForBj"
+                  ]
+                    i.flaticon2-copy
+        = f.text_field :number_evidence,
+          class: 'form-control',
+          placeholder: 'Nomor Bukti',
+          required: true
     fieldset
       legend KURS
       .row

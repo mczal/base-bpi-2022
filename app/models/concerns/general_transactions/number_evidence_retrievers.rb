@@ -24,13 +24,15 @@ module GeneralTransactions
         return "BJ#{loc_text}#{(latest+1).to_s.rjust(4,'0')}"
       end
       if group == :cash
+        return nil if !cash_account.present?
+
         c = cash_account.name.last(3)
         latest = GeneralTransaction.select(:number_evidence).distinct
           .where('number_evidence ILIKE ?', "BNI-#{c}-%")
           .reorder(number_evidence: :desc)
           .limit(1)
           .first&.number_evidence
-        latest = latest.last(3).to_i + 1
+        latest = latest.to_s.last(3).to_i + 1
 
         return "BNI-#{c}-#{latest.to_s.rjust(3, '0')}"
       end

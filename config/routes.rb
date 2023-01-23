@@ -27,6 +27,11 @@ Rails.application.routes.draw do
     post 'general_transactions/:id/edit',
       to: 'general_transactions#edit',
       as: :edit_general_transaction
+    namespace :general_transactions do
+      post 'actions/get_number_evidence/:location/:group/:cash_account_id',
+        to: 'actions#get_number_evidence',
+        as: :get_number_evidence
+    end
 
     resources :accounts, only: %i[index show update destroy create]
     post 'accounts/:id/edit',

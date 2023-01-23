@@ -36,7 +36,8 @@ module Api
               start_date = Date.strptime(daterange[0], '%d/%m/%Y')
               end_date  = Date.strptime(daterange[1], '%d/%m/%Y')
               @contracts = @contracts
-                .where('date::date BETWEEN ? AND ?', start_date, end_date)
+                .where('(started_at >= ? AND started_at <= ?) OR started_at <= ?', start_date, end_date, start_date)
+                .where('(ended_at >= ? AND ended_at <= ?) OR ended_at >= ?', start_date, end_date, end_date)
             end
 
             if query.dig(:search).present?

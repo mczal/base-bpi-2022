@@ -10,7 +10,7 @@ class Ba < ApplicationRecord
   belongs_to :accrued_credit, class_name: 'Account'
 
   has_many :invoices, as: :invoiceable
-  has_many :general_transactions, as: :transactionable
+  has_many :general_transactions, as: :transactionable, dependent: :destroy
 
   monetize :price_cents
 

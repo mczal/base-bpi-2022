@@ -9,6 +9,7 @@ export default class extends DatatablesController {
   connect(){
     this.bindReload();
     super.connect();
+    this.bindChangeDateFilter();
   }
 
   disconnect(){
@@ -16,6 +17,14 @@ export default class extends DatatablesController {
       `${this.data.get('reloadSubjectId')}-datatable:reload`,
       this.bindedHandleReloadEvent
     );
+  }
+
+  bindChangeDateFilter(){
+    $('#kt_dashboard_daterangepicker_custom').on('apply.daterangepicker', function(ev, picker) {
+      const startDate = picker.startDate.format('DD/MM/YYYY');
+      const endDate = picker.endDate.format('DD/MM/YYYY');
+      this.datatable.search(`${startDate} - ${endDate}`, "daterange");
+    }.bind(this));
   }
 
   bindReload(){
@@ -53,7 +62,7 @@ export default class extends DatatablesController {
         autoHide: false,
         template: function(data) {
           return `
-            <span data-controller="popover" data-popover-html="1" data-popover-trigger="hover" data-content="Dibuat: ${data.created_at} <br/> Diubah: ${data.updated_at}" data-title="Dibuat/Diubah" class="svg-icon svg-icon-light-dark" style="cursor:pointer;" data-original-title="" title="">
+            <span data-controller="base--popover" data-base--popover-html="1" data-base--popover-trigger="hover" data-content="Dibuat: ${data.created_at} <br/> Diubah: ${data.updated_at}" data-title="Dibuat/Diubah" class="svg-icon svg-icon-light-dark" style="cursor:pointer;" data-original-title="" title="">
               <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
                 <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                   <rect x="0" y="0" width="24" height="24"></rect>

@@ -111,19 +111,19 @@
             i.menu-arrow
             ul.menu-subnav
               li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/procurements\/contracts\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_inv_trackings_procurements_contracts_path(slug: params[:slug])}"]
+                a.menu-link[href="#{admin_inv_trackings_procurements_contracts_path(slug: current_company.slug)}"]
                   i.menu-bullet.menu-bullet-dot
                     span
                   span.menu-text
                     | Kontrak
               li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/accountings\/bas\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_inv_trackings_accountings_bas_path(slug: params[:slug])}"]
+                a.menu-link[href="#{admin_inv_trackings_accountings_bas_path(slug: current_company.slug)}"]
                   i.menu-bullet.menu-bullet-dot
                     span
                   span.menu-text
                     | Berita Acara
               li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/finances\/invoices\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_inv_trackings_finances_invoices_path(slug: params[:slug])}"]
+                a.menu-link[href="#{admin_inv_trackings_finances_invoices_path(slug: current_company.slug)}"]
                   i.menu-bullet.menu-bullet-dot
                     span
                   span.menu-text
