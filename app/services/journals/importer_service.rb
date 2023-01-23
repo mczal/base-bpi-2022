@@ -175,6 +175,7 @@ module Journals
         account_exist = get_account(row)
 
         if account_code_exist && get_account_code(row).to_s.to_i != 0 && !account_exist
+          puts ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> #{row}"
           binding.pry
         end
 
