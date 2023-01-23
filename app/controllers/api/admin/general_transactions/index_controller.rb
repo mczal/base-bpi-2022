@@ -48,6 +48,15 @@ module Api
                 location: params[:location]
               )
             end
+            if params[:approver_id].present?
+              user = User.find_by(id: params[:approver_id])
+              @general_transactions = @general_transactions
+                .select('general_transactions.id').distinct
+                .joins('JOIN approvals ON general_transactions.id=approvals.approvable_id')
+                .where('approvals.status != ?', 'accepted')
+                .where('approvals.role': user.roles.pluck(:name))
+              @general_transactions = GeneralTransaction.where(id: @general_transactions.ids)
+            end
           end
 
           def apply_sort
@@ -105,9 +114,11 @@ module Api
                 location: general_transaction.location.titlecase,
                 date: general_transaction.date.strftime("%d %b %Y"),
                 number_evidence: general_transaction.number_evidence,
+                source: (general_transaction.source.present? ? I18n.t(general_transaction.source): '-'),
                 show_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug),
                 edit_path: admin_edit_general_transaction_path(id: general_transaction.id,slug: current_company.slug),
-                delete_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug)
+                delete_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug),
+                approver: params[:approver_id].present?,
               }
             end
 

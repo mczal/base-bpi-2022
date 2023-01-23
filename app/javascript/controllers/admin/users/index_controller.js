@@ -16,6 +16,13 @@ export default class extends DatatablesController {
         }
       },
       {
+        field: 'name',
+        title: 'Nama',
+        template: function(data) {
+          return `<span class="font-weight-bolder">${data.name}</span>`;
+        }
+      },
+      {
         field: 'email',
         title: 'Email',
         template: function(data) {
@@ -23,10 +30,10 @@ export default class extends DatatablesController {
         }
       },
       {
-        field: 'company',
-        title: 'Nama Perusahaan',
+        field: 'phone_number',
+        title: 'No. HP (WhatsApp)',
         template: function(data) {
-          return `<span class="font-weight-bolder">${data.company_name}</span>`;
+          return `<span class="font-weight-bolder">${data.phone_number}</span>`;
         }
       },
       {

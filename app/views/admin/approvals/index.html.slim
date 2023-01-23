@@ -1,0 +1,21 @@
+.card.card-custom.mt-20
+  .card-body.py-12
+    .row
+      .col-lg-12
+        h5
+          |  PT BPI - Approval Management - Informasi Pengguna
+        h3.font-weight-bold.mb-10.text-dark[style="margin-bottom: 12px !important;"]
+
+        hr.my-5
+        .card-body[style="padding:0 !important;"]
+          .form-group.row
+            label.col-xl-3.col-lg-3.col-form-label
+              | Email
+            .col-lg-9.col-xl-6
+              input.form-control.form-control-lg.form-control-solid[type="text" value="#{current_user.email}"]
+          .form-group.row
+            label.col-xl-3.col-lg-3.col-form-label
+              | Hak Akses / Roles
+            .col-lg-9.col-xl-6
+              / input.form-control.form-control-lg.form-control-solid[type="text" value="#{current_user.email}"]
+              = current_user.roles_name.map{|x| "<span class='m-1 label label-pill label-inline'>#{x}</span>"}.join(' ').html_safe

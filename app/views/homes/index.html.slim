@@ -13,105 +13,20 @@
           ]
           span#kt_dashboard_daterangepicker_title_custom.text-muted.font-size-base.font-weight-bold.mr-2 Today
           span#kt_dashboard_daterangepicker_date_custom.text-primary.font-size-base.font-weight-bolder Aug 16
-
-  .d-flex.flex-column-fluid 
-    .container
-      .row 
-        .col-6
-          .row
-            .col-lg-12.col-xxl-12.col-md-12.col-sm-12
-              .card.card-custom.gutter-b.card-stretch
-                / .card-body.d-flex.flex-column.p-1.text-center.mt-5.mb-1
-                  h3.card-title.font-weight-bolder.text-danger Cash
-                  .ml-4.text-left
-                    | Saldo Cash 
-                    b #{@dashboard_presenters.total_cash.format}
-                  dev[
-                    data-controller="dashboards--area-chart"
-                    data-series=@dashboard_presenters.cash_balances[:series]
-                    data-categories=@dashboard_presenters.cash_balances[:categories]
-                    data-color="#E91E63"
-                  ] 
-
-        .col-6
-          .row
-            .col-lg-12.col-xxl-12.col-md-12.col-sm-12
-              .card.card-custom.gutter-b.card-stretch
-                / .card-body.d-flex.flex-column.p-1.text-center.mt-5.mb-1
-                  h3.card-title.font-weight-bolder.text-warning Bank Account
-                  .ml-4.text-left
-                    | Saldo Bank Account 
-                    b #{@dashboard_presenters.total_bank_account.format}
-                  div[
-                    data-controller="dashboards--area-chart"
-                    data-series=@dashboard_presenters.bank_accounts[:series]
-                    data-categories=@dashboard_presenters.bank_accounts[:categories]
-                    data-color="#ffd08d"
-                  ]
-        / .col-6
-          .row
-            .col-lg-12.col-xxl-12.col-md-12.col-sm-12
-              .card.card-custom.gutter-b.card-stretch
-                .card-body.d-flex.flex-column.p-1.text-center.mt-5.mb-1
-                  h3.card-title.font-weight-bolder.text-success Tagihan yang perlu dibayar
-                  div[
-                    data-controller="dashboards--bar-chart"
-                    data-series=[{name: "Desktops",data: [10, 41, 35, 51, 49, 62, 69, 91, 148]}].to_json
-                    data-categories=['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'].to_json
-                  ]
-        / .col-6
-          .row
-            .col-lg-12.col-xxl-12.col-md-12.col-sm-12
-              .card.card-custom.gutter-b.card-stretch
-                .card-body.d-flex.flex-column.p-1.text-center.mt-5.mb-1
-                  h3.card-title.font-weight-bolder.text-success Biaya Bulan lalu
-                  div.mx-auto[
-                    data-controller="dashboards--pie-chart"
-                    data-series=[44, 55, 13, 43, 22].to_json
-                    data-categories=['Team A', 'Team B', 'Team C', 'Team D', 'Team E'].to_json
-                  ]
-                  table.table.mt-5
-                    tr
-                      td.text-left Komisi Fee
-                      td Rp. 10.000.000
-                    tr
-                      td.text-left Iklan Promosi
-                      td Rp. 10.000.000
-                    tr
-                      td.text-left Komunikasi - Penjualan
-                      td Rp. 10.000.000
-                    tr
-                      td.text-left Perjalanan Dinas - Penjualan
-                      td Rp. 10.000.000
-                    tr
-                      td.text-left Upah
-                      td Rp. 10.000.000
-                    tr
-                      td.text-left Lainnya
-                      td Rp. 10.000.000
-                    tr style="background-color: #f5f5f5;font-weight: bold;"
-                      td.text-left Total
-                      td Rp. 10.000.000
-                      
-        .col-6
-          .row
-            .col-lg-12.col-xxl-12.col-md-12.col-sm-12
-              .card.card-custom.gutter-b.card-stretch
-                / .card-body.d-flex.flex-column.p-1.text-center.mt-5.mb-1
-                  h3.card-title.font-weight-bolder.text-success Total Keluar Masuk Kas
-                  div[
-                    data-controller="dashboards--bar-chart"
-                    data-series=@dashboard_presenters.cash_in_out[:series]
-                    data-categories=@dashboard_presenters.cash_in_out[:categories]
-                  ]
-        .col-6
-          .row
-            .col-lg-12.col-xxl-12.col-md-12.col-sm-12
-              .card.card-custom.gutter-b.card-stretch
-                / .card-body.d-flex.flex-column.p-1.text-center.mt-5.mb-1
-                  h3.card-title.font-weight-bolder.text-success Laba Rugi
-                  div[
-                    data-controller="dashboards--bar-chart"
-                    data-series=@dashboard_presenters.profit_loss[:series]
-                    data-categories=@dashboard_presenters.profit_loss[:categories]
-                  ]
+  .d-flex.flex-column-fluid
+    .container-fluid
+      .card.card-custom
+        .card-header
+          .card-title
+            span.card-icon
+              i.flaticon2-favourite.text-primary
+            h3.card-label
+              | List Task
+              br
+              span.font-size-sm.text-dark-50.font-weight-bold
+                | Total #{11} Task
+        .card-body
+          #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
+            data-admin--general-transactions--index-data-path=api_admin_general_transactions_index_path(slug: current_company.slug, approver_id: current_user.id)
+            data-controller="admin--general-transactions--index"
+          ]

@@ -21,12 +21,12 @@ module Admin
           end
 
           flash[:danger] = "Ada persetujuan yang belum. #{pre_approval_failed_messages}"
-          return redirect_to admin_approvals_path
+          return redirect_to admin_approvals_path(slug: current_company.slug)
         end
 
         if approval.accepted?
-          flash[:success] = "Surat telah disetujui oleh #{approval.name} pada tanggal #{readable_timestamp_2(approval.updated_at)}"
-          return redirect_to admin_approvals_path
+          flash[:success] = "Surat telah disetujui oleh #{approval.name} pada tanggal #{helpers.readable_timestamp_2(approval.updated_at)}"
+          return redirect_to admin_approvals_path(slug: current_company.slug)
         end
       end
     end
@@ -35,23 +35,26 @@ module Admin
       service = Approvals::UpdateService.new(approval, approval_params)
       if !service.run
         flash[:danger] = "Gagal melakukan approval #{service.error_messages.to_sentence}"
-        return redirect_to admin_general_transaction_path(id: @approval.approvable_id) if @approval.GeneralTransaction?
-        return redirect_to admin_asset_path(id: @approval.approvable.asset.id) if @approval.AssetSale?
+        return redirect_to admin_approval_path(id: approval.id, slug: current_company.slug)
       end
+
       flash[:success] = "Berhasil melakukan approval"
-      return redirect_to admin_general_transaction_path(id: @approval.approvable_id) if @approval.GeneralTransaction?
-      return redirect_to admin_asset_path(id: @approval.approvable.asset.id) if @approval.AssetSale?
+      next_sibl = approval.next
+      if next_sibl.present? && current_user.roles_name.include?(next_sibl.role)
+        return redirect_to admin_approval_path(id: next_sibl.id, slug: current_company.slug)
+      end
+      return redirect_to admin_approvals_path
     end
 
     def send_notification
-      service = Approvals::SendNotificationService.new(approval, params[:approver_id])
+      service = Approvals::SendNotificationService.new(approval, current_user.id)
       if !service.run
         flash[:danger] = "Gagal. #{service.full_error_messages}"
-        return redirect_back fallback_location: admin_root_path
+        return redirect_back fallback_location: root_path
       end
 
       flash[:success] = "Berhasil mengirim notifikasi persetujuan ke #{service.approver.name}"
-      redirect_back fallback_location: admin_root_path
+      redirect_back fallback_location: root_path
     end
 
     private

@@ -29,7 +29,7 @@
           locals: {approval: approval, status: 'accepted', text: 'Setujui'}
         = render partial: 'shared/approvals/edit',
           locals: {approval: approval, status: 'rejected', text: 'Tolak'}
-      / - if !approval.accepted?
+      - if !approval.accepted?
         = render partial: 'shared/approvals/send_notification',
           locals: {approval: approval}
 

@@ -73,6 +73,8 @@ module Api
               index: i,
               id: user.id,
               email: user.email,
+              name: user.name,
+              phone_number: user.phone_number,
               company_name: user.company.name,
               role_name: user.roles.pluck(:name).map{|x| "<span class='m-1 label label-pill label-inline'>#{x}</span>"}.join(' ').html_safe,
               show_path: admin_user_path(id: user.id, slug: current_company.slug),

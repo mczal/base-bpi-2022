@@ -35,7 +35,7 @@ module Approvals
     end
 
     def action
-      return if !Rails.env.staging? && !Rails.env.production?
+      # return if !Rails.env.staging? && !Rails.env.production?
 
       Notifications::WhatsappJob.perform_later(
         approver.id,
@@ -55,7 +55,7 @@ module Approvals
         messages = []
         messages << "Notifikasi PT BPI"
         messages << ""
-        messages << "Permintaan persetujuan pada #{I18n.t(approvable.class.to_s)}"
+        messages << "Permintaan persetujuan pada Transaksi"
         messages << "No. #{approvable.number_evidence}"
         messages << "Kepada #{@approval.role.titlecase} - #{approver.name}"
         messages << "Silahkan klik pada link berikut untuk melakukan proses persetujuan:"

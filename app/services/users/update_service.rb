@@ -34,7 +34,7 @@ module Users
         return @attributes if @attributes.present?
 
         @attributes = @params.require(:user)
-          .permit(:email, :password)
+          .permit(:email, :password, :name, :phone_number)
           .merge({company: @company})
         return @attributes if @attributes[:password].present?
 

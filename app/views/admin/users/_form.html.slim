@@ -7,13 +7,39 @@
       i.ki.ki-close aria-hidden="true"        
   .modal-body
     .form-group
-      label Email
+      label
+        | Email
+        span.text-danger.ml-1 *
       .input-group
         input.form-control[
           name="user[email]"
           placeholder=("Email User")
           type="text"
           value="#{@user&.email}"
+          required="required"
+        ]
+    .form-group
+      label
+        | Nama
+        span.text-danger.ml-1 *
+      .input-group
+        input.form-control[
+          name="user[name]"
+          placeholder=("Nama User")
+          type="text"
+          value="#{@user&.name}"
+          required="required"
+        ]
+    .form-group
+      label
+        | No. Hp (Whatsapp)
+        span.text-danger.ml-1 *
+      .input-group
+        input.form-control[
+          name="user[phone_number]"
+          placeholder=("No. Whatsapp")
+          type="number"
+          value="#{@user&.phone_number}"
           required="required"
         ]
     .form-group
@@ -29,13 +55,17 @@
             'select2-tags': '1'\
           }, id: "U-#{SecureRandom.uuid}"
     .form-group
-      label Password
+      label
+        | Password
+        - if @user.new_record?
+          span.text-danger.ml-1 *
       .input-group
         input.form-control[
           name="user[password]"
           placeholder=("Password User")
           type="password"
           value=""
+          required=(@user.new_record?)
         ]
   .modal-footer
     button.btn.btn-light-primary.font-weight-bold[

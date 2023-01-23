@@ -281,3 +281,8 @@ id:
   ok: ok
   calendar: kalender
   work_time: kerja
+  import: 'import'
+  original: 'Akunting'
+  ba: 'Akrual Berita Acara'
+  invoice_approved: 'Akrual Invoice Verifikasi Hutang'
+  invoice_paid: 'Invoice Terbayar'

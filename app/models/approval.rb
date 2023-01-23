@@ -37,4 +37,8 @@ class Approval < ApplicationRecord
     return unless approvable.present?
     approvable.synchronize_status_after_approval
   end
+
+  def approvable_color
+    "warning"
+  end
 end

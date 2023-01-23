@@ -1,0 +1,60 @@
+/! Button trigger modal
+button.btn.btn-sm.btn-warning[
+  data-target="#ModalApproval-SendNotification-#{approval.id}"
+  data-toggle="modal"
+  type="button"
+]
+  i.text-white.font-size-sm[
+    class="flaticon2-send-1"
+    style="font-size:.8rem;margin-left:5px;"
+  ]
+  | Kirim notifikasi
+  i.text-white[
+    class="flaticon-mail"
+    style="font-size:1.75rem;margin-left:5px;"
+  ]
+/! Modal
+.modal.fade[
+  id="ModalApproval-SendNotification-#{approval.id}"
+  aria-hidden="true"
+  aria-labelledby="ModalApproval-SendNotification-#{approval.id}Label"
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1" 
+]
+  .modal-dialog.modal-dialog-centered role="document" 
+    .modal-content
+      .modal-header
+        h5#exampleModalLabel.modal-title
+          | Kirim Notifikasi
+          br
+          span.font-size-sm.text-muted
+            | (#{approval.role.titlecase})
+          br
+          small
+            | Jumlah notifikasi terkirim: #{approval.number_of_notification_sent}
+        button.close aria-label="Close" data-dismiss="modal" type="button" 
+          i.ki.ki-close aria-hidden="true" 
+      .modal-body
+        - approval.approvers.each do |approver|
+          = form_with url: admin_approval_send_notification_path(id: approval.id, approver_id: approver.id),
+            method: :post do |f|
+            div
+              | #{approver.name}  (#{approver.phone_number} | #{approver.email})
+              button.btn-sm.btn-primary[
+                type="submit"
+                style=";padding:6px 7px 6px 7px;border-radius:50%;margin-left:8px;border:none;"
+                title="Kirim notifikasi via WhatsApp ke #{approver.phone_number}"
+                data-controller="base--tooltip"
+              ]
+                i.flaticon-email-black-circular-button[
+                  style="color:#FFF;font-size:14px;"
+                ]
+      .modal-footer
+        button.btn.font-weight-bold[
+          class="btn-light-warning"
+          data-dismiss="modal"
+          type="button"
+        ]
+          |  Tutup
+

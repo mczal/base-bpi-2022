@@ -1,0 +1,258 @@
+.card.card-custom.mt-20
+  .card-body.py-12
+    h5
+      |  PT BPI - Approval Management 
+    h3.font-weight-bold.mb-10.text-dark[style="margin-bottom: 12px !important;"]
+      |  Form Persetujuan Transaksi
+    div
+      |  Nomor Bukti: #{@approval.approvable.number_evidence}
+    hr.my-10
+    h4
+      |  Persetujuan ke-#{@approval.order}: #{@approval.role.titlecase}
+    h5
+      |  Admin 
+    - flag = 'danger' if @approval.rejected?
+    - flag = 'success' if @approval.accepted?
+    - flag = 'warning' if @approval.waiting?
+    div[
+      class="text-#{flag}"
+    ]
+      |  Status: #{t(@approval.status)} (#{@approval.last_log.comment})
+      br
+      |  Version: #{@approval.last_log.version}
+    - @general_transaction = @approval.approvable
+    .content.d-flex.flex-column.flex-column-fluid.mt-5[
+      style="box-shadow:1px 1px 5px #717171;padding: 1rem 0;"
+    ]
+      .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+        .d-flex.align-items-center.flex-wrap.mr-1
+          button#kt_subheader_mobile_toggle.burger-icon.burger-icon-left.mr-4.d-inline-block.d-lg-none data-controller="base--mobile-mode"
+            span
+          .d-flex.align-items-baseline.flex-wrap.mr-5
+            h5.text-dark.font-weight-bold.my-1.mr-5
+              | Transaksi
+              |  - #{@general_transaction.number_evidence}
+              span.ml-2
+                |  #{@general_transaction.status_for_html}
+      .d-flex.flex-column-fluid.mb-3
+        .container
+          .d-flex.flex-row
+            #kt_profile_aside.flex-row-auto.offcanvas-mobile.w-300px.w-xl-400px
+              .fixed_position_card.card.card-custom
+                .card-header
+                  .card-title
+                    | Informasi Umum
+                .card-body.pt-4
+                  .pt-2.pb-1
+                    .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                      span.font-weight-bold.mr-2 Dibuat:
+                      .text-right
+                        = readable_timestamp_2 @general_transaction.created_at.localtime
+                  .pt-3.pb-3
+                    .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                      span.font-weight-bold.mr-2 Lokasi:
+                      b.text-right
+                        = @general_transaction.location.titlecase
+                    .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                      span.font-weight-bold.mr-2 Tanggal:
+                      b.text-right
+                        = readable_date_2 @general_transaction.date
+                    .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                      span.font-weight-bold.mr-2 Nomor Bukti:
+                      b.text-right
+                        = @general_transaction.number_evidence
+                    .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                      span.font-weight-bold.mr-2 Sumber:
+                      b.text-right
+                        = @general_transaction.source.to_s.titlecase
+                    .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                      span.font-weight-bold.mr-2 Mata Uang Input:
+                      b.text-right
+                        | #{@general_transaction.input_option.upcase}
+                  .pb-5.pt-3
+                    fieldset
+                      legend
+                        | Informasi KURS
+                        a[
+                          href="#{'javascript:void(0);'}"
+                        ]
+                          i.fas.fa-external-link-alt.ml-2.font-size-sm
+                      .d-flex.align-items-center.justify-content-between.mb-2
+                        span.font-weight-bold.mr-2 Nilai:
+                        b.text-right
+                          | #{print_money @general_transaction.rate_money}
+                      .d-flex.align-items-center.justify-content-between.mb-2
+                        span.font-weight-bold.mr-2 Sumber:
+                        b.text-right
+                          | #{@general_transaction.rates_source.to_s.titlecase}
+                      .d-flex.align-items-center.justify-content-between.mb-2
+                        span.font-weight-bold.mr-2 Tanggal:
+                        b.text-right
+                          - if @general_transaction.rate_instance.present?
+                            | #{readable_date_2 @general_transaction.rate_instance.published_date}
+                      .d-flex.align-items-center.justify-content-between.mb-2
+                        span.font-weight-bold.mr-2.text-hover-primary[
+                          data-title="Tipe KURS"
+                          data-content="<div><b>Fixed Rates</b></div><div>Nilai KURS akan sesuai dengan nilai yang dipilih ketika penginputan</div><br/><div><b>End of Period Rates</b></div><div>Nilai KURS akan menggunakan nilai pada akhir Periode sesuai periode yang diinginkan ketika penginputan. Nilai KURS akan otomatis berubah ketika periode tersebut sudah berakhir dan sistem sudah mendapatkan nilai KURS terakhir pada periode tersebut.</div>"
+                          data-controller="base--popover"
+                          data-base--popover-html="1"
+                          data-base--popover-trigger="hover"
+                        ]
+                          | Tipe
+                          i.fas.fa-question-circle.ml-1
+                          |  :
+                        b.text-right
+                          | #{@general_transaction.rates_group.titlecase}
+                      - if @general_transaction.end_of_period_rates?
+                        .d-flex.align-items-center.justify-content-between.mb-2
+                          span.font-weight-bold.mr-2.text-hover-primary[
+                            data-content="Bulan / Tahun"
+                            data-controller="base--popover"
+                            data-base--popover-html="1"
+                            data-base--popover-trigger="hover"
+                          ]
+                            | Periode Akhir KURS
+                            i.fas.fa-question-circle.ml-1
+                            |  :
+                          b.text-right
+                            | #{@general_transaction.end_of_period_rates_options['month']} / #{@general_transaction.end_of_period_rates_options['year']}
+                  .pb-5.pt-3
+                    fieldset
+                      legend
+                        | SUMBER
+                        - if @general_transaction.ba?
+                          a[
+                            href="#{admin_inv_trackings_accountings_ba_path(id: @general_transaction.transactionable_id)}"
+                            target="_blank"
+                          ]
+                            i.fas.fa-external-link-alt.ml-2.font-size-sm
+                        - if @general_transaction.invoice_approved? || @general_transaction.invoice_paid?
+                          a[
+                            href="#{admin_inv_trackings_finances_invoice_path(id: @general_transaction.transactionable_id)}"
+                            target="_blank"
+                          ]
+                            i.fas.fa-external-link-alt.ml-2.font-size-sm
+                      .d-flex.align-items-center.justify-content-between.mb-2
+                        span.font-weight-bold.mr-2 Sumber:
+                        b.text-right
+                          - if @general_transaction.ba?
+                            | Akrual Berita Acara
+                          - if @general_transaction.invoice_approved?
+                            | Invoice Approved - Akrual Hutang
+                          - if @general_transaction.invoice_paid?
+                            | Invoice Lunas 
+                      .d-flex.align-items-center.justify-content-between.mb-2
+                        span.font-weight-bold.mr-2 No.:
+                        b.text-right
+                          - if @general_transaction.ba?
+                            | #{@general_transaction.transactionable.reference_number}
+                          - if @general_transaction.invoice_approved? || @general_transaction.invoice_paid?
+                            | #{@general_transaction.transactionable.ref_number}
+                      .d-flex.align-items-center.justify-content-between.mb-2
+                        span.font-weight-bold.mr-2 Deskripsi:
+                        b.text-right
+                          - if @general_transaction.ba?
+                            | #{@general_transaction.transactionable.description}
+                          - if @general_transaction.invoice_approved?
+                            | 
+            .flex-row-fluid.ml-lg-8          
+              .card.card-custom.card-stretch.gutter-b
+                .card-header.border-0.pt-5
+                  .card-title.font-weight-bolder
+                    .card-label
+                      ul#myTab.nav.nav-tabs[role="tablist"]
+                        li.nav-item
+                          a#home-tab12a.nav-link[
+                            data-toggle="tab"
+                            href="#documents"
+                            class="#{''}"
+                          ]
+                            span.nav-icon
+                              i.flaticon2-layers-1
+                            span.nav-text
+                              | 1. Dokumen
+                        li.nav-item
+                          a#profile-tab14a.nav-link[
+                            data-toggle="tab"
+                            href="#approval"
+                            aria-controls="approval"
+                            class="#{'active' if 1==1}"
+                          ]
+                            span.nav-icon
+                              i.far.fa-calendar-check
+                            span.nav-text
+                              | 2. Approval
+                        li.nav-item
+                          a#profile-tab12.nav-link[
+                            data-toggle="tab"
+                            href="#journals"
+                            aria-controls="journals"
+                            class="#{''}"
+                          ]
+                            span.nav-icon
+                              i.fas.fa-random
+                            span.nav-text
+                              | 3. Jurnal
+                #myTabContent.tab-content.mt-5
+                  #documents.tab-pane.fade[
+                    role="tabpanel" aria-labelledby="documents"
+                    class="#{''}"
+                  ]
+                    .card-body.pt-0
+                      = render partial: 'shared/document_v2',
+                        collection: @general_transaction.files, as: :file,
+                        locals: { file_name: 'Dokumen Lainnya' }
+                  #approval.tab-pane.fade[
+                    role="tabpanel" aria-labelledby="approval"
+                    class="#{'active show' if 1==1}"
+                  ]
+                    .card-body
+                      .d-flex.align-items-center.flex-wrap
+                        - @general_transaction.functioned_approvals.each do |approval|
+                          .d-flex.align-items-start.flex-lg-fill.mr-5.mb-5
+                            span.mr-4
+                              i.flaticon2-file.icon-3x.font-weight-bold[
+                                class="text-#{approval.status_label}"
+                              ]
+                            .d-flex.flex-column.text-dark-75
+                              span.font-weight-bolder.font-size-sm
+                                | #{approval.order}. #{approval.name}
+                              span.font-weight-bolder.font-size-h5
+                                - if approval.accepted? || approval.rejected?
+                                  = approval.last_log.user&.email
+                                span.text-dark-50.font-weight-bold.font-size-sm
+                                  | &nbsp;(#{approval.role})
+                              span.font-weight-bolder.font-size-sm
+                                = t(approval.status).titlecase
+                                - if !approval.waiting?
+                                  span style="margin-left:5px;" 
+                                    = readable_timestamp_2 approval.updated_at.localtime
+                                  span style="margin-left:5px;" 
+                                    | oleh: #{approval.last_log.user&.email}
+                                  .text-muted.my-3[
+                                    title="Komentar #{approval.last_log.user&.email}"
+                                    data-controller="tooltip"
+                                  ]
+                                    | | #{approval.last_log.comment}
+                              - if approval.id == @approval.id
+                                span.font-weight-bolder.font-size-sm
+                                  - if current_user.has_role?(approval.role)
+                                    = render partial: 'shared/approvals/edit',
+                                      locals: {approval: approval, status: 'accepted', text: 'Setujui'}
+                                    = render partial: 'shared/approvals/edit',
+                                      locals: {approval: approval, status: 'rejected', text: 'Tolak'}
+                                  / - if !approval.accepted?
+                                    = render partial: 'shared/approvals/send_notification',
+                                      locals: {approval: approval}
+
+                  #journals.tab-pane.fade[
+                    role="tabpanel" aria-labelledby="journals"
+                    class="#{''}"
+                  ]
+                    = render partial: 'admin/general_transactions/journals'
+          = render partial: 'admin/general_transactions/lines'
+          / = render partial: 'shared/data_history',
+              locals: {\
+                auditable_id: @general_transaction.id,\
+                auditable_type: 'GeneralTransaction'\
+              }

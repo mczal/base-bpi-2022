@@ -24,7 +24,7 @@ module Users
 
       def attributes
         @attributes ||= @params.require(:user)
-          .permit(:email, :password)
+          .permit(:email, :password, :name, :phone_number)
           .merge({company: @company})
       end
   end

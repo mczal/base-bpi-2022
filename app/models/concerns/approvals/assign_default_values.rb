@@ -8,6 +8,9 @@ module Approvals
       if self.status.nil?
         self.status = :waiting
       end
+      if self.number_of_notification_sent.nil?
+        self.number_of_notification_sent = 0
+      end
     end
   end
 end

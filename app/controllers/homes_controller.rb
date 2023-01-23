@@ -11,9 +11,10 @@ class HomesController < ApplicationController
   end
 
   def index
-    @dashboard_presenters = Dashboards::IndexPresenter.new(
-      params[:start_date], params[:end_date], current_company
-    )
+    # @dashboard_presenters = Dashboards::IndexPresenter.new(
+      # params[:start_date], params[:end_date], current_company
+    # )
+    # return redirect_to admin_root_path(slug: current_company.slug)
   end
 
   def err_page

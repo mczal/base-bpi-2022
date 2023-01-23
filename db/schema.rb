@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_01_20_061854) do
+ActiveRecord::Schema.define(version: 2023_01_23_073016) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -120,6 +120,7 @@ ActiveRecord::Schema.define(version: 2023_01_20_061854) do
     t.string "name"
     t.string "approvable_type", null: false
     t.uuid "approvable_id", null: false
+    t.integer "number_of_notification_sent", default: 0
     t.index ["approvable_type", "approvable_id"], name: "index_approvals_on_approvable"
     t.index ["order"], name: "index_approvals_on_order"
     t.index ["user_id"], name: "index_approvals_on_user_id"
@@ -432,6 +433,8 @@ ActiveRecord::Schema.define(version: 2023_01_20_061854) do
     t.string "confirmation_token", limit: 128
     t.string "remember_token", limit: 128, null: false
     t.uuid "company_id"
+    t.string "name"
+    t.string "phone_number"
     t.index ["company_id"], name: "index_users_on_company_id"
     t.index ["email"], name: "index_users_on_email"
     t.index ["remember_token"], name: "index_users_on_remember_token"
