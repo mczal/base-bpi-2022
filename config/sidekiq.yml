@@ -12,5 +12,5 @@ production:
 
 :schedule:
   scrap_rates_job:
-    cron: "0 0/2 * * *" # "At minute 0 past every hour from 0 through 23."
+    cron: "0 0/1 * * *" # "At minute 0 past every hour from 0 through 23."
     class: ScrapRatesJob
