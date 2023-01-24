@@ -55,7 +55,7 @@ scss:
     .row
       .col-6.form-group.mb-0
         = f.select :pph_id,
-          options_from_collection_for_select(Account.all, :id, :name, @invoice.pph_id),
+          options_from_collection_for_select(Account.all, :id, :readable_name, @invoice.pph_id),
           {include_blank: '== Pilih =='},
           class: 'form-control',
           data: { controller: 'select2' }

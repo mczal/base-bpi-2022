@@ -7,6 +7,7 @@ module Invoices
     end
 
     def synchronize_to_general_transactions_after_save_for_approved
+      return unless verified?
       @general_transaction_after_save_for_approved = self.general_transactions
         .find_or_initialize_by(source: :invoice_approved)
       @general_transaction_after_save_for_approved.assign_attributes(
@@ -112,7 +113,7 @@ module Invoices
       @accrued_credit_gt_line.assign_attributes(
         price_idr: idr,
         price_usd: usd,
-        code: self.accrued_credit.code,
+        code: self.ba.accrued_credit.code,
         rate: @general_transaction_after_save_for_approved.rate_money,
       )
       @accrued_credit_gt_line
