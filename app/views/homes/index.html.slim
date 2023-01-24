@@ -24,7 +24,7 @@
               | List Task
               br
               span.font-size-sm.text-dark-50.font-weight-bold
-                | Total #{11} Task
+                | Total #{GeneralTransaction.select('general_transactions.id').distinct.joins('JOIN approvals ON general_transactions.id=approvals.approvable_id').where('approvals.status != ?', 'accepted').where('approvals.role': current_user.roles.pluck(:name)).count} Task
         .card-body
           #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
             data-admin--general-transactions--index-data-path=api_admin_general_transactions_index_path(slug: current_company.slug, approver_id: current_user.id)
