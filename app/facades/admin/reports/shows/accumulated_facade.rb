@@ -11,6 +11,27 @@ module Admin
 
         def calculate_value_for report_line
           if daterange.present?
+            if !!report_line.name.match(/saldo awal kas/i)
+              srl = SavedReportLine.find_by(
+                month: daterange[0].first,
+                year: daterange[1],
+                report_line_id: report_line.id
+              )
+              price_idr = srl&.price_idr.to_money
+              price_usd = srl&.price_usd.to_money.with_currency(:usd)
+
+              return @result[report_line.name] = {
+                price_idr: price_idr,
+                price_usd: price_usd
+              }
+            end
+            if !!report_line.name.match(/saldo akhir kas/i)
+              return @result[report_line.name] = {
+                price_idr: @origin_facade.results.dig(report_line.name, :price_idr).to_money,
+                price_usd: @origin_facade.results.dig(report_line.name, :price_usd).to_money.with_currency(:usd)
+              }
+            end
+
             price_idr = SavedReportLine.find_by_sql(
               <<-EOS
                 SELECT SUM(price_idr_cents) as price_idr_cents, price_idr_currency
