@@ -72,7 +72,7 @@ module Api
                 created_at: helpers.readable_date_4(rate.created_at),
                 updated_at: helpers.readable_date_4(rate.updated_at),
                 published_date: helpers.readable_date_4(rate.published_date),
-                origin: rate.origin.titlecase,
+                origin: rate.origin_name,
                 middle: helpers.print_money(rate.middle),
                 edit_path: admin_settings_edit_rate_path(id: rate.id,slug: current_company.slug),
                 delete_path: admin_settings_rate_path(id: rate.id, slug: current_company.slug)

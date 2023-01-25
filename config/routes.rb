@@ -87,6 +87,10 @@ Rails.application.routes.draw do
     end
 
     resources :reports
+    get 'reports/shows/equity',
+      to: 'reports#show_equity',
+      as: :report_equity
+
     namespace :reports do
       get "actions/download_template",
         to: "actions#download_template",

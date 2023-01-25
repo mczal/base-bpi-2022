@@ -16,6 +16,10 @@ module Admin
 
     def show; end
 
+    def show_equity
+      @show_facade = Admin::Reports::Shows::EquityFacade.new(params)
+    end
+
     def destroy
       if report.destroy
         return redirect_to admin_reports_path, notice: "Laporan Berhasil di hapus."

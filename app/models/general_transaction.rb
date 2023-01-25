@@ -75,4 +75,16 @@ class GeneralTransaction < ApplicationRecord
       journalable_id: general_transaction_lines.ids
     )
   end
+
+  def rates_source_name
+    return @rates_source_name if @rates_source_name.present?
+
+    if self.bank_of_indonesia?
+      return @rates_source_name = 'BI JISDOR'
+    end
+    if self.ministry_of_finance?
+      return @rates_source_name = 'KEMENKEU'
+    end
+    @rates_source_name = self.origin.to_s.titlecase
+  end
 end

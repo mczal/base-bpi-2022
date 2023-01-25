@@ -160,7 +160,12 @@
                     'admin--general-transactions--rates-filter-path': "#{admin_rates_get_select_options_path(slug: params[:slug], origin: '-1')}"\
                   }, required: 1
                 span
-                | #{r.titlecase}
+                - if r == 'bank_of_indonesia'
+                  | BI JISDOR
+                - elsif r == 'ministry_of_finance'
+                  | KEMENKEU
+                - else
+                  = r.titlecase
         .form-group.col-lg-6
           label[
             data-title="Tipe KURS"
