@@ -113,6 +113,13 @@ module Admin
           @acc_y ||= {}
         end
 
+        def accumulation_z
+          @acc_z ||= {
+            price_idr: acc_x.sum{|k,v|v[:price_idr]},
+            price_usd: acc_x.sum{|k,v|v[:price_usd]}
+          }
+        end
+
         def result
           @result ||= {
             saldo_awal: {
