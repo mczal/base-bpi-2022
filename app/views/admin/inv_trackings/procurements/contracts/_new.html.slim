@@ -137,7 +137,7 @@ scss:
                 = f.text_field :started_at,
                   class: 'form-control',
                   data: { controller: 'picker--date' },
-                  required: 1, readonly: 1,
+                  required: 1,
                   value: html_input_date(@contract.started_at)
               .col-6.form-group[style="margin-top:10px;"]
                 label
@@ -145,7 +145,7 @@ scss:
                 = f.text_field :ended_at,
                   class: 'form-control',
                   data: { controller: 'picker--date' },
-                  required: 1, readonly: 1,
+                  required: 1,
                   value: html_input_date(@contract.ended_at)
             .row[style="margin-top:10px;"]
               .col-3.form-group[style="margin-bottom:5px;"]
@@ -168,7 +168,7 @@ scss:
               = f.text_field :started_with_date,
                 class: 'form-control',
                 data: { controller: 'picker--date' },
-                required: 1, readonly: 1,
+                required: 1,
                 value: html_input_date(@contract.started_with_date)
             .form-group[style="margin-top:30px;;margin-bottom:5px;"]
               label

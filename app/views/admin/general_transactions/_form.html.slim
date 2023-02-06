@@ -12,9 +12,9 @@
           | Tanggal
           span.text-danger.ml-1 *
         = f.text_field :date, class: 'form-control', placeholder: 'Tanggal',
-        data: { controller: 'picker--date' }, autocomplete: 'off',
-        required: 1,
-        value: html_input_date(@general_transaction.date)
+          data: { controller: 'picker--date' }, autocomplete: 'off',
+          required: 1,
+          value: html_input_date(@general_transaction.date)
       .form-group.col-lg-6
         label
           | Pilih Lokasi
