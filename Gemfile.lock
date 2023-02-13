@@ -517,6 +517,7 @@ DEPENDENCIES
   caxlsx_rails
   clearance
   dotenv-rails
+  faraday
   fog-aws
   google-analytics-rails (= 1.1.1)
   image_processing (>= 1.2)

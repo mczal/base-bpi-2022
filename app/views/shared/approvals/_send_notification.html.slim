@@ -37,7 +37,7 @@ button.btn.btn-sm.btn-warning[
           i.ki.ki-close aria-hidden="true" 
       .modal-body
         - approval.approvers.each do |approver|
-          = form_with url: admin_approval_send_notification_path(id: approval.id, approver_id: approver.id),
+          = form_with url: admin_approval_send_notification_path(id: approval.id, approver_id: approver.id, slug: params[:slug]),
             method: :post do |f|
             div
               | #{approver.name}  (#{approver.phone_number} | #{approver.email})

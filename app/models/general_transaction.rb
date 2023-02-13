@@ -29,6 +29,7 @@ class GeneralTransaction < ApplicationRecord
     usd: 'usd'
   }
   enum status: {
+    draft: 'draft',
     waiting_for_approval: 'waiting_for_approval',
     accepted: 'accepted',
     rejected: 'rejected',
@@ -43,6 +44,7 @@ class GeneralTransaction < ApplicationRecord
     ba: 'ba',
     invoice_approved: 'invoice_approved',
     invoice_paid: 'invoice_paid',
+    calculator: 'calculator',
   }
 
   accepts_nested_attributes_for :general_transaction_lines
@@ -85,6 +87,6 @@ class GeneralTransaction < ApplicationRecord
     if self.ministry_of_finance?
       return @rates_source_name = 'KEMENKEU'
     end
-    @rates_source_name = self.origin.to_s.titlecase
+    @rates_source_name = ''
   end
 end

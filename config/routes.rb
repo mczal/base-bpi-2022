@@ -192,11 +192,12 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v1 do
-      namespace :accountings do
-        post "authentication", to: "authentications#get_account", as: :authentication
-        post "create_user", to: "authentications#create_user", as: :create_user
-        post "signed_in_user", to: "authentications#signed_in_user", as: :signed_in_user
-      end
+      resources :general_transactions, only: %i[create update delete]
+      # namespace :accountings do
+        # post "authentication", to: "authentications#get_account", as: :authentication
+        # post "create_user", to: "authentications#create_user", as: :create_user
+        # post "signed_in_user", to: "authentications#signed_in_user", as: :signed_in_user
+      # end
     end
 
     namespace :admin do

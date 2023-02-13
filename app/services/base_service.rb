@@ -6,11 +6,11 @@ class BaseService
   end
 
   def full_error_messages
-    @full_messages ||= error_messages.join('\n')
+    @full_messages ||= error_messages.join("\n")
   end
 
   def full_error_messages_html
-    @full_messages ||= error_messages.join('<br/>')
+    @full_messages ||= error_messages.join("<br/>")
   end
 
   def run

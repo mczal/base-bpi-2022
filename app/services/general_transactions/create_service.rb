@@ -18,7 +18,8 @@ module GeneralTransactions
         @attributes ||= @params.require(:general_transaction).permit(
           :date, :number_evidence, :input_option,
           :rates_source, :rates_group,
-          :status, :location,
+          :status, :location, :source,
+          :origin_id,
           fixed_rates_options: %i[id],
           end_of_period_rates_options: %i[month year],
           files: [],

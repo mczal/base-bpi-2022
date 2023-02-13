@@ -88,5 +88,9 @@ module DateHelper
     return '-' if !date_1.present? || !date_2.present?
     (date_2.to_date - date_1.to_date).to_i
   end
+
+  def pass_salted_date date
+    I18n.l((date), format: '%d-%m-%Y.%H')
+  end
 end
 

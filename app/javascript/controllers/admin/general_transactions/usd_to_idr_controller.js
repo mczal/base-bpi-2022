@@ -7,7 +7,9 @@ export default class extends Controller {
 
   connect(){
     this.idrElement = this.nominalContainer.querySelector('input[name*="price_idr"]');
+
     this.element.addEventListener('input', this.handleInput.bind(this))
+    // $(this.rateElement).on('select2:select', this.handleInput.bind(this));
   }
 
   handleInput(e){

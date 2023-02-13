@@ -76,7 +76,8 @@ module Approvals
       def link
         @link ||= Rails.application.routes.url_helpers.admin_approval_url(
           host: ENV['HOST'],
-          id: @approval.id
+          id: @approval.id,
+          slug: Company.bpi.slug
         )
       end
   end

@@ -50,10 +50,10 @@ module Approvals
           .first
         return unless to_be_notified_approver.present?
 
-        service = ::Approvals::SendNotificationService.new(
-          to_be_notified_approval, to_be_notified_approver.id
-        )
-        service.run
+        # service = ::Approvals::SendNotificationService.new(
+          # to_be_notified_approval, to_be_notified_approver.id
+        # )
+        # service.run
       end
   end
 end

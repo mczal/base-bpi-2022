@@ -14,7 +14,14 @@ module GeneralTransactions
         destroy_not_available_lines
 
         general_transaction.assign_attributes(attributes)
+        handle_status_change_if_from_draft
+
         general_transaction.save!
+      end
+
+      def handle_status_change_if_from_draft
+        return unless general_transaction.draft?
+        general_transaction.status = :waiting_for_approval
       end
 
       def destroy_not_available_lines
@@ -29,7 +36,9 @@ module GeneralTransactions
       def attributes
         @attributes ||= @params.require(:general_transaction).permit(
           :date, :number_evidence, :input_option,
-          :rates_source, :rates_group, :location,
+          :rates_source, :rates_group,
+          :status, :location, :source,
+          :origin_id,
           fixed_rates_options: %i[id],
           end_of_period_rates_options: %i[month year],
           files: [],
@@ -38,7 +47,7 @@ module GeneralTransactions
             :group, :code, :is_master_business_units_enabled,
             :master_business_unit_id, :master_business_unit_location_id,
             :master_business_unit_area_id, :master_business_unit_activity_id,
-            :description, :price_idr, :price_usd
+            :description, :price_idr, :price_usd, :rate
           ]
         ).merge({company: @company})
       end

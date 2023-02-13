@@ -63,7 +63,7 @@ scss:
                 .d-flex.align-items-center.justify-content-between.mb-1.mt-1
                   span.font-weight-bold.mr-2 Lokasi:
                   b.text-right
-                    = @general_transaction.location.titlecase
+                    = @general_transaction.location.to_s.titlecase
                 .d-flex.align-items-center.justify-content-between.mb-1.mt-1
                   span.font-weight-bold.mr-2 Tanggal:
                   b.text-right
@@ -113,7 +113,7 @@ scss:
                       i.fas.fa-question-circle.ml-1
                       |  :
                     b.text-right
-                      | #{@general_transaction.rates_group.titlecase}
+                      | #{@general_transaction.rates_group.to_s.titlecase}
                   - if @general_transaction.end_of_period_rates?
                     .d-flex.align-items-center.justify-content-between.mb-2
                       span.font-weight-bold.mr-2.text-hover-primary[
