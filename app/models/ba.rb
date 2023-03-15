@@ -1,3 +1,22 @@
+# == Schema Information
+#
+# Table name: bas
+#
+#  id                   :uuid             not null, primary key
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  contract_id          :uuid
+#  description          :text
+#  reference_number     :string
+#  date                 :date
+#  levered_at           :date
+#  realized_at          :date
+#  _number_of_days_late :integer
+#  status               :string
+#  price_cents          :decimal(, )      default(0.0), not null
+#  price_currency       :string           default("IDR"), not null
+#  accrued_credit_id    :uuid
+#
 class Ba < ApplicationRecord
   include Bas::Statuses
   # include Bas::SynchronizeToJournalsAfterSave

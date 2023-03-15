@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: rates
+#
+#  id               :uuid             not null, primary key
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  buying_cents     :decimal(, )      default(0.0), not null
+#  buying_currency  :string           default("IDR"), not null
+#  selling_cents    :decimal(, )      default(0.0), not null
+#  selling_currency :string           default("IDR"), not null
+#  origin           :string
+#  published_date   :date
+#
 class Rate < ApplicationRecord
   audited
   include Rates::RoundBuyingAndSellingAfterCreate

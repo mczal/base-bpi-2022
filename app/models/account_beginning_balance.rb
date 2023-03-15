@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: account_beginning_balances
+#
+#  id                 :uuid             not null, primary key
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  code               :string
+#  price_idr_cents    :decimal(, )      default(0.0), not null
+#  price_idr_currency :string           default("IDR"), not null
+#  price_usd_cents    :decimal(, )      default(0.0), not null
+#  price_usd_currency :string           default("USD"), not null
+#  year               :integer
+#
 class AccountBeginningBalance < ApplicationRecord
   include PgSearch::Model
 

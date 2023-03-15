@@ -1,3 +1,13 @@
+# == Schema Information
+#
+# Table name: banks
+#
+#  id         :uuid             not null, primary key
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#  name       :string
+#  code       :string
+#
 class Bank < ApplicationRecord
   audited
   include PgSearch::Model

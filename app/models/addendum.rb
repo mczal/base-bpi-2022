@@ -1,5 +1,18 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: addendums
+#
+#  id               :uuid             not null, primary key
+#  created_at       :datetime         not null
+#  updated_at       :datetime         not null
+#  ref_number       :string
+#  contract_id      :uuid
+#  contract_changes :json
+#  date             :date
+#  description      :text
+#
 class Addendum < ApplicationRecord
   audited
   include PgSearch::Model

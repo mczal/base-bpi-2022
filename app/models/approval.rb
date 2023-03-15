@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: approvals
+#
+#  id                          :uuid             not null, primary key
+#  created_at                  :datetime         not null
+#  updated_at                  :datetime         not null
+#  status                      :string
+#  user_id                     :uuid
+#  role                        :string
+#  order                       :integer
+#  name                        :string
+#  approvable_type             :string           not null
+#  approvable_id               :uuid             not null
+#  number_of_notification_sent :integer          default(0)
+#
 class Approval < ApplicationRecord
   audited
   include Approvals::StatusLabel

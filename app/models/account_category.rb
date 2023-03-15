@@ -1,3 +1,15 @@
+# == Schema Information
+#
+# Table name: account_categories
+#
+#  id              :uuid             not null, primary key
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  code            :string
+#  description     :string
+#  bottom_treshold :integer
+#  upper_treshold  :integer
+#
 class AccountCategory < ApplicationRecord
   include PgSearch::Model
   include AccountCategories::AssignDefaultValues

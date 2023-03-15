@@ -1,3 +1,19 @@
+# == Schema Information
+#
+# Table name: accounts
+#
+#  id                  :uuid             not null, primary key
+#  code                :string
+#  name                :string
+#  company_id          :uuid             not null
+#  created_at          :datetime         not null
+#  updated_at          :datetime         not null
+#  balance_type        :string
+#  account_category_id :uuid
+#  isak_16             :boolean          default(FALSE)
+#  non_isak            :boolean          default(FALSE)
+#  fiskal              :boolean          default(FALSE)
+#
 class Account < ApplicationRecord
   include PgSearch::Model
   include Accounts::AssignDefaultValues

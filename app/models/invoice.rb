@@ -1,5 +1,39 @@
 # frozen_string_literal: true
 
+# == Schema Information
+#
+# Table name: invoices
+#
+#  id                   :uuid             not null, primary key
+#  created_at           :datetime         not null
+#  updated_at           :datetime         not null
+#  spp_number           :string
+#  ref_number           :string
+#  date                 :date
+#  receipt_number       :string
+#  price_cents          :decimal(, )      default(0.0), not null
+#  price_currency       :string           default("IDR"), not null
+#  ppn_group            :string
+#  tax_receipt_date     :date
+#  tax_receipt_number   :string
+#  invoiceable_type     :string
+#  invoiceable_id       :uuid
+#  status               :string
+#  ppn_cost_group       :string
+#  pph_percentage       :decimal(, )
+#  fine_cents           :decimal(, )      default(0.0), not null
+#  fine_currency        :string           default("IDR"), not null
+#  debt_age_started_at  :date
+#  ppn_percentage       :decimal(, )
+#  spp_checked          :boolean          default(FALSE)
+#  invoice_checked      :boolean          default(FALSE)
+#  kwitansi_checked     :boolean          default(FALSE)
+#  faktur_pajak_checked :boolean          default(FALSE)
+#  received_at          :datetime
+#  pph_id               :uuid
+#  accrued_credit_id    :uuid
+#  bank_account_id      :uuid
+#
 class Invoice < ApplicationRecord
   include Invoices::Statuses
   # include Invoices::Approvals

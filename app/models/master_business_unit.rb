@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: master_business_units
+#
+#  id          :uuid             not null, primary key
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  code        :string
+#  description :text
+#  group       :string
+#
 class MasterBusinessUnit < ApplicationRecord
   include PgSearch::Model
 
