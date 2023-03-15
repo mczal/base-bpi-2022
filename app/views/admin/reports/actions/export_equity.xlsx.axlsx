@@ -1,0 +1,148 @@
+wb = xlsx_package.workbook
+img = File.expand_path(Rails.root+'app/assets/images/logo_bpi.png')
+
+wb.add_worksheet(name: "Laporan Equity") do |sheet|  
+  sheet.add_image(image_src: img, start_at: 'G2', width: 50, height: 50)
+
+  sheet.add_row()
+  sheet.add_row([
+    "",
+    "PT BUKIT PEMBANGKIT INNOVATIVE",
+    "","","","","","",
+    "PT BUKIT PEMBANGKIT INNOVATIVE",
+  ])
+
+  sheet.add_row([
+    "",
+    "LAPORAN EQUITY",
+    "","","","","","",
+    "LAPORAN EQUITY"
+  ])
+
+  sheet.add_row()
+  sheet.add_row([
+    "",
+    "TANGGAL #{I18n.l(Date.today.end_of_month, format: '%d %B %Y')}",
+    "","","","","","",
+    "TANGGAL #{I18n.l(Date.today.end_of_month, format: '%d %B %Y')}"
+  ])
+  
+  sheet.add_row(["","",""])
+  sheet.add_row([
+    "",
+    "",
+    "Modal Saham",
+    "Setoran Modal Lainnya",
+    "Saldo Laba (Rugi)",
+    "Jumlah",
+    "","","",
+    "Modal Saham",
+    "Setoran Modal Lainnya",
+    "Saldo Laba (Rugi)",
+    "Jumlah"
+  ])
+  
+  sheet.add_row([
+    "",
+    "Saldo #{I18n.l(Date.today.beginning_of_month, format: '%d %B %Y')}",
+    "-",
+    "-",
+    "-",
+    "-",
+    "","","",
+    "Saldo #{I18n.l(Date.today.beginning_of_month, format: '%d %B %Y')}",
+    "-",
+    "-",
+    "-",
+    "-"
+  ])
+  sheet.add_row()
+
+  sheet.add_row([
+    "",
+    "Tambahan modal saham",
+    "-",
+    "-",
+    "-",
+    "-",
+    "","","",
+    "Tambahan modal saham",
+    "-",
+    "-",
+    "-",
+    "-"
+  ])
+  sheet.add_row()
+
+  sheet.add_row([
+    "",
+    "Tambahan setoran modal Lainya",
+    "-",
+    "-",
+    "-",
+    "-",
+    "","","",
+    "Tambahan setoran modal Lainya",
+    "-",
+    "-",
+    "-",
+    "-"
+  ])
+  sheet.add_row()
+
+  sheet.add_row([
+    "",
+    "Laba (rugi) tahun berjalan",
+    "-",
+    "-",
+    "-",
+    "-",
+    "","","",
+    "Laba (rugi) tahun berjalan",
+    "-",
+    "-",
+    "-",
+    "-"
+  ])
+  sheet.add_row([
+    "",
+    "Other Comprehensive Income",
+    "-",
+    "-",
+    "-",
+    "-",
+    "","","",
+    "Other Comprehensive Income",
+    "-",
+    "-",
+    "-",
+    "-"
+  ])
+  sheet.add_row()
+
+  sheet.add_row([
+    "",
+    "Saldo Per TANGGAL #{I18n.l(Date.today, format: '%d %B %Y').upcase}",
+    "-",
+    "-",
+    "-",
+    "-","","","",
+    "Saldo Per TANGGAL #{I18n.l(Date.today, format: '%d %B %Y').upcase}",
+    "-",
+    "-",
+    "-",
+    "-"
+  ])
+
+  # @report_facede.table_reports.each_with_index do |report_line, index|
+  #   sheet.add_row([
+  #     "",
+  #     report_line[:name],
+  #     report_line[:value],
+  #     "",
+  #     "",
+  #     report_line[:name],
+  #     report_line[:value],
+  #   ])
+  # end
+end

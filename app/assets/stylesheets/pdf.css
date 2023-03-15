@@ -19,12 +19,14 @@ p {
 }
 
 .table-bordered {
-  border: 1px solid black;
+  border: 1px solid #dee2e6;
+  border-collapse: collapse;
+}
 
-  th,
-  td {
-    border: 1px solid black;
-  }
+.table-bordered th,
+.table-bordered td {
+  border: 1px solid #dee2e6;
+  border-right-width: 0;
 }
 
 .border-black {

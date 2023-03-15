@@ -1,34 +1,58 @@
 wb = xlsx_package.workbook
-img = File.expand_path(Rails.root+'app/assets/images/logo_only.png')
+img = File.expand_path(Rails.root+'app/assets/images/logo_bpi.png')
 
 wb.add_worksheet(name: "Laporan #{@report.name}") do |sheet|  
   sheet.add_image(image_src: img, start_at: 'C1', width: 50, height: 50)
 
+  sheet.add_row()
   sheet.add_row([
     "",
-    "Laporan #{@report.name}",
-    ""
+    "PT BUKIT PEMBANGKIT INNOVATIVE",
+    "",
+    "",
+    "",
+    "PT BUKIT PEMBANGKIT INNOVATIVE",
+  ])
+
+  sheet.add_row([
+    "",
+    "LAPORAN #{@report.name.upcase}",
+    "",
+    "",
+    "",
+    "LAPORAN #{@report.name.upcase}",
   ])
 
   sheet.add_row(["","",""])
   sheet.add_row([
     "",
-    "Tanggal #{@report_facede.start_date} s/d #{@report_facede.end_date}",
-    ""
+    "TANGGAL #{I18n.l(@report_facede.end_date, format: '%d %B %Y')}",
+    "",
+    "",
+    "",
+    "TANGGAL #{I18n.l(@report_facede.end_date, format: '%d %B %Y')}",
   ])
   sheet.add_row(["","",""])
 
   sheet.add_row([
     "",
+    "Nama Akun",
+    "IDR",
     "",
-    "IDR"
+    "",
+    "Nama Akun",
+    "USD",
   ])
   
   @report_facede.table_reports.each_with_index do |report_line, index|
     sheet.add_row([
-      (index + 1),
+      "",
       report_line[:name],
-      report_line[:value]
+      report_line[:value],
+      "",
+      "",
+      report_line[:name],
+      report_line[:value],
     ])
   end
 end

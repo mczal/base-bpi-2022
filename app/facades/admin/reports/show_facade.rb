@@ -34,6 +34,7 @@ module Admin
 
         @results[report_line.name][:price_idr]
       end
+
       def calculate_accumulation_usd_for report_line
         formula = report_line.formula.dup
         @results.each do |k,v|
@@ -70,6 +71,7 @@ module Admin
 
         @results[report_line.name][:price_idr]
       end
+      
       def calculate_value_usd_for report_line
         if !report_line.codes_references.present?
           @results[report_line.name] = {

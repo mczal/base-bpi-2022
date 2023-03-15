@@ -18,7 +18,7 @@ module Api
 
           def clients
             return @clients if @clients.present?
-            @clients = Client.all
+            @clients = Client.all.order(name: :asc)
 
             if sort.present?
               @clients = @clients

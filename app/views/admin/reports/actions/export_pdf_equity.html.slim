@@ -1,0 +1,169 @@
+- url = wicked_pdf_asset_base64("logo_bpi.png")
+= wicked_pdf_stylesheet_link_tag "pdf"
+= image_tag url, alt: "Logo", class: "logo", size: "50x50", style: "position: absolute;"
+
+h4 style="text-align: center;"
+  | PT BUKIT PEMBANGKIT INNOVATIVE
+
+h4 style="text-align: center;"
+  | LAPORAN EQUITY
+
+h4 style="text-align: center;"
+  | TANGGAL : #{I18n.l(Date.today, format: '%d %B %Y')}
+
+table.table.table-bordered style="width: 100%;"
+  thead
+    tr
+      th
+      th.text-center[colspan="4"]
+        | IDR (Rp)
+      th.nospace
+      th.text-center[colspan="4"]
+        | USD ($)
+    tr
+      th
+      th
+        | Modal Saham
+      th
+        | Setoran Modal Lainnya
+      th
+        | Saldo Laba (Rugi)
+      th
+        | Jumlah
+      th.nospace
+      th
+        | Modal Saham
+      th
+        | Setoran Modal Lainnya
+      th
+        | Saldo Laba (Rugi)
+      th
+        | Jumlah
+  tbody
+    tr
+      td.font-weight-bold
+        | Saldo #{readable_date_2 @show_facade.start_date.beginning_of_year}
+      td
+        | #{print_money @show_facade.calculate(:saldo_awal, :modal_saham)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:saldo_awal, :setoran_modal_lainnya)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:saldo_awal, :saldo_laba_rugi)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.accumulation_x(:saldo_awal)[:price_idr].amount.floor.to_money, precision:0}
+      td.nospace
+      td
+        | #{print_money @show_facade.calculate(:saldo_awal, :modal_saham)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:saldo_awal, :setoran_modal_lainnya)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:saldo_awal, :saldo_laba_rugi)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.accumulation_x(:saldo_awal)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+    tr
+      td[colspan="100%"]
+    tr
+      td.font-weight-bold
+        | Tambahan modal saham
+      td
+        | #{print_money @show_facade.calculate(:tambahan_modal_saham, :modal_saham)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_modal_saham, :setoran_modal_lainnya)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_modal_saham, :saldo_laba_rugi)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.accumulation_x(:tambahan_modal_saham)[:price_idr].amount.floor.to_money, precision:0}
+      td.nospace
+      td
+        | #{print_money @show_facade.calculate(:tambahan_modal_saham, :modal_saham)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_modal_saham, :setoran_modal_lainnya)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_modal_saham, :saldo_laba_rugi)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.accumulation_x(:tambahan_modal_saham)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+    tr
+      td[colspan="100%"]
+    tr
+      td.font-weight-bold
+        | Tambahan setoran modal lainnya
+      td
+        | #{print_money @show_facade.calculate(:tambahan_setoran_modal_lainnya, :modal_saham)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_setoran_modal_lainnya, :setoran_modal_lainnya)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_setoran_modal_lainnya, :saldo_laba_rugi)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.accumulation_x(:tambahan_setoran_modal_lainnya)[:price_idr].amount.floor.to_money, precision:0}
+      td.nospace
+      td
+        | #{print_money @show_facade.calculate(:tambahan_setoran_modal_lainnya, :modal_saham)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_setoran_modal_lainnya, :setoran_modal_lainnya)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:tambahan_setoran_modal_lainnya, :saldo_laba_rugi)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.accumulation_x(:tambahan_setoran_modal_lainnya)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+    tr
+      td[colspan="100%"]
+    tr
+      td.font-weight-bold
+        | Laba (rugi) tahun berjalan
+      td
+        | #{print_money @show_facade.calculate(:laba_rugi_tahun_berjalan, :modal_saham)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:laba_rugi_tahun_berjalan, :setoran_modal_lainnya)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:laba_rugi_tahun_berjalan, :saldo_laba_rugi)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.accumulation_x(:laba_rugi_tahun_berjalan)[:price_idr].amount.floor.to_money, precision:0}
+      td.nospace
+      td
+        | #{print_money @show_facade.calculate(:laba_rugi_tahun_berjalan, :modal_saham)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:laba_rugi_tahun_berjalan, :setoran_modal_lainnya)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:laba_rugi_tahun_berjalan, :saldo_laba_rugi)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.accumulation_x(:laba_rugi_tahun_berjalan)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+    tr
+      td.font-weight-bold.pt-0[style="font-style:italic;"]
+        | Other Comprehensive Income
+      td
+        | #{print_money @show_facade.calculate(:other_comprehensive_income, :modal_saham)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:other_comprehensive_income, :setoran_modal_lainnya)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.calculate(:other_comprehensive_income, :saldo_laba_rugi)[:price_idr].amount.floor.to_money, precision:0}
+      td
+        | #{print_money @show_facade.accumulation_x(:other_comprehensive_income)[:price_idr].amount.floor.to_money, precision:0}
+      td.nospace
+      td
+        | #{print_money @show_facade.calculate(:other_comprehensive_income, :modal_saham)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:other_comprehensive_income, :setoran_modal_lainnya)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.calculate(:other_comprehensive_income, :saldo_laba_rugi)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      td
+        | #{print_money @show_facade.accumulation_x(:other_comprehensive_income)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+  tfoot
+    tr
+      th
+        | Saldo Per TANGGAL #{readable_date_2 @show_facade.end_date.end_of_month}
+      th
+        | #{print_money @show_facade.accumulation_y(:modal_saham)[:price_idr].amount.floor.to_money, precision:0}
+      th
+        | #{print_money @show_facade.accumulation_y(:setoran_modal_lainnya)[:price_idr].amount.floor.to_money, precision:0}
+      th
+        | #{print_money @show_facade.accumulation_y(:saldo_laba_rugi)[:price_idr].amount.floor.to_money, precision:0}
+      th
+        | #{print_money @show_facade.accumulation_z[:price_idr].amount.floor.to_money, precision:0}
+      th.nospace
+      th
+        | #{print_money @show_facade.accumulation_y(:modal_saham)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      th
+        | #{print_money @show_facade.accumulation_y(:setoran_modal_lainnya)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      th
+        | #{print_money @show_facade.accumulation_y(:saldo_laba_rugi)[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}
+      th
+        | #{print_money @show_facade.accumulation_z[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2}

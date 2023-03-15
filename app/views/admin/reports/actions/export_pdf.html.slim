@@ -1,11 +1,14 @@
-- url = wicked_pdf_asset_base64("logo_only.png")
+- url = wicked_pdf_asset_base64("logo_bpi.png")
 = image_tag url, alt: "Logo", class: "logo", size: "50x50", style: "position: absolute;"
 
 h4 style="text-align: center;"
-  = @report.name
+  | PT BUKIT PEMBANGKIT INNOVATIVE
 
 h4 style="text-align: center;"
-  | Tanggal : #{@report_facede.start_date.strftime("%d %B %Y")} - #{@report_facede.end_date.strftime("%d %B %Y")}
+  | LAPORAN #{@report.name.upcase}
+
+h4 style="text-align: center;"
+  | TANGGAL : #{I18n.l(@report_facede.end_date, format: '%d %B %Y')}
 
 table.table style="width: 100%;"
   thead
@@ -13,6 +16,8 @@ table.table style="width: 100%;"
       th style="width: 70%;"
       th style="text-align: left;width: 30%;"
         | IDR
+      th style="text-align: left;width: 30%;"
+        | USD
 
   tbody
     - @report_facede.table_reports.each do |table_report|
@@ -21,4 +26,6 @@ table.table style="width: 100%;"
           = table_report[:name]
         td style="text-align: left;"
           = table_report[:value].to_money.format
+        td style="text-align: left;"
+          = table_report[:value]
         

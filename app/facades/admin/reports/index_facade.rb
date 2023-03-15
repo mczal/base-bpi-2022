@@ -6,8 +6,8 @@ module Admin
       def initialize params, current_company
         @params = params
         @current_company = current_company
-        @start_date = params[:start_date]&.to_date || Date.today.beginning_of_year
-        @end_date = params[:end_date]&.to_date || Date.today
+        @start_date = params[:date]&.to_date&.beginning_of_month || Date.today.beginning_of_month
+        @end_date = params[:date]&.to_date&.end_of_month || Date.today
         @table_reports = []
         table_report_generator
       end
@@ -31,11 +31,9 @@ module Admin
       private
         def table_report_generator
           report.report_lines.each do |report_line|
-            if report_line.category?
+            if report_line.title?
               @table_reports << add_category_report(report_line)
-            elsif report_line.component?
-              @table_reports << add_component_report(report_line)
-            else report_line.accumulation?
+            else
               @table_reports << add_accumulation_report(report_line)
             end
           end
@@ -48,25 +46,6 @@ module Admin
             styles: "font-weight: bold;text-align: left;text-transform: uppercase",
             styles_row: "",
             error_message: ""
-          }
-        end
-
-        def add_component_report report_line
-          error_message = ""
-          value = 0
-
-          begin
-            value = eval(formula_component_parser(report_line))
-          rescue SyntaxError => e
-            error_message = "Formula Error: #{report_line.name} --> #{report_line.formula}"
-          end
-
-          {
-            name: report_line.name,
-            value: value,
-            styles: "",
-            styles_row: "padding-left: 30px;text-align: left;text-transform: capitalize;",
-            error_message: error_message
           }
         end
 

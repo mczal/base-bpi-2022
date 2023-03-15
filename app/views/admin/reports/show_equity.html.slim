@@ -73,10 +73,11 @@
                     = form_with url: admin_reports_action_export_path(\
                         slug: current_company.slug,\
                         format: "xlsx",\
-                      ), method: :post, local: true do |f|                        
-                        = f.text_field :id, class: "d-none", value: params[:id]
+                      ), method: :post, local: true, html: { target: "_blank" } do |f|                        
+                        = f.text_field :id, class: "d-none", value: "equity"
                         = f.text_field :start_date, class: "d-none", value: params[:start_date].to_date if params[:start_date].present?
                         = f.text_field :end_date, class: "d-none", value: params[:end_date].to_date if params[:end_date].present?
+                        = f.text_field :date, class: "d-none", value: params[:date].to_date if params[:date].present?
                         button.nav-link.text-left[
                           style="border:none;background:none;"
                           type="submit"
@@ -90,10 +91,11 @@
                     = form_with url: admin_reports_action_export_pdf_path(\
                         slug: current_company.slug,\
                         format: "pdf",\
-                      ), method: :post, local: true do |f|
-                        = f.text_field :id, class: "d-none", value: params[:id]
+                      ), method: :post, local: true, html: { target: "_blank" } do |f|
+                        = f.text_field :id, class: "d-none", value: "equity"
                         = f.text_field :start_date, class: "d-none", value: params[:start_date].to_date if params[:start_date].present?
                         = f.text_field :end_date, class: "d-none", value: params[:end_date].to_date if params[:end_date].present?
+                        = f.text_field :date, class: "d-none", value: params[:date].to_date if params[:date].present?
                         button.nav-link.text-left[
                           style="border:none;background:none;"
                           type="submit"

@@ -33,26 +33,55 @@ module Admin
 
       def export
         @report = Report.find_by(id: params[:id])
-        return redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' if @report.blank?
-        @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
-        respond_to do |format|
-          format.xlsx {
-            response.headers['Content-Disposition'] = "attachment; filename=\"Laporan #{@report.name}.xlsx\""
-          }
+        
+        if @report.present?
+          @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
+          return respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = "attachment; filename=\"Laporan #{@report.name}.xlsx\""
+            }
+          end
         end
+
+        if params[:id] == "equity"
+          return respond_to do |format|
+            format.xlsx {
+              response.headers['Content-Disposition'] = "attachment; filename='Laporan Equity.xlsx'"
+              render xlsx: "Laporan Equity", template: 'admin/reports/actions/export_equity'
+            }
+          end
+        end
+
+        redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' 
       end
 
       def export_pdf
         @report = Report.find_by(id: params[:id])
-        return redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' if @report.blank?
-        @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
-        respond_to do |format|
-          format.pdf {
-            render pdf: "Laporan #{@report.name}",
-              template: 'admin/reports/actions/export_pdf.html.slim',
-              layout: 'pdf'
-          }
+
+        if @report.present?
+          @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
+          return respond_to do |format|
+            format.pdf {
+              render pdf: "Laporan #{@report.name}",
+                template: 'admin/reports/actions/export_pdf.html.slim',
+                layout: 'pdf'
+            }
+          end
         end
+
+        if params[:id] == "equity"
+          @show_facade = Admin::Reports::Shows::EquityFacade.new(params)
+          return respond_to do |format|
+            format.pdf {
+              render pdf: "Laporan Equity",
+                template: 'admin/reports/actions/export_pdf_equity.html.slim',
+                layout: 'pdf',
+                orientation: 'Landscape'
+            }
+          end
+        end
+
+        redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' 
       end
 
       private
