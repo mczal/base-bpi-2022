@@ -1,148 +1,212 @@
 wb = xlsx_package.workbook
 img = File.expand_path(Rails.root+'app/assets/images/logo_bpi.png')
 
-wb.add_worksheet(name: "Laporan Equity") do |sheet|  
-  sheet.add_image(image_src: img, start_at: 'G2', width: 50, height: 50)
+wb.styles do |styles|
+  bold_style = styles.add_style(
+    :b => true,
+    :alignment => { :vertical=> :center }
+  )
+  italic_style = styles.add_style(
+    :i => true,
+    :alignment => { :vertical=> :center }
+  )
+  number_style = styles.add_style(
+    format_code: "#,##0.00",
+    :alignment => {
+      :wrap_text=> true,
+      :vertical=> :center }
+  )
+  number_style_bold = styles.add_style(
+    format_code: "#,##0.00",
+    :b => true,
+    :alignment => {
+      :wrap_text=> true,
+      :vertical=> :center }
+  )
 
-  sheet.add_row()
-  sheet.add_row([
-    "",
-    "PT BUKIT PEMBANGKIT INNOVATIVE",
-    "","","","","","",
-    "PT BUKIT PEMBANGKIT INNOVATIVE",
-  ])
+  wb.add_worksheet(name: "LAPORAN PERUBAHAN EKUITAS") do |sheet|  
+    sheet.add_image(image_src: img, start_at: 'F2', width: 100, height: 80)
 
-  sheet.add_row([
-    "",
-    "LAPORAN EQUITY",
-    "","","","","","",
-    "LAPORAN EQUITY"
-  ])
+    sheet.add_row()
+    sheet.add_row(
+      [
+        "",
+        "PT BUKIT PEMBANGKIT INNOVATIVE",
+        "","","","","",
+        "PT BUKIT PEMBANGKIT INNOVATIVE",
+      ],
+      style: bold_style
+    )
 
-  sheet.add_row()
-  sheet.add_row([
-    "",
-    "TANGGAL #{I18n.l(Date.today.end_of_month, format: '%d %B %Y')}",
-    "","","","","","",
-    "TANGGAL #{I18n.l(Date.today.end_of_month, format: '%d %B %Y')}"
-  ])
-  
-  sheet.add_row(["","",""])
-  sheet.add_row([
-    "",
-    "",
-    "Modal Saham",
-    "Setoran Modal Lainnya",
-    "Saldo Laba (Rugi)",
-    "Jumlah",
-    "","","",
-    "Modal Saham",
-    "Setoran Modal Lainnya",
-    "Saldo Laba (Rugi)",
-    "Jumlah"
-  ])
-  
-  sheet.add_row([
-    "",
-    "Saldo #{I18n.l(Date.today.beginning_of_month, format: '%d %B %Y')}",
-    "-",
-    "-",
-    "-",
-    "-",
-    "","","",
-    "Saldo #{I18n.l(Date.today.beginning_of_month, format: '%d %B %Y')}",
-    "-",
-    "-",
-    "-",
-    "-"
-  ])
-  sheet.add_row()
+    sheet.add_row(
+      [
+        "",
+        "LAPORAN EQUITY",
+        "","","","","",
+        "LAPORAN EQUITY"
+      ],
+      style: bold_style
+    )
 
-  sheet.add_row([
-    "",
-    "Tambahan modal saham",
-    "-",
-    "-",
-    "-",
-    "-",
-    "","","",
-    "Tambahan modal saham",
-    "-",
-    "-",
-    "-",
-    "-"
-  ])
-  sheet.add_row()
+    sheet.add_row(
+      [
+        "",
+        "TANGGAL #{readable_date_2 @export_facade.end_date.end_of_month}",
+        "","","","","",
+        "TANGGAL #{readable_date_2 @export_facade.end_date.end_of_month}"
+      ],
+      types: %i[string],
+      style: bold_style
+    )
+    sheet.add_row(
+      [
+        "",
+        "(dinyatakan dalam Rupiah Indonesia)",
+        "","","","","",
+        "(dinyatakan dalam Dollar Amerika Serikat)"
+      ],
+      style: italic_style
+    )
 
-  sheet.add_row([
-    "",
-    "Tambahan setoran modal Lainya",
-    "-",
-    "-",
-    "-",
-    "-",
-    "","","",
-    "Tambahan setoran modal Lainya",
-    "-",
-    "-",
-    "-",
-    "-"
-  ])
-  sheet.add_row()
+    sheet.add_row()
+    sheet.add_row(
+      [
+        "",
+        "",
+        "Modal Saham",
+        "Setoran Modal Lainnya",
+        "Saldo Laba (Rugi)",
+        "Jumlah",
+        "","",
+        "Modal Saham",
+        "Setoran Modal Lainnya",
+        "Saldo Laba (Rugi)",
+        "Jumlah"
+      ],
+      style: bold_style
+    )
 
-  sheet.add_row([
-    "",
-    "Laba (rugi) tahun berjalan",
-    "-",
-    "-",
-    "-",
-    "-",
-    "","","",
-    "Laba (rugi) tahun berjalan",
-    "-",
-    "-",
-    "-",
-    "-"
-  ])
-  sheet.add_row([
-    "",
-    "Other Comprehensive Income",
-    "-",
-    "-",
-    "-",
-    "-",
-    "","","",
-    "Other Comprehensive Income",
-    "-",
-    "-",
-    "-",
-    "-"
-  ])
-  sheet.add_row()
+    sheet.add_row(
+      [
+        "",
+        "Saldo #{readable_date_2 @export_facade.start_date.beginning_of_year}",
+        "#{@export_facade.calculate(:saldo_awal, :modal_saham)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:saldo_awal, :setoran_modal_lainnya)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:saldo_awal, :saldo_laba_rugi)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_x(:saldo_awal)[:price_idr].amount.floor}",
+        "",
+        "Saldo #{readable_date_2 @export_facade.start_date.beginning_of_year}",
+        "#{@export_facade.calculate(:saldo_awal, :modal_saham)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:saldo_awal, :setoran_modal_lainnya)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:saldo_awal, :saldo_laba_rugi)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_x(:saldo_awal)[:price_usd].amount.floor(2)}",
+      ],
+      style: number_style
+    )
+    sheet.add_row()
 
-  sheet.add_row([
-    "",
-    "Saldo Per TANGGAL #{I18n.l(Date.today, format: '%d %B %Y').upcase}",
-    "-",
-    "-",
-    "-",
-    "-","","","",
-    "Saldo Per TANGGAL #{I18n.l(Date.today, format: '%d %B %Y').upcase}",
-    "-",
-    "-",
-    "-",
-    "-"
-  ])
+    sheet.add_row(
+      [
+        "",
+        "Tambahan modal saham",
+        "#{@export_facade.calculate(:tambahan_modal_saham, :modal_saham)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:tambahan_modal_saham, :setoran_modal_lainnya)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:tambahan_modal_saham, :saldo_laba_rugi)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_x(:tambahan_modal_saham)[:price_idr].amount.floor}",
+        "",
+        "Tambahan modal saham",
+        "#{@export_facade.calculate(:tambahan_modal_saham, :modal_saham)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:tambahan_modal_saham, :setoran_modal_lainnya)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:tambahan_modal_saham, :saldo_laba_rugi)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_x(:tambahan_modal_saham)[:price_usd].amount.floor(2)}",
+      ],
+      style: number_style
+    )
+    sheet.add_row()
 
-  # @report_facede.table_reports.each_with_index do |report_line, index|
-  #   sheet.add_row([
-  #     "",
-  #     report_line[:name],
-  #     report_line[:value],
-  #     "",
-  #     "",
-  #     report_line[:name],
-  #     report_line[:value],
-  #   ])
-  # end
+    sheet.add_row(
+      [
+        "",
+        "Tambahan setoran modal Lainya",
+        "#{@export_facade.calculate(:tambahan_setoran_modal_lainnya, :modal_saham)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:tambahan_setoran_modal_lainnya, :setoran_modal_lainnya)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:tambahan_setoran_modal_lainnya, :saldo_laba_rugi)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_x(:tambahan_setoran_modal_lainnya)[:price_idr].amount.floor}",
+        "",
+        "Tambahan setoran modal Lainya",
+        "#{@export_facade.calculate(:tambahan_setoran_modal_lainnya, :modal_saham)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:tambahan_setoran_modal_lainnya, :setoran_modal_lainnya)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:tambahan_setoran_modal_lainnya, :saldo_laba_rugi)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_x(:tambahan_setoran_modal_lainnya)[:price_usd].amount.floor(2)}"
+      ],
+      style: number_style
+    )
+    sheet.add_row()
+
+    sheet.add_row(
+      [
+        "",
+        "Laba (rugi) tahun berjalan",
+        "#{@export_facade.calculate(:laba_rugi_tahun_berjalan, :modal_saham)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:laba_rugi_tahun_berjalan, :setoran_modal_lainnya)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:laba_rugi_tahun_berjalan, :saldo_laba_rugi)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_x(:laba_rugi_tahun_berjalan)[:price_idr].amount.floor}",
+        "",
+        "Laba (rugi) tahun berjalan",
+        "#{@export_facade.calculate(:laba_rugi_tahun_berjalan, :modal_saham)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:laba_rugi_tahun_berjalan, :setoran_modal_lainnya)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:laba_rugi_tahun_berjalan, :saldo_laba_rugi)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_x(:laba_rugi_tahun_berjalan)[:price_usd].amount.floor(2)}"
+      ],
+      style: number_style
+    )
+    sheet.add_row(
+      [
+        "",
+        "Other Comprehensive Income",
+        "#{@export_facade.calculate(:other_comprehensive_income, :modal_saham)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:other_comprehensive_income, :setoran_modal_lainnya)[:price_idr].amount.floor}",
+        "#{@export_facade.calculate(:other_comprehensive_income, :saldo_laba_rugi)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_x(:other_comprehensive_income)[:price_idr].amount.floor}",
+        "",
+        "Other Comprehensive Income",
+        "#{@export_facade.calculate(:other_comprehensive_income, :modal_saham)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:other_comprehensive_income, :setoran_modal_lainnya)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.calculate(:other_comprehensive_income, :saldo_laba_rugi)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_x(:other_comprehensive_income)[:price_usd].amount.floor(2)}"
+      ],
+      style: number_style
+    )
+    sheet.add_row()
+
+    sheet.add_row(
+      [
+        "",
+        "Saldo Per TANGGAL #{readable_date_2 @export_facade.end_date.end_of_month}",
+        "#{@export_facade.accumulation_y(:modal_saham)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_y(:setoran_modal_lainnya)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_y(:saldo_laba_rugi)[:price_idr].amount.floor}",
+        "#{@export_facade.accumulation_z[:price_idr].amount.floor}",
+        "",
+        "Saldo Per TANGGAL #{readable_date_2 @export_facade.end_date.end_of_month}",
+        "#{@export_facade.accumulation_y(:modal_saham)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_y(:setoran_modal_lainnya)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_y(:saldo_laba_rugi)[:price_usd].amount.floor(2)}",
+        "#{@export_facade.accumulation_z[:price_usd].amount.floor(2)}"
+      ],
+      style: number_style_bold
+    )
+
+    # @report_facede.table_reports.each_with_index do |report_line, index|
+    #   sheet.add_row([
+    #     "",
+    #     report_line[:name],
+    #     report_line[:value],
+    #     "",
+    #     "",
+    #     report_line[:name],
+    #     report_line[:value],
+    #   ])
+    # end
+  end
 end

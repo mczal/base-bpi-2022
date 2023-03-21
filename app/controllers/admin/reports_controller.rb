@@ -52,6 +52,12 @@ module Admin
           if report.cash_flow_xlsx?
             return @show_facade = Admin::Reports::Shows::CashFlowXlsxFacade.new(params)
           end
+          if report.income_statement_xlsx?
+            return @show_facade = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params)
+          end
+          if report.balance_sheet_xlsx?
+            return @show_facade = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params)
+          end
         end
       end
   end

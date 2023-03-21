@@ -55,53 +55,53 @@
               .mr-2 
                 | (#{readable_date_2 @show_facade.start_date} - #{readable_date_2 @show_facade.end_date})
           .card-toolbar
-            .dropdown.dropdown-inline.mr-2.mb-2
-              button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
-                aria-expanded="false"
-                aria-haspopup="true"
-                type="button"
-                data-toggle="dropdown"
-              ]
-                i.la.la-download
-                | Export
-              .dropdown-menu.dropdown-menu-sm.dropdown-menu-right
-                ul.nav.flex-column.nav-hover
-                  li.nav-header.font-weight-bolder.text-uppercase.text-primary.pb-2.px-4
-                    | Pilih:
-                  li.nav-item
-                    = form_with url: admin_reports_action_export_path(\
-                        slug: current_company.slug,\
-                        format: "xlsx",\
-                      ), method: :post, local: true, html: { target: "_blank" } do |f|
-                        = f.hidden_field :id, value: params[:id]
-                        = f.hidden_field :date, value: params[:date]
-                        / = f.text_field :id, class: "d-none", value: params[:id]
-                        / = f.text_field :date, class: "d-none", value: params[:date].to_date if params[:date].present?
-                        button.nav-link.text-left[
-                          style="border:none;background:none;"
-                          type="submit"
-                        ]
-                          i.nav-icon.la.la-file-excel-o[
-                            style="padding-right:9px;"
+            - if @report.html?
+              .dropdown.dropdown-inline.mr-2.mb-2
+                button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  type="button"
+                  data-toggle="dropdown"
+                ]
+                  i.la.la-download
+                  | Export
+                .dropdown-menu.dropdown-menu-sm.dropdown-menu-right
+                  ul.nav.flex-column.nav-hover
+                    li.nav-header.font-weight-bolder.text-uppercase.text-primary.pb-2.px-4
+                      | Pilih:
+                    li.nav-item
+                      = form_with url: admin_reports_action_export_path(\
+                          slug: current_company.slug,\
+                          format: "xlsx",\
+                        ), method: :post, local: true, html: { target: "_blank" } do |f|
+                          = f.hidden_field :id, value: params[:id]
+                          = f.hidden_field :date, value: params[:date]
+                          / = f.text_field :id, class: "d-none", value: params[:id]
+                          / = f.text_field :date, class: "d-none", value: params[:date].to_date if params[:date].present?
+                          button.nav-link.text-left[
+                            style="border:none;background:none;"
+                            type="submit"
                           ]
-                          span.nav-text.ml-2 Export Data Excel
-                  / li.nav-item
-                    = form_with url: admin_reports_action_export_pdf_path(\
-                        slug: current_company.slug,\
-                        format: "pdf",\
-                      ), method: :post, local: true, html: { target: "_blank" }  do |f|
-                        = f.text_field :id, class: "d-none", value: params[:id]
-                        = f.text_field :date, class: "d-none", value: params[:date].to_date if params[:date].present?
-                        button.nav-link.text-left[
-                          style="border:none;background:none;"
-                          type="submit"
-                          target="_blank"
-                        ]
-                          i.nav-icon.la.la-file-pdf-o[
-                            style="padding-right:9px;"
+                            i.nav-icon.la.la-file-excel-o[
+                              style="padding-right:9px;"
+                            ]
+                            span.nav-text.ml-2 Export Data Excel
+                    / li.nav-item
+                      = form_with url: admin_reports_action_export_pdf_path(\
+                          slug: current_company.slug,\
+                          format: "pdf",\
+                        ), method: :post, local: true, html: { target: "_blank" }  do |f|
+                          = f.text_field :id, class: "d-none", value: params[:id]
+                          = f.text_field :date, class: "d-none", value: params[:date].to_date if params[:date].present?
+                          button.nav-link.text-left[
+                            style="border:none;background:none;"
+                            type="submit"
+                            target="_blank"
                           ]
-                          span.nav-text.ml-2 Export Data PDF
-
+                            i.nav-icon.la.la-file-pdf-o[
+                              style="padding-right:9px;"
+                            ]
+                            span.nav-text.ml-2 Export Data PDF
         .card-header.border-0.pt-5
           .card-title.font-weight-bolder
             .card-label

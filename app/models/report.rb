@@ -20,8 +20,13 @@ class Report < ApplicationRecord
   enum group: {
     cash_flow: 'cash_flow',
     cash_flow_xlsx: 'cash_flow_xlsx',
+
     income_statement: 'income_statement',
+    income_statement_xlsx: 'income_statement_xlsx',
+
     balance_sheet: 'balance_sheet',
+    balance_sheet_xlsx: 'balance_sheet_xlsx',
+
     other: 'other',
   }
 

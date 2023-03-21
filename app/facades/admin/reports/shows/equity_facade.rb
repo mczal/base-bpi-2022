@@ -2,6 +2,8 @@ module Admin
   module Reports
     module Shows
       class EquityFacade
+        attr_accessor :report
+
         def initialize params
           @params = params
         end
@@ -9,7 +11,10 @@ module Admin
         def calculate x,y
           return result[x][y] if result[x][y].present?
           if x == :saldo_awal && y == :modal_saham
-            report_line = ReportLine.find_by(name: 'Modal Saham')
+            report_line = ReportLine.joins(:report)
+              .where('reports.display': :html)
+              .where(name: 'Modal Saham')
+              .first
             saved = report_line.saved_report_lines.find_by(
               month: end_date.month,
               year: end_date.year
@@ -26,7 +31,10 @@ module Admin
             }
           end
           if x == :saldo_awal && y == :saldo_laba_rugi
-            report_line = ReportLine.find_by(name: 'Laba (Rugi) Tahun Lalu')
+            report_line = ReportLine.joins(:report)
+              .where('reports.display': :html)
+              .where(name: 'Laba (Rugi) Tahun Lalu')
+              .first
             saved = report_line.saved_report_lines.find_by(
               month: end_date.month,
               year: end_date.year
@@ -43,7 +51,10 @@ module Admin
             }
           end
           if x == :laba_rugi_tahun_berjalan && y == :saldo_laba_rugi
-            report_line = ReportLine.find_by(name: 'Laba (Rugi) Tahun Berjalan')
+            report_line = ReportLine.joins(:report)
+              .where('reports.display': :html)
+              .where(name: 'Laba (Rugi) Tahun Berjalan')
+              .first
             saved = report_line.saved_report_lines.find_by(
               month: end_date.month,
               year: end_date.year
@@ -60,7 +71,10 @@ module Admin
             }
           end
           if x == :other_comprehensive_income && y == :saldo_laba_rugi
-            report_line = ReportLine.find_by(name: 'Other Comprehensive Income')
+            report_line = ReportLine.joins(:report)
+              .where('reports.display': :html)
+              .where(name: 'Other Comprehensive Income')
+              .first
             saved = report_line.saved_report_lines.find_by(
               month: end_date.month,
               year: end_date.year

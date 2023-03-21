@@ -41,7 +41,7 @@ module Admin
         if params[:id] == "equity"
           return respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = "attachment; filename='Laporan Equity.xlsx'"
+              response.headers['Content-Disposition'] = "attachment; filename='Laporan Perubahan Ekuitas.xlsx'"
               render xlsx: "Laporan Equity", template: 'admin/reports/actions/export_equity'
             }
           end
@@ -112,9 +112,20 @@ module Admin
 
         def export_facade
           return @export_facade if @export_facade.present?
+
+          if params[:id] == 'equity'
+            return @export_facade = Admin::Reports::Shows::EquityFacade.new(params)
+          end
+
           return nil unless report.xlsx?
           if report.cash_flow_xlsx?
             return @export_facade = Admin::Reports::Shows::CashFlowXlsxFacade.new(params)
+          end
+          if report.income_statement_xlsx?
+            return @export_facade = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params)
+          end
+          if report.balance_sheet_xlsx?
+            return @export_facade = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params)
           end
         end
     end
