@@ -173,7 +173,7 @@
           h4.menu-text Laporan
           i.menu-icon.ki.ki-bold-more-hor.icon-md
 
-        - Report.where(company: current_company).each do |report|
+        - Report.html.where(company: current_company).each do |report|
           li aria-haspopup="true" class=("menu-item #{'menu-item-active' if current_page?(admin_report_path(id: report.id, slug: current_company.slug))}") data-menu-toggle="hover" 
             a.menu-link.menu-toggle href=admin_report_path(id: report.id, slug: current_company.slug)
               span.svg-icon.menu-icon

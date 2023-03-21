@@ -3,9 +3,7 @@
 module Admin
   module Reports
     class ActionsController < Admin::ReportsController
-
-      def import_form
-      end
+      def import_form; end
 
       def import_preview
         return render partial: "admin/reports/partials/table_report_lines",
@@ -32,13 +30,10 @@ module Admin
       end
 
       def export
-        @report = Report.find_by(id: params[:id])
-        
-        if @report.present?
-          @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
+        if export_facade.report.present?
           return respond_to do |format|
             format.xlsx {
-              response.headers['Content-Disposition'] = "attachment; filename=\"Laporan #{@report.name}.xlsx\""
+              response.headers['Content-Disposition'] = "attachment; filename=\"#{export_facade.report.name}.xlsx\""
             }
           end
         end
@@ -52,37 +47,37 @@ module Admin
           end
         end
 
-        redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' 
+        redirect_to admin_reports_path, alert: 'Laporan versi XLSX tidak tersedia.'
       end
 
-      def export_pdf
-        @report = Report.find_by(id: params[:id])
+      # def export_pdf
+        # @report = Report.find_by(id: params[:id])
 
-        if @report.present?
-          @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
-          return respond_to do |format|
-            format.pdf {
-              render pdf: "Laporan #{@report.name}",
-                template: 'admin/reports/actions/export_pdf.html.slim',
-                layout: 'pdf'
-            }
-          end
-        end
+        # if @report.present?
+          # @report_facede = Admin::Reports::IndexFacade.new(params, current_company)
+          # return respond_to do |format|
+            # format.pdf {
+              # render pdf: "Laporan #{@report.name}",
+                # template: 'admin/reports/actions/export_pdf.html.slim',
+                # layout: 'pdf'
+            # }
+          # end
+        # end
 
-        if params[:id] == "equity"
-          @show_facade = Admin::Reports::Shows::EquityFacade.new(params)
-          return respond_to do |format|
-            format.pdf {
-              render pdf: "Laporan Equity",
-                template: 'admin/reports/actions/export_pdf_equity.html.slim',
-                layout: 'pdf',
-                orientation: 'Landscape'
-            }
-          end
-        end
+        # if params[:id] == "equity"
+          # @show_facade = Admin::Reports::Shows::EquityFacade.new(params)
+          # return respond_to do |format|
+            # format.pdf {
+              # render pdf: "Laporan Equity",
+                # template: 'admin/reports/actions/export_pdf_equity.html.slim',
+                # layout: 'pdf',
+                # orientation: 'Landscape'
+            # }
+          # end
+        # end
 
-        redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.' 
-      end
+        # redirect_to admin_reports_path, alert: 'Laporan tidak ditemukan.'
+      # end
 
       private
         def parser_service
@@ -107,6 +102,20 @@ module Admin
           preview_parser_service.run
           @report = @preview_parser_service.report
           @report_facede = ::Admin::Reports::PreviewFacade.new(@report)
+        end
+
+        def report
+          return @report if @report.present?
+          report_s = Report.find_by(id: params[:id])
+          @report = Report.find_by(display: :xlsx, group: "#{report_s.group}_xlsx")
+        end
+
+        def export_facade
+          return @export_facade if @export_facade.present?
+          return nil unless report.xlsx?
+          if report.cash_flow_xlsx?
+            return @export_facade = Admin::Reports::Shows::CashFlowXlsxFacade.new(params)
+          end
         end
     end
   end

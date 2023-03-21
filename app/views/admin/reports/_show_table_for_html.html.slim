@@ -1,0 +1,117 @@
+table.table.table-hover.table-bordered
+  thead
+    - if @report.balance_sheet?
+      tr
+        th[
+          rowspan="2"
+          style="position:sticky;top:-1px;background-color:#FFF;"
+        ]
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
+        ]
+          | IDR
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
+        ]
+          | USD
+    - else
+      tr
+        th[
+          rowspan="2"
+          style="position:sticky;top:-1px;background-color:#FFF;"
+        ]
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;padding-top:0px;padding-bottom:0px;"
+          colspan="2"
+        ]
+          | #{readable_month_2 @show_facade.start_date}
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;padding-top:0px;padding-bottom:0px;"
+          colspan="2"
+        ]
+          | #{readable_month_3 @show_facade.start_date.beginning_of_year} s/d #{readable_month_2 @show_facade.start_date}
+      tr
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+        ]
+          | IDR
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+        ]
+          | USD
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+        ]
+          | IDR
+        th.text-center[
+          style="width:150px;max-width:200px !important;position:sticky;top:18px;background-color:#FFF;"
+        ]
+          | USD
+  tbody
+    - if @report.balance_sheet?
+      - @report.report_lines.each.with_index(1) do |report_line,i|
+        - if report_line.title?
+          tr
+            td[
+              style="#{report_line.style}position:sticky;top:44px;z-index:#{i};"
+              colspan="100%"
+            ]
+              = report_line.name
+        - else
+          tr
+            td[
+              style="#{report_line.style}"
+            ]
+              = report_line.name
+            td.text-center[
+              style="#{report_line.style}"
+            ]
+              - if report_line.value?
+                = print_money @show_facade.calculate_value_idr_for(report_line).amount.floor.to_money, precision:0
+              - elsif report_line.accumulation?
+                = print_money @show_facade.calculate_accumulation_idr_for(report_line).amount.floor.to_money, precision:0
+            td.text-center[
+              style="#{report_line.style}"
+            ]
+              - if report_line.value?
+                = print_money @show_facade.calculate_value_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd), precision:2
+              - elsif report_line.accumulation?
+                = print_money @show_facade.calculate_accumulation_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd), precision:2
+    - else
+      - @report.report_lines.each.with_index(1) do |report_line,i|
+        - if report_line.title?
+          tr
+            td[
+              style="#{report_line.style}position:sticky;top:63px;z-index:#{i};"
+              colspan="100%"
+            ]
+              = report_line.name
+        - else
+          tr
+            td[
+              style="#{report_line.style}"
+            ]
+              = report_line.name
+            td.text-center[
+              style="#{report_line.style}"
+            ]
+              - if report_line.value?
+                = print_money @show_facade.calculate_value_idr_for(report_line).amount.floor.to_money, precision:0
+              - elsif report_line.accumulation?
+                = print_money @show_facade.calculate_accumulation_idr_for(report_line).amount.floor.to_money, precision:0
+            td.text-center[
+              style="#{report_line.style}"
+            ]
+              - if report_line.value?
+                = print_money @show_facade.calculate_value_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd), precision:2
+              - elsif report_line.accumulation?
+                = print_money @show_facade.calculate_accumulation_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd), precision:2
+            - accumulated_result = @show_facade.accumulated_facade.calculate_value_for(report_line)
+            td.text-center[
+              style="#{report_line.style}"
+            ]
+              = print_money accumulated_result[:price_idr].amount.floor.to_money, precision:0
+            td.text-center[
+              style="#{report_line.style}"
+            ]
+              = print_money accumulated_result[:price_usd].amount.floor(2).to_money.with_currency(:usd), precision:2

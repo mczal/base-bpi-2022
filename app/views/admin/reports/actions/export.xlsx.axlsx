@@ -1,58 +1,111 @@
 wb = xlsx_package.workbook
 img = File.expand_path(Rails.root+'app/assets/images/logo_bpi.png')
 
-wb.add_worksheet(name: "Laporan #{@report.name}") do |sheet|  
-  sheet.add_image(image_src: img, start_at: 'C1', width: 50, height: 50)
+wb.styles do |styles|
+  bold_style = styles.add_style(
+    :b => true,
+    :alignment => { :vertical=> :center }
+  )
+  italic_style = styles.add_style(
+    :i => true,
+    :alignment => { :vertical=> :center }
+  )
+  number_style = styles.add_style(
+    format_code: "#,##0.00",
+    :alignment => {
+      :wrap_text=> true,
+      :vertical=> :center }
+  )
+  number_style_bold = styles.add_style(
+    format_code: "#,##0.00",
+    :b => true,
+    :alignment => {
+      :wrap_text=> true,
+      :vertical=> :center }
+  )
 
-  sheet.add_row()
-  sheet.add_row([
-    "",
-    "PT BUKIT PEMBANGKIT INNOVATIVE",
-    "",
-    "",
-    "",
-    "PT BUKIT PEMBANGKIT INNOVATIVE",
-  ])
+  wb.add_worksheet(name: "Laporan #{@export_facade.report.name}") do |sheet|  
+    sheet.add_image(image_src: img, start_at: 'D1', width: 100, height: 80)
 
-  sheet.add_row([
-    "",
-    "LAPORAN #{@report.name.upcase}",
-    "",
-    "",
-    "",
-    "LAPORAN #{@report.name.upcase}",
-  ])
+    sheet.add_row()
+    sheet.add_row(
+      [
+        "",
+        "PT BUKIT PEMBANGKIT INNOVATIVE",
+        "",
+        "",
+        "PT BUKIT PEMBANGKIT INNOVATIVE",
+      ],
+      types: %i[string],
+      style: bold_style
+    )
 
-  sheet.add_row(["","",""])
-  sheet.add_row([
-    "",
-    "TANGGAL #{I18n.l(@report_facede.end_date, format: '%d %B %Y')}",
-    "",
-    "",
-    "",
-    "TANGGAL #{I18n.l(@report_facede.end_date, format: '%d %B %Y')}",
-  ])
-  sheet.add_row(["","",""])
+    sheet.add_row(
+      [
+        "",
+        "#{@export_facade.report.name.upcase}",
+        "",
+        "",
+        "#{@export_facade.report.name.upcase}",
+      ],
+      types: %i[string],
+      style: bold_style
+    )
+    sheet.add_row(
+      [
+        "",
+        "s.d #{I18n.l(@export_facade.end_date, format: '%B %Y').upcase}",
+        "",
+        "",
+        "s.d #{I18n.l(@export_facade.end_date, format: '%B %Y').upcase}",
+      ],
+      types: %i[string],
+      style: bold_style
+    )
+    sheet.add_row(
+      [
+        "",
+        "(dinyatakan dalam Rupiah Indonesia)",
+        "",
+        "",
+        "(dinyatakan dalam Dollar Amerika Serikat)",
+      ],
+      types: %i[string],
+      style: italic_style
+    )
+    sheet.add_row()
+    sheet.add_row()
 
-  sheet.add_row([
-    "",
-    "Nama Akun",
-    "IDR",
-    "",
-    "",
-    "Nama Akun",
-    "USD",
-  ])
-  
-  @report_facede.table_reports.each_with_index do |report_line, index|
-    sheet.add_row([
-      "",
-      report_line[:name],
-      report_line[:value],
-      "",
-      "",
-      report_line[:name],
-      report_line[:value],
-    ])
+    @export_facade.report.report_lines.each.with_index(1) do |report_line, i|
+      style = number_style_bold if i == 1
+      if report_line.value?
+        value_idr = @export_facade.calculate_value_idr_for(report_line).amount.floor
+        value_usd = @export_facade.calculate_value_usd_for(report_line).amount.floor(2)
+        style = number_style unless style.present?
+      elsif report_line.accumulation?
+        value_idr = @export_facade.calculate_accumulation_idr_for(report_line).amount.floor
+        value_usd = @export_facade.calculate_accumulation_usd_for(report_line).amount.floor(2)
+        style = number_style_bold
+      else
+        value_idr = ""
+        value_usd = ""
+        style = bold_style
+      end
+
+      sheet.add_row(
+        [
+          "",
+          report_line.name,
+          value_idr,
+          "",
+          report_line.name,
+          value_usd,
+        ],
+        style: style
+      )
+    end
+
+    col_widths= [10, 50, 35, 15, 50, 35]
+    sheet.column_widths *col_widths
   end
 end

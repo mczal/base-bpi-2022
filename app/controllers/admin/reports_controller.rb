@@ -36,14 +36,22 @@ module Admin
       def show_facade
         return @show_facade if @show_facade.present?
 
-        if report.cash_flow?
-          return @show_facade = Admin::Reports::Shows::CashFlowFacade.new(params)
-        elsif report.income_statement?
-          return @show_facade = Admin::Reports::Shows::IncomeStatementFacade.new(params)
-        elsif report.balance_sheet?
-          return @show_facade = Admin::Reports::Shows::BalanceSheetFacade.new(params)
-        else
-          return @show_facade = Admin::Reports::ShowFacade.new(params)
+        if report.html?
+          if report.cash_flow?
+            return @show_facade = Admin::Reports::Shows::CashFlowFacade.new(params)
+          elsif report.income_statement?
+            return @show_facade = Admin::Reports::Shows::IncomeStatementFacade.new(params)
+          elsif report.balance_sheet?
+            return @show_facade = Admin::Reports::Shows::BalanceSheetFacade.new(params)
+          else
+            return @show_facade = Admin::Reports::ShowFacade.new(params)
+          end
+        end
+
+        if report.xlsx?
+          if report.cash_flow_xlsx?
+            return @show_facade = Admin::Reports::Shows::CashFlowXlsxFacade.new(params)
+          end
         end
       end
   end

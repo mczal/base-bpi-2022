@@ -34,6 +34,7 @@ module Reports
         name: name,
         company_id: @company_id,
         group: report_group(sheet),
+        display: report_display(sheet),
       )
       @report.assign_attributes({shown: true})
       @report.save! if @report.new_record? || @report.changed?
@@ -41,6 +42,9 @@ module Reports
 
     def report_group sheet
       sheet.cell(1,2).to_s.strip
+    end
+    def report_display sheet
+      sheet.cell(1,4).to_s.strip.downcase
     end
 
     def parse_and_save row, i
