@@ -1,12 +1,88 @@
 .card-body.pt-0
-  = render partial: 'shared/document_v2',
-    locals: { file_name: 'Surat Permohonan Pembayaran', file: @invoice.spp_file, checked: @invoice.spp_checked? }
-  = render partial: 'shared/document_v2',
-    locals: { file_name: 'Invoice', file: @invoice.file, checked: @invoice.invoice_checked? }
-  = render partial: 'shared/document_v2',
-    locals: { file_name: 'Kwitansi', file: @invoice.receipt_file, checked: @invoice.kwitansi_checked? }
-  = render partial: 'shared/document_v2',
-    locals: { file_name: 'Faktur Pajak', file: @invoice.tax_receipt_file, checked: @invoice.faktur_pajak_checked? }
+  h5.mb-2.ml-2 Checklist Dokumen
+  .d-flex.align-items-center.my-5
+    span.bullet.bullet-bar.bg-success.align-self-stretch
+    label.checkbox.checkbox-lg.checkbox-light-success.checkbox-inline.flex-shrink-0.m-0.mx-4
+      input[
+        type="checkbox"
+        name="select"
+        disabled="disabled"
+        readonly="readonly"
+        checked=(@invoice.spp_checked?)
+      ]
+      span
+    .d-flex.flex-column.flex-grow-1[
+      style="overflow-wrap:anywhere;"
+    ]
+      a.text-dark-75.text-hover-primary.font-weight-bold.font-size-lg.mb-1[
+        href="javascript:void(0);"
+        title="Surat Permohonan Pembayaran"
+        data-controller="tooltip"
+      ]
+        | Surat Permohonan Pembayaran
+  .d-flex.align-items-center.my-5
+    span.bullet.bullet-bar.bg-success.align-self-stretch
+    label.checkbox.checkbox-lg.checkbox-light-success.checkbox-inline.flex-shrink-0.m-0.mx-4
+      input[
+        type="checkbox"
+        name="select"
+        disabled="disabled"
+        readonly="readonly"
+        checked=(@invoice.invoice_checked?)
+      ]
+      span
+    .d-flex.flex-column.flex-grow-1[
+      style="overflow-wrap:anywhere;"
+    ]
+      a.text-dark-75.text-hover-primary.font-weight-bold.font-size-lg.mb-1[
+        href="javascript:void(0);"
+        title="Invoice"
+        data-controller="tooltip"
+      ]
+        | Invoice
+  .d-flex.align-items-center.my-5
+    span.bullet.bullet-bar.bg-success.align-self-stretch
+    label.checkbox.checkbox-lg.checkbox-light-success.checkbox-inline.flex-shrink-0.m-0.mx-4
+      input[
+        type="checkbox"
+        name="select"
+        disabled="disabled"
+        readonly="readonly"
+        checked=(@invoice.kwitansi_checked?)
+      ]
+      span
+    .d-flex.flex-column.flex-grow-1[
+      style="overflow-wrap:anywhere;"
+    ]
+      a.text-dark-75.text-hover-primary.font-weight-bold.font-size-lg.mb-1[
+        href="javascript:void(0);"
+        title="Kwitansi"
+        data-controller="tooltip"
+      ]
+        | Kwitansi
+  .d-flex.align-items-center.my-5
+    span.bullet.bullet-bar.bg-success.align-self-stretch
+    label.checkbox.checkbox-lg.checkbox-light-success.checkbox-inline.flex-shrink-0.m-0.mx-4
+      input[
+        type="checkbox"
+        name="select"
+        disabled="disabled"
+        readonly="readonly"
+        checked=(@invoice.faktur_pajak_checked?)
+      ]
+      span
+    .d-flex.flex-column.flex-grow-1[
+      style="overflow-wrap:anywhere;"
+    ]
+      a.text-dark-75.text-hover-primary.font-weight-bold.font-size-lg.mb-1[
+        href="javascript:void(0);"
+        title="Faktur Pajak"
+        data-controller="tooltip"
+      ]
+        | Faktur Pajak
+
+  hr
+  h5.mb-2.ml-2 Dokumen Attachment
   = render partial: 'shared/document_v2',
     collection: @invoice.other_files, as: :file,
     locals: { file_name: 'Dokumen Lainnya' }

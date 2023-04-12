@@ -40,6 +40,9 @@ export default class extends Controller {
       if(this.submitButton){
         this.submitButton.disabled = false
       }
+
+      const event = new Event('dropzone:queuecomplete');
+      this.element.dispatchEvent(event);
     })
 
     this.dropzone.on('error', (file,error) => {

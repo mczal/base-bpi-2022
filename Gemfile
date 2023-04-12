@@ -15,7 +15,10 @@ gem 'caxlsx_rails'
 gem 'clearance'
 gem 'fog-aws'
 gem 'google-analytics-rails', '1.1.1'
+
 gem 'image_processing', '>= 1.2'
+gem 'rmagick'
+
 gem 'jbuilder', '~> 2.7'
 gem 'kaminari'
 gem 'money-rails'

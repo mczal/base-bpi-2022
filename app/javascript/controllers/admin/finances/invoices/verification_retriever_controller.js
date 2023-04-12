@@ -42,6 +42,9 @@ export default class extends Controller {
         pph_percentage: this.pphPercentageInput.value,
         pph_id: this.pphIdInput.value,
         fine: this.fineInput.value,
+        bonus: this.bonusInput.value,
+        fine_account_id: this.fineAccountIdInput.value,
+        bonus_account_id: this.bonusAccountIdInput.value,
         ppn_cost_group: this.checkedPpnCostGroupInput.value,
       }),
       headers: [
@@ -65,6 +68,15 @@ export default class extends Controller {
   }
   get fineInput(){
     return this.form.querySelector('input[name="invoice[fine]"]');
+  }
+  get bonusInput(){
+    return this.form.querySelector('input[name="invoice[bonus]"]');
+  }
+  get fineAccountIdInput(){
+    return this.form.querySelector('select[name="invoice[fine_account_id]"]');
+  }
+  get bonusAccountIdInput(){
+    return this.form.querySelector('select[name="invoice[bonus_account_id]"]');
   }
   get checkedPpnCostGroupInput(){
     return this.form.querySelector('input[name="invoice[ppn_cost_group]"]:checked');

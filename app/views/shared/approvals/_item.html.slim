@@ -22,9 +22,9 @@
           title="Komentar #{approval.last_log.user&.email}"
           data-controller="tooltip"
         ]
-          | | #{approval.last_log.comment}
+          | Komentar: #{approval.last_log.comment.to_s.strip.present? ? approval.last_log.comment : '-'}
     span.font-weight-bolder.font-size-sm
-      - if current_user.has_role?(approval.role)
+      - if !approval.accepted? && current_user.has_role?(approval.role)
         = render partial: 'shared/approvals/edit',
           locals: {approval: approval, status: 'accepted', text: 'Setujui'}
         = render partial: 'shared/approvals/edit',

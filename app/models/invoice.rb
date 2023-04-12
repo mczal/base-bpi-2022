@@ -1,39 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: invoices
-#
-#  id                   :uuid             not null, primary key
-#  created_at           :datetime         not null
-#  updated_at           :datetime         not null
-#  spp_number           :string
-#  ref_number           :string
-#  date                 :date
-#  receipt_number       :string
-#  price_cents          :decimal(, )      default(0.0), not null
-#  price_currency       :string           default("IDR"), not null
-#  ppn_group            :string
-#  tax_receipt_date     :date
-#  tax_receipt_number   :string
-#  invoiceable_type     :string
-#  invoiceable_id       :uuid
-#  status               :string
-#  ppn_cost_group       :string
-#  pph_percentage       :decimal(, )
-#  fine_cents           :decimal(, )      default(0.0), not null
-#  fine_currency        :string           default("IDR"), not null
-#  debt_age_started_at  :date
-#  ppn_percentage       :decimal(, )
-#  spp_checked          :boolean          default(FALSE)
-#  invoice_checked      :boolean          default(FALSE)
-#  kwitansi_checked     :boolean          default(FALSE)
-#  faktur_pajak_checked :boolean          default(FALSE)
-#  received_at          :datetime
-#  pph_id               :uuid
-#  accrued_credit_id    :uuid
-#  bank_account_id      :uuid
-#
 class Invoice < ApplicationRecord
   include Invoices::Statuses
   # include Invoices::Approvals
@@ -54,6 +20,9 @@ class Invoice < ApplicationRecord
   belongs_to :accrued_credit, class_name: "Account", optional: true
   belongs_to :bank_account, class_name: "Account", optional: true
 
+  belongs_to :fine_account, class_name: "Account", optional: true
+  belongs_to :bonus_account, class_name: "Account", optional: true
+
   has_many :approvals, as: :approvable, dependent: :destroy
   has_many :general_transactions, as: :transactionable, dependent: :destroy
 
@@ -65,6 +34,7 @@ class Invoice < ApplicationRecord
 
   monetize :price_cents
   monetize :fine_cents
+  monetize :bonus_cents
 
   enum ppn_group: {
     include: 'include',
@@ -114,9 +84,11 @@ class Invoice < ApplicationRecord
   end
   def dpp_price_original
     if ppn_exclude?
-      return @dpp_price_original = (self.ba.price - fine)
+      # return @dpp_price_original = (self.ba.price - fine)
+      return @dpp_price_original = (self.ba.price)
     end
-    @dpp_price_original = ((self.ba.price - fine) / (self.ppn + 1)).to_money
+    # @dpp_price_original = ((self.ba.price - fine) / (self.ppn + 1)).to_money
+    @dpp_price_original = ((self.ba.price) / (self.ppn + 1)).to_money
   end
   def dpp_price
     @dpp_price ||= dpp_price_original.amount.floor.to_money
@@ -133,10 +105,15 @@ class Invoice < ApplicationRecord
   end
 
   def payable_price
-    @payable_price ||= (dpp_price.to_money + ppn_price.to_money - pph_price.to_money).to_money
+    @payable_price ||= (
+      dpp_price.to_money + ppn_price.to_money\
+      - pph_price.to_money\
+      - fine.to_money\
+      + bonus.to_money
+    ).to_money
   end
 
   def ppn
-    @ppn ||= self.ppn_percentage.to_f / 100.0
+    @ppn ||= (self.ppn_percentage.to_f / 100.0).to_d
   end
 end

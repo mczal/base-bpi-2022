@@ -53,28 +53,57 @@ scss:
     label
       | Pajak Pph
     .row
-      .col-6.form-group.mb-0
+      .col-8.form-group.mb-0
         = f.select :pph_id,
           options_from_collection_for_select(Account.all, :id, :readable_name, @invoice.pph_id),
           {include_blank: '== Pilih =='},
           class: 'form-control',
           data: { controller: 'select2' }
-      .col-4.form-group.mb-0
+      .col-4.form-group.mb-0.p-0.position-relative
+        span.position-absolute[
+          style="top:0;left:0;font-size:17px;padding:6px 8px;background-color:#efefef;border:1px solid #cbcbcb;border-top-left-radius:5px;border-bottom-left-radius:5px;"
+        ] %
         = f.number_field :pph_percentage,
           placeholder: '%',
           class: 'form-control',
-          step: '0.1'
-      .col-2.form-group.mb-0
+          step: '0.1',
+          style: 'padding-left:40px;'
+      / .col-2.form-group.mb-0
         = text_field_tag :tdt, '%',
           class: 'form-control text-center p-0',
           disabled: 1
-  .form-group.mb-0
+  .form-group.mb-8
     label
       | Denda (Rp)
-    = f.text_field :fine,
-      class: 'form-control',
-      data: { controller: 'base--input-price' },
-      value: @invoice.fine.amount
+    .row
+      .col-5.form-group.mb-0
+        = f.text_field :fine,
+          class: 'form-control',
+          data: { controller: 'base--input-price' },
+          value: @invoice.fine.amount
+      .col-7.form-group.mb-0
+        = f.select :fine_account_id,
+          options_from_collection_for_select(Account.select(:id,:name,:code), :id, :readable_name, @invoice.fine_account_id),
+          {include_blank: '== Pilih =='},
+          class: 'form-control',
+          data: { controller: 'select2' },
+          required: 1
+  .form-group.mb-8
+    label
+      | Bonus (Rp)
+    .row
+      .col-5.form-group.mb-0
+        = f.text_field :bonus,
+          class: 'form-control',
+          data: { controller: 'base--input-price' },
+          value: @invoice.bonus.amount
+      .col-7.form-group.mb-0
+        = f.select :bonus_account_id,
+          options_from_collection_for_select(Account.select(:id,:name,:code), :id, :readable_name, @invoice.bonus_account_id),
+          {include_blank: '== Pilih =='},
+          class: 'form-control',
+          data: { controller: 'select2' },
+          required: 1
 
   .form-group.mt-3.text-center
     button.btn.btn-sm.btn-primary[
@@ -93,12 +122,7 @@ scss:
         tbody
           tr
             td.px-3.py-2.text-left
-              | Nilai Denda
-            td.px-3.py-2.text-right
-              = print_money @invoice.fine
-          tr
-            td.px-3.py-2.text-left
-              | Nilai DPP
+              | 1. Nilai DPP
             td.px-3.py-2.text-right
               - if @invoice.is_dpp_rounded?
                 .text-muted[
@@ -110,7 +134,18 @@ scss:
               = print_money @invoice.dpp_price
           tr
             td.px-3.py-2.text-left
-              | Nilai PPN
+              | 2.  Nilai PPN
+              .text-muted[
+                style="font-size:12px;font-style:italic;"
+              ]
+                - if @invoice.ppn_cost_biaya?
+                  | #{@invoice.ppn_biaya_account.readable_name} (#{@invoice.ppn_percentage}%)
+                - elsif @invoice.ppn_cost_non_biaya?
+                  span[
+                    title="+Added to cost center"
+                    data-controller="tooltip"
+                  ]
+                    | #{@invoice.ba.contract.accrued_debit.readable_name} (#{@invoice.ppn_percentage}%)
             td.px-3.py-2.text-right
               - if @invoice.is_ppn_rounded?
                 .text-muted[
@@ -121,12 +156,17 @@ scss:
                   | (#{print_money @invoice.ppn_price_original})
               = print_money @invoice.ppn_price
           tr
+            td.px-3.py-2.text-left.font-weight-bold
+              | 3. Nilai DPP + PPN (1 + 2)
+            td.px-3.py-2.text-right.font-weight-bold
+              = print_money(@invoice.dpp_price + @invoice.ppn_price)
+          tr
             td.px-3.py-2.text-left
-              | Nilai Potongan Pajak
+              | 4. Nilai Potongan Pajak
               .text-muted[
                 style="font-size:12px;font-style:italic;"
               ]
-                | #{@invoice.pph&.readable_name} (#{@invoice.pph_percentage}%)
+                | #{@invoice.pph&.readable_name} (#{@invoice.pph_percentage.present? ? "#{@invoice.pph_percentage}%" : ''})
             td.px-3.py-2.text-right
               - if @invoice.is_pph_rounded?
                 .text-muted[
@@ -138,6 +178,26 @@ scss:
               = print_money @invoice.pph_price
           tr
             td.px-3.py-2.text-left
-              | Nilai Harus Dibayar
+              | 5. Nilai Denda
+              .text-muted[
+                style="font-size:12px;font-style:italic;"
+              ]
+                - if @invoice.fine > 0
+                  | #{@invoice.fine_account&.readable_name}
             td.px-3.py-2.text-right
+              = print_money @invoice.fine
+          tr
+            td.px-3.py-2.text-left
+              | 6. Nilai Bonus
+              .text-muted[
+                style="font-size:12px;font-style:italic;"
+              ]
+                - if @invoice.bonus > 0
+                  | #{@invoice.bonus_account&.readable_name}
+            td.px-3.py-2.text-right
+              = print_money @invoice.bonus
+          tr
+            td.px-3.py-2.text-left.font-weight-bolder
+              | 7. Nilai Harus Dibayar (3 - 4 - 5 + 6)
+            td.px-3.py-2.text-right.font-weight-bolder
               = print_money (@invoice.payable_price)

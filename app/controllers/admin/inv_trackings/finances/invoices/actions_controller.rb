@@ -18,6 +18,9 @@ module Admin
               pph_percentage: params[:pph_percentage],
               pph_id: params[:pph_id],
               fine: params[:fine],
+              bonus: params[:bonus],
+              fine_account_id: params[:fine_account_id],
+              bonus_account_id: params[:bonus_account_id],
               ppn_cost_group: params[:ppn_cost_group],
             )
             render layout: false

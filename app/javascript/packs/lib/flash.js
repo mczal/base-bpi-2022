@@ -11,7 +11,7 @@ export default class Flash {
 
   static html(type, message){
     return `
-      <div id="js-Flash" style="z-index:99;position:fixed;top:0;left:0;width:100%;" class="alert alert-custom alert-notice alert-light-${type} fade show" role="alert">
+      <div id="js-Flash" style="z-index:10000;position:fixed;top:0;left:0;width:100%;" class="alert alert-custom alert-notice alert-light-${type} fade show" role="alert">
         <div class="alert-icon"><i class="flaticon-warning"></i></div>
         <div class="alert-text">${message}</div>
         <div class="alert-close">

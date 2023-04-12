@@ -29,8 +29,8 @@ module Invoices
       end
       @general_transaction_after_save_for_approved.save! if @general_transaction_after_save_for_approved.new_record? || @general_transaction_after_save_for_approved.changed?
 
-      credit_cost_center_for_fine_reduction_if_fine_exist! # OK
-      debit_bymhd_for_fine_reduction_if_fine_exist! # OK
+      # credit_cost_center_for_fine_reduction_if_fine_exist! # OK # Rev. 12 April 2023: Denda Tidak Dikurangi DPP
+      # debit_bymhd_for_fine_reduction_if_fine_exist! # OK # Rev. 12 April 2023: Denda Tidak Dikurangi DPP
 
       debit_bymhd! # OK
       credit_cost_center_for_ppn_if_biaya_and_ppn_include! # OK
@@ -44,6 +44,9 @@ module Invoices
 
       credit_cost_center_for_rounding_if_rounded! # OK
       # debit_bymhd_for_rounding_if_rounded! # OK
+
+      credit_fine_account_if_exist!
+      debit_bonus_account_if_exist!
     end
 
     # TODO: ...
@@ -51,6 +54,84 @@ module Invoices
       @accrued_journals ||= Journal
         .where('description ILIKE ?', "%[#{self.id}]%")
         .reorder(created_at: :asc)
+    end
+
+    def credit_fine_account_if_exist!
+      if self.fine <= 0 || !self.fine_account.present?
+        @general_transaction_after_save_for_approved
+          .general_transaction_lines.credit
+          .where('description ILIKE ?', "%[DENDA]")
+          .destroy_all
+        return
+      end
+
+      if @credit_fine_account_gt_line.present?
+        @credit_fine_account_gt_line.save! if @credit_fine_account_gt_line.changed? || @credit_fine_account_gt_line.new_record?
+        return @credit_fine_account_gt_line
+      end
+      @credit_fine_account_gt_line = @general_transaction_after_save_for_approved
+        .general_transaction_lines
+        .where(group: :credit)
+        .where('description ILIKE ?', "%[DENDA]")
+        .first
+      if !@credit_fine_account_gt_line.present?
+        @credit_fine_account_gt_line = @general_transaction_after_save_for_approved
+          .general_transaction_lines.new(
+            group: :credit,
+            description: "Jurnal Denda atas Invoice #{self.ba.description} #{self.ba.contract.client.name} [DENDA]"
+          )
+      end
+
+      # idr = (self.dpp_price + self.ppn_price - self.pph_price) # Rev. 12 April 2023
+      idr = self.fine
+      usd = (idr / @general_transaction_after_save_for_approved.rate_money).to_money.with_currency(:usd)
+      @credit_fine_account_gt_line.assign_attributes(
+        price_idr: idr,
+        price_usd: usd,
+        code: self.fine_account.code,
+        rate: @general_transaction_after_save_for_approved.rate_money,
+      )
+      @credit_fine_account_gt_line.save! if @credit_fine_account_gt_line.changed? || @credit_fine_account_gt_line.new_record?
+      @credit_fine_account_gt_line
+    end
+
+    def debit_bonus_account_if_exist!
+      if self.bonus <= 0 || !self.bonus_account.present?
+        @general_transaction_after_save_for_approved
+          .general_transaction_lines.debit
+          .where('description ILIKE ?', "%[BONUS]")
+          .destroy_all
+        return
+      end
+
+      if @debit_bonus_account_gt_line.present?
+        @debit_bonus_account_gt_line.save! if @debit_bonus_account_gt_line.changed? || @debit_bonus_account_gt_line.new_record?
+        return @debit_bonus_account_gt_line
+      end
+      @debit_bonus_account_gt_line = @general_transaction_after_save_for_approved
+        .general_transaction_lines
+        .where(group: :debit)
+        .where('description ILIKE ?', "%[BONUS]")
+        .first
+      if !@debit_bonus_account_gt_line.present?
+        @debit_bonus_account_gt_line = @general_transaction_after_save_for_approved
+          .general_transaction_lines.new(
+            group: :debit,
+            description: "Jurnal Bonus atas Invoice #{self.ba.description} #{self.ba.contract.client.name} [BONUS]"
+          )
+      end
+
+      # idr = (self.dpp_price + self.ppn_price - self.pph_price) # Rev. 12 April 2023
+      idr = self.bonus
+      usd = (idr / @general_transaction_after_save_for_approved.rate_money).to_money.with_currency(:usd)
+      @debit_bonus_account_gt_line.assign_attributes(
+        price_idr: idr,
+        price_usd: usd,
+        code: self.bonus_account.code,
+        rate: @general_transaction_after_save_for_approved.rate_money,
+      )
+      @debit_bonus_account_gt_line.save! if @debit_bonus_account_gt_line.changed? || @debit_bonus_account_gt_line.new_record?
+      @debit_bonus_account_gt_line
     end
 
     def credit_debt!
@@ -108,12 +189,13 @@ module Invoices
           )
       end
 
-      idr = (self.dpp_price + self.ppn_price - self.pph_price)
+      # idr = (self.dpp_price + self.ppn_price - self.pph_price) # Rev. 12 April 2023
+      idr = (self.dpp_price + self.ppn_price - self.pph_price - self.fine + self.bonus)
       usd = (idr / @general_transaction_after_save_for_approved.rate_money).to_money.with_currency(:usd)
       @accrued_credit_gt_line.assign_attributes(
         price_idr: idr,
         price_usd: usd,
-        code: self.ba.accrued_credit.code,
+        code: self.accrued_credit.code,
         rate: @general_transaction_after_save_for_approved.rate_money,
       )
       @accrued_credit_gt_line
@@ -209,7 +291,8 @@ module Invoices
           )
       end
 
-      idr = self.ba.price - self.fine.to_money
+      # idr = self.ba.price - self.fine.to_money # Rev. 12 April 2023: Denda tidak mengurangi DPP
+      idr = self.ba.price
       usd = (idr / @general_transaction_after_save_for_approved.rate_money).to_money.with_currency(:usd)
       @accrued_debit_gt_line.assign_attributes(
         price_idr: idr,

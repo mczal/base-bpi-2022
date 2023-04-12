@@ -4,12 +4,7 @@ fieldset
     tbody
       tr
         td.px-3.py-2.text-left
-          | Nilai Denda
-        td.px-3.py-2.text-right
-          = print_money @invoice.fine
-      tr
-        td.px-3.py-2.text-left
-          | Nilai DPP
+          | 1. Nilai DPP
         td.px-3.py-2.text-right
           - if @invoice.is_dpp_rounded?
             .text-muted[
@@ -21,7 +16,7 @@ fieldset
           = print_money @invoice.dpp_price
       tr
         td.px-3.py-2.text-left
-          | Nilai PPN
+          | 2.  Nilai PPN
           .text-muted[
             style="font-size:12px;font-style:italic;"
           ]
@@ -43,8 +38,13 @@ fieldset
               | (#{print_money @invoice.ppn_price_original})
           = print_money @invoice.ppn_price
       tr
+        td.px-3.py-2.text-left.font-weight-bold
+          | 3. Nilai DPP + PPN (1 + 2)
+        td.px-3.py-2.text-right.font-weight-bold
+          = print_money(@invoice.dpp_price + @invoice.ppn_price)
+      tr
         td.px-3.py-2.text-left
-          | Nilai Potongan Pajak
+          | 4. Nilai Potongan Pajak
           .text-muted[
             style="font-size:12px;font-style:italic;"
           ]
@@ -60,8 +60,28 @@ fieldset
           = print_money @invoice.pph_price
       tr
         td.px-3.py-2.text-left
-          | Nilai Harus Dibayar
+          | 5. Nilai Denda
+          .text-muted[
+            style="font-size:12px;font-style:italic;"
+          ]
+            - if @invoice.fine > 0
+              | #{@invoice.fine_account&.readable_name}
         td.px-3.py-2.text-right
+          = print_money @invoice.fine
+      tr
+        td.px-3.py-2.text-left
+          | 6. Nilai Bonus
+          .text-muted[
+            style="font-size:12px;font-style:italic;"
+          ]
+            - if @invoice.bonus > 0
+              | #{@invoice.bonus_account&.readable_name}
+        td.px-3.py-2.text-right
+          = print_money @invoice.bonus
+      tr
+        td.px-3.py-2.text-left.font-weight-bolder
+          | 7. Nilai Harus Dibayar (3 - 4 - 5 + 6)
+        td.px-3.py-2.text-right.font-weight-bolder
           = print_money (@invoice.payable_price)
   .form-group.mt-3.text-right
     button.btn.btn-sm.btn-success[

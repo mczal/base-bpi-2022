@@ -45,6 +45,10 @@
                   p
                     = @ba.reference_number
                 .d-flex.align-items-center.justify-content-between.mb-2
+                  span.font-weight-bold.mr-2 Nilai:
+                  p
+                    = @ba.price.format
+                .d-flex.align-items-center.justify-content-between.mb-2
                   span.font-weight-bold.mr-2 Perihal:
                   p
                     = @ba.description
@@ -124,6 +128,10 @@
                       data-popover-html="1"
                     ]
                       | #{@contract.client.name}
+                  .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Client NPWP
+                    a.text-muted.text-hover-primary
+                      | #{@contract.client.npwp}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Bank
                     a.text-muted.text-hover-primary

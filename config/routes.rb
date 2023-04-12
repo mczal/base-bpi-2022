@@ -178,6 +178,10 @@ Rails.application.routes.draw do
           post ':id/actions/get_verification',
             to: 'actions#get_verification',
             as: 'get_verification'
+
+          post 'faktur_pajaks/verify/:group/:signed',
+            to: 'faktur_pajaks#verify',
+            as: 'faktur_pajak_verify'
         end
       end
     end

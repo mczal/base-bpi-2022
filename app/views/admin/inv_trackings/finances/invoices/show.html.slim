@@ -177,6 +177,10 @@
                     ]
                       | #{contract.client.name}
                   .d-flex.align-items-center.justify-content-between.mb-2
+                    span.font-weight-bold.mr-2 Client NPWP
+                    a.text-muted.text-hover-primary.text-right
+                      | #{contract.client.npwp}
+                  .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Bank
                     a.text-muted.text-hover-primary.text-right
                       | #{contract.bank.name}

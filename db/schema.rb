@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_03_21_080640) do
+ActiveRecord::Schema.define(version: 2023_04_12_055840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -320,8 +320,14 @@ ActiveRecord::Schema.define(version: 2023_03_21_080640) do
     t.uuid "pph_id"
     t.uuid "accrued_credit_id"
     t.uuid "bank_account_id"
+    t.uuid "fine_account_id"
+    t.decimal "bonus_cents", default: "0.0", null: false
+    t.string "bonus_currency", default: "IDR", null: false
+    t.uuid "bonus_account_id"
     t.index ["accrued_credit_id"], name: "index_invoices_on_accrued_credit_id"
     t.index ["bank_account_id"], name: "index_invoices_on_bank_account_id"
+    t.index ["bonus_account_id"], name: "index_invoices_on_bonus_account_id"
+    t.index ["fine_account_id"], name: "index_invoices_on_fine_account_id"
     t.index ["invoiceable_type", "invoiceable_id"], name: "index_invoices_on_invoiceable"
     t.index ["pph_id"], name: "index_invoices_on_pph_id"
   end
@@ -477,6 +483,8 @@ ActiveRecord::Schema.define(version: 2023_03_21_080640) do
   add_foreign_key "general_transactions", "companies"
   add_foreign_key "invoices", "accounts", column: "accrued_credit_id"
   add_foreign_key "invoices", "accounts", column: "bank_account_id"
+  add_foreign_key "invoices", "accounts", column: "bonus_account_id"
+  add_foreign_key "invoices", "accounts", column: "fine_account_id"
   add_foreign_key "invoices", "accounts", column: "pph_id"
   add_foreign_key "journals", "companies"
   add_foreign_key "report_lines", "reports"

@@ -302,6 +302,8 @@ GEM
     net-ssh (6.1.0)
     newrelic_rpm (8.0.0)
     nio4r (2.5.8)
+    nokogiri (1.12.5-x86_64-darwin)
+      racc (~> 1.4)
     nokogiri (1.12.5-x86_64-linux)
       racc (~> 1.4)
     oauth (0.5.8)
@@ -318,6 +320,7 @@ GEM
     pg_search (2.3.5)
       activerecord (>= 5.2)
       activesupport (>= 5.2)
+    pkg-config (1.5.1)
     pry (0.14.1)
       coderay (~> 1.1)
       method_source (~> 1.0)
@@ -369,6 +372,8 @@ GEM
     regexp_parser (2.2.0)
     retriable (3.1.2)
     rexml (3.2.5)
+    rmagick (5.2.0)
+      pkg-config (~> 1.4)
     rolify (6.0.0)
     roo (2.9.0)
       nokogiri (~> 1)
@@ -534,6 +539,7 @@ DEPENDENCIES
   rack-mini-profiler (~> 2.0)
   rails (~> 6.1.4, >= 6.1.4.1)
   redis
+  rmagick
   rolify
   roo
   roo-google
