@@ -22,11 +22,19 @@
           placeholder: 'Nama',
           class: 'form-control',
           required: 1
-      .form-group.col-lg-6
-        label NPWP
+      .form-group.col-lg-6[
+        data-controller="admin--clients--input-npwp-display-formatter"
+      ]
+        label
+          | NPWP
+          span.ml-3[
+            style="background-color:#f5f5f5;padding:4px 11px;border-radius:3px;border:1px solid #c5c5c5;"
+            data-admin--clients--input-npwp-display-formatter-target="display"
+          ] #{@client.formatted_npwp}
         = f.text_field :npwp,
           placeholder: 'Kode',
-          class: 'form-control'
+          class: 'form-control',
+          data: { 'admin--clients--input-npwp-display-formatter-target': 'input' }
     .row.mb-5
       .col-lg-6.form-group[
         style="margin-bottom:5px;"

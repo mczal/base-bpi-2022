@@ -1,25 +1,3 @@
-# == Schema Information
-#
-# Table name: general_transactions
-#
-#  id                          :uuid             not null, primary key
-#  number_evidence             :string
-#  date                        :date
-#  company_id                  :uuid             not null
-#  created_at                  :datetime         not null
-#  updated_at                  :datetime         not null
-#  rates_source                :string
-#  rates_group                 :string
-#  input_option                :string
-#  end_of_period_rates_options :json
-#  fixed_rates_options         :json
-#  status                      :string
-#  location                    :string
-#  source                      :string
-#  transactionable_type        :string
-#  transactionable_id          :uuid
-#  origin_id                   :string
-#
 class GeneralTransaction < ApplicationRecord
   audited
   include PgSearch::Model

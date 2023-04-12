@@ -98,7 +98,7 @@
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Tanggal Kontrak:
                     a.text-muted.text-hover-primary
-                      | #{readable_date_4 @contract.started_at} - #{readable_date_4 @contract.ended_at}
+                      | #{readable_date_4 @contract.started_at}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Jangka Waktu:
                     a.text-muted.text-hover-primary
@@ -131,7 +131,7 @@
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Client NPWP
                     a.text-muted.text-hover-primary
-                      | #{@contract.client.npwp}
+                      | #{@contract.client.formatted_npwp}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Bank
                     a.text-muted.text-hover-primary

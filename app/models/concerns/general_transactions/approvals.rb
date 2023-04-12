@@ -3,6 +3,8 @@
 module GeneralTransactions
   module Approvals extend ActiveSupport::Concern
     def approval_lines
+      return @approval_lines if @approval_lines.present?
+
       @approval_lines = []
       # @approval_lines << {
         # name: 'Manager Keuangan dan Anggaran',
@@ -12,6 +14,18 @@ module GeneralTransactions
         # name: 'Direktur Keuangan dan Umum',
         # role: "director_finance"
       # }
+
+      if self.ba? || self.invoice_approved?
+        @approval_lines << {
+          name: 'Manager Keuangan dan Anggaran',
+          role: "manager_finance"
+        }
+        @approval_lines << {
+          name: 'Manager Akunting',
+          role: "manager_accounting"
+        }
+        return @approval_lines
+      end
 
       ac_1 = ApprovalConfiguration.find_by(bottom_treshold_cents: 0, upper_treshold_cents: 0)
       ac_1.roles.each do |x|

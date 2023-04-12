@@ -72,7 +72,7 @@ module Api
                 email: client.email,
                 phone_number: client.phone_number,
                 address: client.address,
-                npwp: client.npwp,
+                npwp: client.formatted_npwp,
                 group: client.group.to_s.titlecase,
                 pkp_group: client.pkp_group.to_s.titlecase.upcase,
                 show_path: admin_client_path(id: client.id, slug: current_company.slug),

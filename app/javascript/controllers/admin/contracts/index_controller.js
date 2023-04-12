@@ -81,7 +81,7 @@ export default class extends DatatablesController {
                 Tgl:
               </span>
               <a class="text-muted font-weight-bold text-hover-primary" href="javascript:void(0);">
-                ${data.started_at} - ${data.ended_at}
+                ${data.started_at}
               </a>
             </div>
           `

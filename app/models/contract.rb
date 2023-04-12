@@ -1,37 +1,5 @@
 # frozen_string_literal: true
 
-# == Schema Information
-#
-# Table name: contracts
-#
-#  id                               :uuid             not null, primary key
-#  created_at                       :datetime         not null
-#  updated_at                       :datetime         not null
-#  started_at                       :date
-#  ended_at                         :date
-#  ref_number                       :string
-#  price_cents                      :decimal(, )      default(0.0), not null
-#  price_currency                   :string           default("IDR"), not null
-#  status                           :string
-#  client_id                        :uuid
-#  bank_id                          :uuid
-#  account_number                   :string
-#  account_holder                   :string
-#  description                      :string
-#  started_with_group               :string
-#  started_with_ref_number          :string
-#  started_with_date                :date
-#  time_period                      :integer
-#  payment_time_period              :integer
-#  payment_time_period_group        :string
-#  accrued_debit_id                 :uuid
-#  location                         :string
-#  is_master_business_units_enabled :boolean          default(FALSE)
-#  master_business_unit_id          :uuid
-#  master_business_unit_location_id :uuid
-#  master_business_unit_area_id     :uuid
-#  master_business_unit_activity_id :uuid
-#
 class Contract < ApplicationRecord
   audited
   has_associated_audits
@@ -41,8 +9,9 @@ class Contract < ApplicationRecord
   include Contracts::Clients
   include Contracts::SynchronizeToJournalsAfterSave
   include Contracts::MasterBusinessUnits
+  include Contracts::SynchronizeToEndedAtAfterSave
 
-  validates :started_at, :ended_at, presence: true
+  validates :started_at, presence: true
   validates :ref_number, uniqueness: true
 
   monetize :price_cents

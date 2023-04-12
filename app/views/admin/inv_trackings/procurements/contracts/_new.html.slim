@@ -130,16 +130,16 @@ scss:
                 placeholder: 'Perihal',
                 class: 'form-control',
                 required:1, required: 1
-            .row
-              .col-6.form-group[style="margin-top:10px;"]
-                label
-                  | Tanggal Mulai Kontrak
-                = f.text_field :started_at,
-                  class: 'form-control',
-                  data: { controller: 'picker--date' },
-                  required: 1,
-                  value: html_input_date(@contract.started_at)
-              .col-6.form-group[style="margin-top:10px;"]
+            / .row
+            .form-group[style="margin-top:10px;"]
+              label
+                | Tanggal Kontrak
+              = f.text_field :started_at,
+                class: 'form-control',
+                data: { controller: 'picker--date' },
+                required: 1,
+                value: html_input_date(@contract.started_at)
+              / .col-6.form-group[style="margin-top:10px;"]
                 label
                   | Tanggal Selesai Kontrak
                 = f.text_field :ended_at,
