@@ -19,7 +19,7 @@ module Accounts
           .permit(
             :code, :name, :balance_type,
             :account_category_id, :isak_16,
-            :non_isak, :fiskal
+            :non_isak, :fiskal, :moneter
           )
       end
   end

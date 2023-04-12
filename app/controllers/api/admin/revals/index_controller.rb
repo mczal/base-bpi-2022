@@ -2,7 +2,7 @@
 
 module Api
   module Admin
-    module Accounts
+    module Revals
       class IndexController < Api::ApplicationController
         def show
           render json: result
@@ -16,32 +16,24 @@ module Api
             }
           end
 
-          def accounts
-            return @accounts if @accounts.present?
-
-            @accounts = Account
-              .where(company_id: current_company.id)
-              .order(code: :asc)
+          def revals
+            return @revals if @revals.present?
+            @revals = Reval.all
 
             if sort.present?
-              @accounts = @accounts
+              @revals = @revals
                 .reorder("#{sort[:field]}": sort[:sort])
             end
-
             if query.present? && query.dig(:search).present?
-              @accounts = @accounts
+              @revals = @revals
                 .search(query[:search])
             end
-            if params[:account_category_id].present?
-              @accounts = @accounts
-                .where(account_category_id: params[:account_category_id])
-            end
 
-            @accounts
+            @revals
           end
 
-          def paginated_accounts
-            @paginated_accounts ||= accounts
+          def paginated_revals
+            @paginated_revals ||= revals
               .page(page[:page])
               .per(page[:perpage])
           end
@@ -61,9 +53,9 @@ module Api
           def meta
             {
               page: page[:page],
-              pages: paginated_accounts.total_pages,
+              pages: paginated_revals.total_pages,
               perpage: page[:perpage],
-              total: accounts.count
+              total: revals.count
             }
           end
 
@@ -71,23 +63,19 @@ module Api
             return @data if @data.present?
 
             @data = {}
-            paginated_accounts.each_with_index do |account, index|
+            paginated_revals.each_with_index do |reval, index|
               i = index + start_index
               @data[i] = {
                 index: i,
-                id: account.id,
-                code: account.code,
-                name: account.name,
-                company_name: account.company.name,
-                balance_type: account.balance_type,
-                moneter: account.moneter?,
-                report_categories: account.report_categories_for_checkbox,
-                account_category: account.account_category.description,
-                edit_path: admin_edit_account_path(id: account.id,slug: current_company.slug),
-                delete_path: admin_account_path(id: account.id, slug: current_company.slug)
+                created_at: helpers.readable_timestamp_2(reval.created_at.localtime),
+                updated_at: helpers.readable_timestamp_2(reval.updated_at.localtime),
+                date: helpers.readable_date_4(reval.date),
+                number_of_account: reval.reval_lines.debit.count,
+                show_path: admin_reval_path(id: reval.id, slug: current_company.slug),
+                edit_path: admin_edit_reval_path(id: reval.id, slug: current_company.slug),
+                delete_path: admin_reval_path(id: reval.id, slug: current_company.slug)
               }
             end
-
             @data
           end
 

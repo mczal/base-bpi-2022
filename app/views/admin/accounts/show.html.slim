@@ -87,6 +87,10 @@ scss:
                   span.font-weight-bold.mr-2 FISKAL:
                   b.text-right
                     | #{@account.fiskal? ? 'OK' : 'NO'}
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 MONETER:
+                  b.text-right
+                    | #{@account.moneter? ? 'OK' : 'NO'}
               .pb-5.pt-3
                 fieldset
                   legend

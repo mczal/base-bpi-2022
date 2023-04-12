@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_04_12_055840) do
+ActiveRecord::Schema.define(version: 2023_04_12_215610) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 2023_04_12_055840) do
     t.boolean "isak_16", default: false
     t.boolean "non_isak", default: false
     t.boolean "fiskal", default: false
+    t.boolean "moneter", default: false
     t.index ["account_category_id"], name: "index_accounts_on_account_category_id"
     t.index ["code"], name: "index_accounts_on_code"
     t.index ["company_id"], name: "index_accounts_on_company_id"
@@ -98,6 +99,25 @@ ActiveRecord::Schema.define(version: 2023_04_12_055840) do
     t.date "date"
     t.text "description"
     t.index ["contract_id"], name: "index_addendums_on_contract_id"
+  end
+
+  create_table "adjustment_audit_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "group"
+    t.decimal "price_idr_cents", default: "0.0", null: false
+    t.string "price_idr_currency", default: "IDR", null: false
+    t.decimal "price_usd_cents", default: "0.0", null: false
+    t.string "price_usd_currency", default: "USD", null: false
+    t.string "description"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "account_id"
+    t.index ["account_id"], name: "index_adjustment_audit_lines_on_account_id"
+  end
+
+  create_table "adjustment_audits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.date "date"
   end
 
   create_table "approval_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -409,6 +429,27 @@ ActiveRecord::Schema.define(version: 2023_04_12_055840) do
     t.index ["company_id"], name: "index_reports_on_company_id"
   end
 
+  create_table "reval_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "group"
+    t.decimal "price_idr_cents", default: "0.0", null: false
+    t.string "price_idr_currency", default: "IDR", null: false
+    t.decimal "price_usd_cents", default: "0.0", null: false
+    t.string "price_usd_currency", default: "USD", null: false
+    t.uuid "reval_id"
+    t.string "description"
+    t.uuid "account_id"
+    t.index ["account_id"], name: "index_reval_lines_on_account_id"
+    t.index ["reval_id"], name: "index_reval_lines_on_reval_id"
+  end
+
+  create_table "revals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.date "date"
+  end
+
   create_table "roles", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "resource_type"
@@ -463,6 +504,7 @@ ActiveRecord::Schema.define(version: 2023_04_12_055840) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addendums", "contracts"
+  add_foreign_key "adjustment_audit_lines", "accounts"
   add_foreign_key "approvals", "users"
   add_foreign_key "bas", "accounts", column: "accrued_credit_id"
   add_foreign_key "bas", "contracts"
@@ -490,6 +532,8 @@ ActiveRecord::Schema.define(version: 2023_04_12_055840) do
   add_foreign_key "report_lines", "reports"
   add_foreign_key "report_references", "reports"
   add_foreign_key "reports", "companies"
+  add_foreign_key "reval_lines", "accounts"
+  add_foreign_key "reval_lines", "revals"
   add_foreign_key "saved_report_lines", "report_lines"
   add_foreign_key "users", "companies"
 end

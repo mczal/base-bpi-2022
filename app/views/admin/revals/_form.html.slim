@@ -1,0 +1,296 @@
+= form_for [:admin, @reval] do |f|
+  .modal-header
+    h5#exampleModalLabel.modal-title
+      | #{@reval.new_record? ? 'Buat' : 'Ubah'}
+      |  Data Reval
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      i.ki.ki-close aria-hidden="true"
+  .modal-body
+    .row
+      .form-group.col-lg-6
+        label
+          | Tanggal
+          span.text-danger.ml-1 *
+        = f.text_field :date, class: 'form-control', placeholder: 'Tanggal',
+          data: { controller: 'picker--date' }, autocomplete: 'off',
+          required: 1,
+          value: html_input_date(@reval.date)
+    fieldset
+      legend
+        i.flaticon2-arrow-down.text-success.mr-1
+        | DEBIT
+      - if @reval.new_record?
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
+        ]
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          .js-item-container.pl-5.position-relative.mb-4.pb-4[
+            style="border-bottom:1px solid #e8e8e8;"
+          ]
+            .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+              | 1.
+            .position-absolute.right-0.top-0[
+              style="z-index:10;"
+            ]
+              button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                type="button"
+                data-action="click->base--dynamic-input-v2#remove"
+              ]
+                i.fas.fa-times
+            = hidden_field_tag 'reval[reval_lines_attributes][0][group]', 'debit'
+            .row.mb-2
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | Kode Akun 
+                  span.text-danger.ml-1 *
+                = select_tag 'reval[reval_lines_attributes][0][code]',
+                  options_for_select(select_account_options),
+                  include_blank: '== Pilih ==',
+                  class: 'form-control',
+                  placeholder: 'Kode Akun',
+                  data: { target: 'base--dynamic-input.input', controller: "select2" },
+                  id: "a#{SecureRandom.uuid}", required: 1
+            .form-group[style="margin-bottom:15px;position:relative;"]
+              label
+                | Deskripsi
+                span.text-danger.ml-1 *
+              = text_area_tag 'reval[reval_lines_attributes][0][description]', '',
+                class: 'form-control',
+                data: {\
+                  target: 'base--dynamic-input.input'\
+                }, required: 1
+            .form-group[style="margin-bottom:5px;position:relative;"]
+              label
+                | Nominal
+                span.text-danger.ml-1 *
+            .row.js-general-transactions-nominal-idr-usd
+              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                .position-absolute.p-3 IDR
+                = text_field_tag 'reval[reval_lines_attributes][0][price_idr]', nil,
+                class: 'form-control pl-10 js-nominal', required: 1
+              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                .position-absolute.p-3 USD
+                = text_field_tag 'reval[reval_lines_attributes][0][price_usd]', nil,
+                class: 'form-control pl-12 js-nominal', required: 1
+      - else
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
+        ]
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          - @reval.reval_lines.debit.each_with_index do |line,i|
+            .js-item-container.pl-5.position-relative.mb-4.pb-4[
+              style="border-bottom:1px solid #e8e8e8;"
+            ]
+              .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                | #{i+1}.
+              .position-absolute.right-0.top-0[
+                style="z-index:10;"
+              ]
+                button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#remove"
+                ]
+                  i.fas.fa-times
+              = hidden_field_tag "reval[reval_lines_attributes][#{i}][group]", 'debit'
+              = hidden_field_tag "reval[reval_lines_attributes][#{i}][id]", line.id
+              .row.mb-2
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    | Kode Akun 
+                    span.text-danger.ml-1 *
+                  = select_tag "reval[reval_lines_attributes][#{i}][code]",
+                    options_for_select(select_account_options, line.code),
+                    include_blank: '== Pilih ==',
+                    class: 'form-control',
+                    placeholder: 'Kode Akun',
+                    data: { target: 'base--dynamic-input.input', controller: "select2" },
+                    id: "a#{SecureRandom.uuid}", required: 1
+              .form-group[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Deskripsi
+                  span.text-danger.ml-1 *
+                = text_area_tag "reval[reval_lines_attributes][#{i}][description]", line.description,
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group[style="margin-bottom:5px;position:relative;"]
+                label
+                  | Nominal
+                  span.text-danger.ml-1 *
+              .row.js-general-transactions-nominal-idr-usd
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 IDR
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", line.idr.amount,
+                  class: 'form-control pl-10 js-nominal', required: 1
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 USD
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", line.usd.amount,
+                  class: 'form-control pl-12 js-nominal', required: 1
+    fieldset
+      legend
+        i.flaticon2-arrow-up.text-danger.mr-1
+        | KREDIT
+      - if @reval.new_record?
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
+        ]
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          .js-item-container.pl-5.position-relative.mb-4.pb-4[
+            style="border-bottom:1px solid #e8e8e8;"
+          ]
+            .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+              | 1.
+            .position-absolute.right-0.top-0[
+              style="z-index:10;"
+            ]
+              button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                type="button"
+                data-action="click->base--dynamic-input-v2#remove"
+              ]
+                i.fas.fa-times
+            = hidden_field_tag 'reval[reval_lines_attributes][1][group]', 'credit'
+            .row.mb-2
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | Kode Akun 
+                  span.text-danger.ml-1 *
+                = select_tag 'reval[reval_lines_attributes][1][code]',
+                  options_for_select(select_account_options),
+                  include_blank: '== Pilih ==',
+                  class: 'form-control',
+                  placeholder: 'Kode Akun',
+                  data: { target: 'base--dynamic-input.input', controller: "select2" },
+                  id: "a#{SecureRandom.uuid}", required: 1
+            .form-group[style="margin-bottom:15px;position:relative;"]
+              label
+                | Deskripsi
+                span.text-danger.ml-1 *
+              = text_area_tag 'reval[reval_lines_attributes][1][description]', '',
+                class: 'form-control',
+                data: {\
+                  target: 'base--dynamic-input.input'\
+                }, required: 1
+            .form-group[style="margin-bottom:5px;position:relative;"]
+              label
+                | Nominal
+                span.text-danger.ml-1 *
+            .row.js-general-transactions-nominal-idr-usd
+              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                .position-absolute.p-3 IDR
+                = text_field_tag 'reval[reval_lines_attributes][1][price_idr]', nil,
+                  class: 'form-control pl-10 js-nominal', required: 1
+              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                .position-absolute.p-3 USD
+                = text_field_tag 'reval[reval_lines_attributes][1][price_usd]', nil,
+                  class: 'form-control pl-12 js-nominal', required: 1
+      - else
+        .pb-8.position-relative[
+          data-controller="base--dynamic-input-v2"
+        ]
+          .position-absolute.right-0.bottom-0[style="z-index:10;"]
+            button.btn-sm.btn.btn-outline-primary.mr-3[
+              type="button"
+              data-action="click->base--dynamic-input-v2#add"
+            ]
+              i.fas.fa-plus.mr-1
+              | Tambah
+          - start = @reval.reval_lines.debit.count
+          - @reval.reval_lines.credit.each_with_index do |line,j|
+            - i = start + j
+            .js-item-container.pl-5.position-relative.mb-4.pb-4[
+              style="border-bottom:1px solid #e8e8e8;"
+            ]
+              .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                | #{j+1}.
+              .position-absolute.right-0.top-0[
+                style="z-index:10;"
+              ]
+                button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#remove"
+                ]
+                  i.fas.fa-times
+              = hidden_field_tag "reval[reval_lines_attributes][#{i}][group]", 'credit'
+              = hidden_field_tag "reval[reval_lines_attributes][#{i}][id]", line.id
+              .row.mb-2
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    | Kode Akun 
+                    span.text-danger.ml-1 *
+                  = select_tag "reval[reval_lines_attributes][#{i}][code]",
+                    options_for_select(select_account_options, line.code),
+                    include_blank: '== Pilih ==',
+                    class: 'form-control',
+                    placeholder: 'Kode Akun',
+                    data: { target: 'base--dynamic-input.input', controller: "select2" },
+                    id: "a#{SecureRandom.uuid}", required: 1
+              .form-group[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Deskripsi
+                  span.text-danger.ml-1 *
+                = text_area_tag "reval[reval_lines_attributes][#{i}][description]", line.description,
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group[style="margin-bottom:5px;position:relative;"]
+                label
+                  | Nominal
+                  span.text-danger.ml-1 *
+              .row.js-general-transactions-nominal-idr-usd
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 IDR
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", line.idr.amount,
+                    class: 'form-control pl-10 js-nominal', required: 1
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 USD
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", line.usd.amount,
+                    class: 'form-control pl-12 js-nominal', required: 1
+    .form-group.mt-3
+      label Dokumen (maks. 10 Dokumen)
+      .input-group.d-block
+        #kt_dropzone_2.dropzone.dropzone-default[
+          data-controller='base--dropzone'
+          data-base--dropzone-max-files="10"
+          data-base--dropzone-max-file-size="20"
+          data-base--dropzone-accepted-files=".pdf,application/pdf"
+          data-base--dropzone-add-remove-links='1'
+          data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+          data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+        ]
+          input.d-none[
+            name="reval[files][]"
+            type="file"
+            data-target="base--dropzone.input"
+            data-direct-upload-url="#{rails_direct_uploads_path}"
+          ]
+          .dropzone-msg.dz-message.needsclick
+            span.dropzone-msg-desc
+              | Letakan dokumen disini atau
+              |  klik untuk unggah dokumen.
+  .modal-footer
+    button.btn.btn-light-primary.font-weight-bold[
+      data-dismiss="modal"
+      type="button"
+    ] Batal
+    = f.submit "Simpan", class: "btn btn-outline-success"
+

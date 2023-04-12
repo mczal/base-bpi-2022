@@ -28,7 +28,14 @@ export default class extends DatatablesController {
         title: 'Nama Akun',
         width: 150,
         template: function(data) {
-          return `<span class="font-weight-bolder">${data.name}</span>`;
+          return `
+            <div class="font-weight-bolder">
+              ${data.name}
+            </div>
+            <div class="text-muted font-weight-bolder">
+              ${data.moneter ? 'Akun Moneter' : ''}
+            </div>
+          `;
         }
       },
       {

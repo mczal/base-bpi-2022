@@ -186,6 +186,15 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :revals, only: %i[index show create update destroy]
+    post 'revals/:id/edit',
+      to: 'revals#edit',
+      as: :edit_reval
+    resources :adjustment_audits, only: %i[index show create update destroy]
+    post 'adjustment_audits/:id/edit',
+      to: 'adjustment_audits#edit',
+      as: :edit_adjustment_audit
+
     post 'active_storages/:resource_id/:resource_type/:registered_name/upload_document',
       to: 'active_storages#upload_document',
       as: :active_storages_upload_document
@@ -206,6 +215,9 @@ Rails.application.routes.draw do
 
     namespace :admin do
       namespace :general_transactions do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :revals do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :journals do

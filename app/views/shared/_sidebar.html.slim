@@ -128,6 +128,17 @@
                     span
                   span.menu-text
                     | Invoices
+        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/revals\/?/)}") data-menu-toggle="hover" 
+          a.menu-link href=admin_revals_path(slug: current_company.slug) 
+            span.svg-icon.menu-icon
+              /! begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-horizontal.svg
+              svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
+                  rect height="24" width="24" x="0" y="0" 
+                  rect fill="#000000" height="6" opacity="0.3" rx="1.5" width="16" x="4" y="5" 
+                  rect fill="#000000" height="6" rx="1.5" width="16" x="4" y="13" 
+              /! end::Svg Icon
+            span.menu-text Reval
         li.menu-section.mt-1
           h5.menu-text Akuntansi
           i.menu-icon.ki.ki-bold-more-hor.icon-md
