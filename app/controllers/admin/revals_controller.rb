@@ -1,5 +1,5 @@
 module Admin
-  class RevalsController < ::AdminController
+  class RevalsController < ::Admin::Revals::ApplicationController
     # include ClosedJournalPolicy
     before_action :reval, only: %i[show edit]
 

@@ -7,14 +7,30 @@
       i.ki.ki-close aria-hidden="true"
   .modal-body
     .row
-      .form-group.col-lg-6
-        label
-          | Tanggal
+      .col-lg-6.form-group
+        label[
+          data-title="Periode"
+          data-content="<div>Setelah disetujui jurnal akan diterbitkan pada akhir periode bulan yang ditentukan disini.<i class='ml-2 font-size-sm text-dark'>(tanggal terakhir pada bulan tsb.)</i></div> "
+          data-controller="base--popover"
+          data-base--popover-html="1"
+          data-base--popover-trigger="hover"
+        ]
+          i.fas.fa-question-circle.mr-1
+          | Periode
           span.text-danger.ml-1 *
-        = f.text_field :date, class: 'form-control', placeholder: 'Tanggal',
-          data: { controller: 'picker--date' }, autocomplete: 'off',
-          required: 1,
-          value: html_input_date(@reval.date)
+        label.btn.btn-sm.btn-light.font-weight-bold.ml-2.my-0
+          span.text-primary.font-size-base.font-weight-bolder.ml-2
+            | #{@reval.new_record? ? readable_date_5(DateTime.now.localtime.to_date.prev_month.end_of_month) : readable_date_5(@reval.date)}
+          input[
+            name="reval[periode]"
+            type="text"
+            class=""
+            value="#{@reval&.date || readable_date_6(DateTime.now.localtime.to_date.prev_month.end_of_month)}"
+            readonly="readonly"
+            placeholder="Select date"
+            data-controller="picker--date-month-year"
+            style="opacity:0;width:1px;"
+          ]
     fieldset
       legend
         i.flaticon2-arrow-down.text-success.mr-1
@@ -30,54 +46,56 @@
             ]
               i.fas.fa-plus.mr-1
               | Tambah
-          .js-item-container.pl-5.position-relative.mb-4.pb-4[
-            style="border-bottom:1px solid #e8e8e8;"
-          ]
-            .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
-              | 1.
-            .position-absolute.right-0.top-0[
-              style="z-index:10;"
+          - Account.moneter.each_with_index do |account, i|
+            .js-item-container.pl-5.position-relative.mb-4.pb-4[
+              style="border-bottom:1px solid #e8e8e8;"
             ]
-              button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
-                type="button"
-                data-action="click->base--dynamic-input-v2#remove"
+              .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                | #{i+1}.
+              .position-absolute.right-0.top-0[
+                style="z-index:10;"
               ]
-                i.fas.fa-times
-            = hidden_field_tag 'reval[reval_lines_attributes][0][group]', 'debit'
-            .row.mb-2
-              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#remove"
+                ]
+                  i.fas.fa-times
+              = hidden_field_tag "reval[reval_lines_attributes][#{i}][group]", 'debit'
+              .row.mb-2
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    | Kode Akun 
+                    span.text-danger.ml-1 *
+                  = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
+                    options_from_collection_for_select(Account.where(id: account.id), :id, :readable_name, account.id),
+                    include_blank: '== Pilih ==',
+                    class: 'form-control',
+                    placeholder: 'Kode Akun',
+                    data: { target: 'base--dynamic-input.input', controller: "select2" },
+                    id: "a#{SecureRandom.uuid}", required: 1
+              .form-group[style="margin-bottom:15px;position:relative;"]
                 label
-                  | Kode Akun 
+                  | Deskripsi
                   span.text-danger.ml-1 *
-                = select_tag 'reval[reval_lines_attributes][0][code]',
-                  options_for_select(select_account_options),
-                  include_blank: '== Pilih ==',
+                = text_area_tag "reval[reval_lines_attributes][#{i}][description]", '',
                   class: 'form-control',
-                  placeholder: 'Kode Akun',
-                  data: { target: 'base--dynamic-input.input', controller: "select2" },
-                  id: "a#{SecureRandom.uuid}", required: 1
-            .form-group[style="margin-bottom:15px;position:relative;"]
-              label
-                | Deskripsi
-                span.text-danger.ml-1 *
-              = text_area_tag 'reval[reval_lines_attributes][0][description]', '',
-                class: 'form-control',
-                data: {\
-                  target: 'base--dynamic-input.input'\
-                }, required: 1
-            .form-group[style="margin-bottom:5px;position:relative;"]
-              label
-                | Nominal
-                span.text-danger.ml-1 *
-            .row.js-general-transactions-nominal-idr-usd
-              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-                .position-absolute.p-3 IDR
-                = text_field_tag 'reval[reval_lines_attributes][0][price_idr]', nil,
-                class: 'form-control pl-10 js-nominal', required: 1
-              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-                .position-absolute.p-3 USD
-                = text_field_tag 'reval[reval_lines_attributes][0][price_usd]', nil,
-                class: 'form-control pl-12 js-nominal', required: 1
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group[style="margin-bottom:5px;position:relative;"]
+                label
+                  | Nominal
+              .row.js-general-transactions-nominal-idr-usd
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 IDR
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", nil,
+                    class: 'form-control pl-10 js-nominal',
+                    data: { controller: 'base--input-price' }
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 USD
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", nil,
+                    class: 'form-control pl-12 js-nominal',
+                    data: { controller: 'base--input-price' }
       - else
         .pb-8.position-relative[
           data-controller="base--dynamic-input-v2"
@@ -110,8 +128,8 @@
                   label
                     | Kode Akun 
                     span.text-danger.ml-1 *
-                  = select_tag "reval[reval_lines_attributes][#{i}][code]",
-                    options_for_select(select_account_options, line.code),
+                  = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
+                    options_from_collection_for_select(Account.where(id: line.id), :id, :readable_name),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',
@@ -129,16 +147,17 @@
               .form-group[style="margin-bottom:5px;position:relative;"]
                 label
                   | Nominal
-                  span.text-danger.ml-1 *
               .row.js-general-transactions-nominal-idr-usd
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 IDR
-                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", line.idr.amount,
-                  class: 'form-control pl-10 js-nominal', required: 1
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", line.price_idr.amount,
+                    class: 'form-control pl-10 js-nominal',
+                    data: { controller: 'base--input-price' }
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 USD
-                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", line.usd.amount,
-                  class: 'form-control pl-12 js-nominal', required: 1
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", line.price_usd.amount,
+                    class: 'form-control pl-12 js-nominal',
+                    data: { controller: 'base--input-price' }
     fieldset
       legend
         i.flaticon2-arrow-up.text-danger.mr-1
@@ -154,54 +173,58 @@
             ]
               i.fas.fa-plus.mr-1
               | Tambah
-          .js-item-container.pl-5.position-relative.mb-4.pb-4[
-            style="border-bottom:1px solid #e8e8e8;"
-          ]
-            .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
-              | 1.
-            .position-absolute.right-0.top-0[
-              style="z-index:10;"
+          - start = Account.moneter.count
+          - Account.moneter.each_with_index do |account,j|
+            - i = start + j
+            .js-item-container.pl-5.position-relative.mb-4.pb-4[
+              style="border-bottom:1px solid #e8e8e8;"
             ]
-              button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
-                type="button"
-                data-action="click->base--dynamic-input-v2#remove"
+              .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                | #{j+1}.
+              .position-absolute.right-0.top-0[
+                style="z-index:10;"
               ]
-                i.fas.fa-times
-            = hidden_field_tag 'reval[reval_lines_attributes][1][group]', 'credit'
-            .row.mb-2
-              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#remove"
+                ]
+                  i.fas.fa-times
+              = hidden_field_tag "reval[reval_lines_attributes][#{i}][group]", 'credit'
+              .row.mb-2
+                .col-lg-6.form-group[style="margin-bottom:5px;"]
+                  label
+                    | Kode Akun 
+                    span.text-danger.ml-1 *
+                  = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
+                    options_from_collection_for_select(Account.where(id: account.id), :id, :readable_name, account.id),
+                    include_blank: '== Pilih ==',
+                    class: 'form-control',
+                    placeholder: 'Kode Akun',
+                    data: { target: 'base--dynamic-input.input', controller: "select2" },
+                    id: "a#{SecureRandom.uuid}", required: 1
+              .form-group[style="margin-bottom:15px;position:relative;"]
                 label
-                  | Kode Akun 
+                  | Deskripsi
                   span.text-danger.ml-1 *
-                = select_tag 'reval[reval_lines_attributes][1][code]',
-                  options_for_select(select_account_options),
-                  include_blank: '== Pilih ==',
+                = text_area_tag "reval[reval_lines_attributes][#{i}][description]", '',
                   class: 'form-control',
-                  placeholder: 'Kode Akun',
-                  data: { target: 'base--dynamic-input.input', controller: "select2" },
-                  id: "a#{SecureRandom.uuid}", required: 1
-            .form-group[style="margin-bottom:15px;position:relative;"]
-              label
-                | Deskripsi
-                span.text-danger.ml-1 *
-              = text_area_tag 'reval[reval_lines_attributes][1][description]', '',
-                class: 'form-control',
-                data: {\
-                  target: 'base--dynamic-input.input'\
-                }, required: 1
-            .form-group[style="margin-bottom:5px;position:relative;"]
-              label
-                | Nominal
-                span.text-danger.ml-1 *
-            .row.js-general-transactions-nominal-idr-usd
-              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-                .position-absolute.p-3 IDR
-                = text_field_tag 'reval[reval_lines_attributes][1][price_idr]', nil,
-                  class: 'form-control pl-10 js-nominal', required: 1
-              .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
-                .position-absolute.p-3 USD
-                = text_field_tag 'reval[reval_lines_attributes][1][price_usd]', nil,
-                  class: 'form-control pl-12 js-nominal', required: 1
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group[style="margin-bottom:5px;position:relative;"]
+                label
+                  | Nominal
+              .row.js-general-transactions-nominal-idr-usd
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 IDR
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", nil,
+                    class: 'form-control pl-10 js-nominal',
+                    data: { controller: 'base--input-price' }
+                .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                  .position-absolute.p-3 USD
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", nil,
+                    class: 'form-control pl-12 js-nominal',
+                    data: { controller: 'base--input-price' }
       - else
         .pb-8.position-relative[
           data-controller="base--dynamic-input-v2"
@@ -236,8 +259,8 @@
                   label
                     | Kode Akun 
                     span.text-danger.ml-1 *
-                  = select_tag "reval[reval_lines_attributes][#{i}][code]",
-                    options_for_select(select_account_options, line.code),
+                  = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
+                    options_from_collection_for_select(Account.where(id: line.id), :id, :readable_name),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',
@@ -255,16 +278,17 @@
               .form-group[style="margin-bottom:5px;position:relative;"]
                 label
                   | Nominal
-                  span.text-danger.ml-1 *
               .row.js-general-transactions-nominal-idr-usd
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 IDR
-                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", line.idr.amount,
-                    class: 'form-control pl-10 js-nominal', required: 1
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_idr]", line.price_idr.amount,
+                    class: 'form-control pl-10 js-nominal',
+                    data: { controller: 'base--input-price' }
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 USD
-                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", line.usd.amount,
-                    class: 'form-control pl-12 js-nominal', required: 1
+                  = text_field_tag "reval[reval_lines_attributes][#{i}][price_usd]", line.price_usd.amount,
+                    class: 'form-control pl-12 js-nominal',
+                    data: { controller: 'base--input-price' }
     .form-group.mt-3
       label Dokumen (maks. 10 Dokumen)
       .input-group.d-block

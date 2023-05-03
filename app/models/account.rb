@@ -32,6 +32,7 @@ class Account < ApplicationRecord
     kredit: 'kredit',
   }
 
+  scope :moneter, -> { where(moneter: true) }
   pg_search_scope :search,
     against: %i[code name],
     using: {

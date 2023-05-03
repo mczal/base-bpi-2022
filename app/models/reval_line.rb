@@ -2,6 +2,7 @@ class RevalLine < ApplicationRecord
   audited
 
   belongs_to :reval
+  belongs_to :account
   has_many :journals, as: :journalable, dependent: :destroy
 
   monetize :price_idr_cents, with_currency: :idr

@@ -42,4 +42,8 @@ class User < ApplicationRecord
 
     formatted_phone
   end
+
+  def readable_name
+    @readable_name ||= "#{self.name} (#{self.email})"
+  end
 end

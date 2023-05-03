@@ -190,6 +190,15 @@ Rails.application.routes.draw do
     post 'revals/:id/edit',
       to: 'revals#edit',
       as: :edit_reval
+    namespace :revals do
+      post '/actions/edit_account_configurations',
+        to: 'actions#edit_account_configuration',
+        as: :edit_account_configuration
+      post '/actions/update_account_configurations',
+        to: 'actions#update_account_configuration',
+        as: :update_account_configuration
+    end
+
     resources :adjustment_audits, only: %i[index show create update destroy]
     post 'adjustment_audits/:id/edit',
       to: 'adjustment_audits#edit',

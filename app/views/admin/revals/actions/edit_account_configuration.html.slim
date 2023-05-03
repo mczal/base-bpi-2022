@@ -1,0 +1,76 @@
+= form_with url: admin_revals_update_account_configuration_path,
+  method: :post do |f|
+  .modal-header
+    h5#exampleModalLabel.modal-title
+      span
+        | Update Konfigurasi Akun Moneter
+    button.close aria-label="Close" data-dismiss="modal" type="button" 
+      i.ki.ki-close aria-hidden="true"
+  .modal-body
+    .pb-8.position-relative[
+      data-controller="base--dynamic-input-v2"
+    ]
+      .position-absolute.right-0.bottom-0[style="z-index:10;"]
+        button.btn-sm.btn.btn-outline-primary.mr-3[
+          type="button"
+          data-action="click->base--dynamic-input-v2#add"
+        ]
+          i.fas.fa-plus.mr-1
+          | Tambah
+      - if !Account.moneter.present?
+        .js-item-container.pl-5.position-relative.mb-4.pb-4[
+          style="border-bottom:1px solid #e8e8e8;"
+        ]
+          .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+            | 1.
+          .position-absolute.right-0.top-0[
+            style="z-index:10;"
+          ]
+            button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+              type="button"
+              data-action="click->base--dynamic-input-v2#remove"
+            ]
+              i.fas.fa-times
+          .form-group[style="margin-bottom:5px;"]
+            label
+              | Kode Akun 
+              span.text-danger.ml-1 *
+            = select_tag 'account_id[]',
+              options_from_collection_for_select(Account.select(:id,:name,:code), :id, :readable_name),
+              include_blank: '== Pilih ==',
+              class: 'form-control',
+              placeholder: 'Kode Akun',
+              data: { target: 'base--dynamic-input.input', controller: "select2" },
+              id: "a#{SecureRandom.uuid}", required: 1
+      - else
+        - Account.moneter.each.with_index(1) do |account,i|
+          .js-item-container.pl-5.position-relative.mb-4.pb-4[
+            style="border-bottom:1px solid #e8e8e8;"
+          ]
+            .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+              | #{i}.
+            .position-absolute.right-0.top-0[
+              style="z-index:10;"
+            ]
+              button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                type="button"
+                data-action="click->base--dynamic-input-v2#remove"
+              ]
+                i.fas.fa-times
+            .form-group[style="margin-bottom:5px;"]
+              label
+                | Kode Akun 
+                span.text-danger.ml-1 *
+              = select_tag 'account_id[]',
+                options_from_collection_for_select(Account.select(:id,:name,:code), :id, :readable_name, account.id),
+                include_blank: '== Pilih ==',
+                class: 'form-control',
+                placeholder: 'Kode Akun',
+                data: { target: 'base--dynamic-input.input', controller: "select2" },
+                id: "a#{SecureRandom.uuid}", required: 1
+  .modal-footer
+    button.btn.btn-light-primary.font-weight-bold[
+      data-dismiss="modal"
+      type="button"
+    ] Batal
+    = f.submit "Simpan", class: "btn btn-outline-success"

@@ -1,6 +1,10 @@
 class Reval < ApplicationRecord
   audited
   include PgSearch::Model
+  include Audited::Logs
+  include Revals::SynchronizeToDateBeforeSave
+  include Revals::Price
+  include Revals::Periodes
 
   has_many :reval_lines, dependent: :destroy
   has_many :approvals, as: :approvable, dependent: :destroy
@@ -19,5 +23,11 @@ class Reval < ApplicationRecord
       journalable_type: 'RevalLine',
       journalable_id: reval_lines.ids
     )
+  end
+
+  def account_count
+    @account_count ||= begin
+      reval_lines.uniq{|x| x.account_id}.count
+   end
   end
 end

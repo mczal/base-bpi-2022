@@ -70,7 +70,7 @@ module Api
                 created_at: helpers.readable_timestamp_2(reval.created_at.localtime),
                 updated_at: helpers.readable_timestamp_2(reval.updated_at.localtime),
                 date: helpers.readable_date_4(reval.date),
-                number_of_account: reval.reval_lines.debit.count,
+                number_of_account: reval.account_count,
                 show_path: admin_reval_path(id: reval.id, slug: current_company.slug),
                 edit_path: admin_edit_reval_path(id: reval.id, slug: current_company.slug),
                 delete_path: admin_reval_path(id: reval.id, slug: current_company.slug)

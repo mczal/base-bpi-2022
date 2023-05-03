@@ -1,0 +1,141 @@
+.row.mt-5
+  .col-12
+    .card.card-custom.card-stretch.gutter-b
+      .card-header.border-0.py-5
+        .text-dark.text-hover-primary.font-size-h5.font-weight-bolder.mb-4
+          |  List Data Akun REVAL
+      .card-body.pt-0.pb-3
+        .table-responsive[
+            style="max-height:65vh;"
+          ]
+          table.table.table-head-custom.table-head-bg.table-vertical-center.table-bordered
+            thead
+              tr.text-uppercase
+                th.text-center.text-dark.font-weight-bolder[
+                  rowspan="2"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | #
+                th.pl-7[
+                  style="min-width: 100px"
+                  rowspan="2"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | Akun
+                th.pl-7[
+                  style="min-width: 100px"
+                  rowspan="2"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | Deskripsi
+                th.text-center[
+                  style=""
+                  colspan="2"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | Debit
+                th.text-center[
+                  style=""
+                  colspan="2"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | Kredit
+              tr.text-uppercase
+                th.text-center[
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | IDR
+                th.text-center[
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | USD
+                th.text-center[
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | IDR
+                th.text-center[
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | USD
+            tbody
+              - @reval.reval_lines.each.with_index(1) do |line, i|
+                tr
+                  td.pt-5.text-center[style="vertical-align:top;"]
+                    | #{i}.
+                  td.pl-4.py-4
+                    div
+                      b
+                        | #{line.account.code}
+                    div
+                      | #{line.account.name}
+                  td.pl-4.py-4
+                    | #{line.description}
+                  - if line.debit?
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | #{print_money line.price_idr}
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | #{print_money line.price_usd}
+                  - else
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | 
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | 
+                  - if line.credit?
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | #{print_money line.price_idr}
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | #{print_money line.price_usd}
+                  - else
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | 
+                    td.text-right
+                      span.text-dark-75.d-block.font-size-lg
+                        | 
+              tfoot[
+                style="border-top:1px solid #E5E5E5;"
+              ]
+                tr
+                  td.text-right.font-weight-bolder[
+                    colspan="3"
+                  ]
+                    | TOTAL
+                  td.font-weight-bolder.text-right[
+                  ]
+                    | #{print_money @reval.total_debit_idr}
+                  td.font-weight-bolder.text-right[
+                  ]
+                    | #{print_money @reval.total_debit_usd}
+                  td.font-weight-bolder.text-right[
+                  ]
+                    | #{print_money @reval.total_credit_idr}
+                  td.font-weight-bolder.text-right[
+                  ]
+                    | #{print_money @reval.total_credit_usd}
+                tr
+                  td.text-right.font-weight-bolder[
+                    colspan="3"
+                  ]
+                    | Balance IDR Check
+                  td.font-weight-bold.font-weight-bolder[
+                    colspan="4"
+                    class="#{@reval.idr_balance_check == 0 ? 'text-success':'text-danger'}"
+                  ]
+                    | #{print_money @reval.idr_balance_check}
+                tr
+                  td.text-right.font-weight-bolder[
+                    colspan="3"
+                  ]
+                    | Balance USD Check
+                  td.font-weight-bold.font-weight-bolder[
+                    colspan="4"
+                    class="#{@reval.usd_balance_check == 0 ? 'text-success':'text-danger'}"
+                  ]
+                    | #{print_money @reval.usd_balance_check}
+

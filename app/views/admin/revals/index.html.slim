@@ -49,6 +49,16 @@
               i.la.la-plus
               | Tambah Data Reval
             = render partial: 'new'
+            button.btn.btn-secondary.font-weight-bolder.mb-2.ml-2[
+              data-controller="admin--edit"
+              data-action="click->admin--edit#handleClick"
+              data-admin--edit-path="#{admin_revals_edit_account_configuration_path}"
+              data-target="#Edit"
+              data-toggle="modal"
+              type="button"
+            ]
+              i.fas.fa-cog
+              | Atur Konfigurasi Akun Moneter
 
         .card-body
           = render partial: 'edit'

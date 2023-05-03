@@ -14,13 +14,24 @@ module Revals
       end
 
       def attributes
-        @attributes ||= @params.require(:reval).permit(
-          :date, files: [],
+        return @attributes if @attributes.present?
+        @attributes = @params.require(:reval).permit(
+          :date, :periode, files: [],
           reval_lines_attributes: [
             :group, :description,
-            :price_idr, :price_usd
+            :price_idr, :price_usd,
+            :account_id
           ]
         )
+        @attributes[:reval_lines_attributes].each do |k,v|
+          if !v[:price_idr].present?
+            v[:price_idr] = nil
+          end
+          if !v[:price_usd].present?
+            v[:price_usd] = nil
+          end
+        end
+        @attributes
       end
   end
 end
