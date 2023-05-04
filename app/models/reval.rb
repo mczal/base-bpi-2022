@@ -2,6 +2,8 @@ class Reval < ApplicationRecord
   audited
   include PgSearch::Model
   include Audited::Logs
+  include Approvable::AfterHooks
+  include Revals::Approvals
   include Revals::SynchronizeToDateBeforeSave
   include Revals::Price
   include Revals::Periodes

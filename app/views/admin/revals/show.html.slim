@@ -98,25 +98,14 @@ scss:
                     li.nav-item
                       a#profile-tab14a.nav-link[
                         data-toggle="tab"
-                        href="#approval"
-                        aria-controls="approval"
+                        href="#transaction"
+                        aria-controls="transaction"
                         class="#{''}"
                       ]
                         span.nav-icon
                           i.far.fa-calendar-check
                         span.nav-text
                           | 2. Approval
-                    li.nav-item
-                      a#profile-tab12.nav-link[
-                        data-toggle="tab"
-                        href="#journals"
-                        aria-controls="journals"
-                        class="#{''}"
-                      ]
-                        span.nav-icon
-                          i.fas.fa-random
-                        span.nav-text
-                          | 3. Jurnal
             #myTabContent.tab-content.mt-5
               #documents.tab-pane.fade[
                 role="tabpanel" aria-labelledby="documents"
@@ -126,20 +115,11 @@ scss:
                   = render partial: 'shared/document_v2',
                     collection: @reval.files, as: :file,
                     locals: { file_name: 'Dokumen Lainnya' }
-              #approval.tab-pane.fade[
-                role="tabpanel" aria-labelledby="approval"
+              #transaction.tab-pane.fade[
+                role="tabpanel" aria-labelledby="transaction"
                 class="#{''}"
               ]
-                .card-body
-                  .d-flex.align-items-center.flex-wrap
-                    / - @reval.functioned_approvals.each do |approval|
-                      = render partial: 'shared/approvals/item',
-                        locals: {approval: approval}
-              #journals.tab-pane.fade[
-                role="tabpanel" aria-labelledby="journals"
-                class="#{''}"
-              ]
-                / = render partial: 'journals'
+                = render partial: 'approvals'
       = render partial: 'lines'
       / = render partial: 'shared/data_history',
           locals: {\
