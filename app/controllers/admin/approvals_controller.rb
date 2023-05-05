@@ -1,8 +1,10 @@
 module Admin
   class ApprovalsController < AdminController
+    layout 'approval'
+    include Approvals::RedirectHandlers
+
     before_action :approval, except: %i[index]
     before_action :pending_approvals, only: %i[index show update]
-    layout 'approval'
 
     def index; end
 
@@ -38,6 +40,7 @@ module Admin
         return redirect_to admin_approval_path(id: approval.id, slug: current_company.slug)
       end
 
+      binding.pry
       flash[:success] = "Berhasil melakukan approval"
       next_sibl = approval.next
       if next_sibl.present? && current_user.roles_name.include?(next_sibl.role)

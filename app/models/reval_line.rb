@@ -1,5 +1,6 @@
 class RevalLine < ApplicationRecord
   audited
+  include RevalLines::SetupJournals
 
   belongs_to :reval
   belongs_to :account

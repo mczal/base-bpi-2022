@@ -1,16 +1,35 @@
 module Revals
-  class CreateService < ::BaseService
+  class UpdateService < ::BaseService
     def initialize params
       @params = params
     end
 
     def reval
-      @reval ||= Reval.new(attributes)
+      @reval ||= Reval.find_by(id: @params[:id])
     end
 
     private
       def action
+        destroy_not_available_lines
+
+        reval.assign_attributes(attributes)
+        handle_status_change_if_from_draft
+
         reval.save!
+      end
+
+      def handle_status_change_if_from_draft
+        return unless reval.draft?
+        reval.status = :waiting_for_approval
+      end
+
+      def destroy_not_available_lines
+        ids = attributes[:reval_lines_attributes].values.map{|x|x[:id]}
+        reval.reval_lines
+          .where.not(id: ids)
+          .destroy_all
+
+        reval.reload
       end
 
       def attributes

@@ -1,5 +1,5 @@
 class AddPeriodeToRevals < ActiveRecord::Migration[6.1]
   def change
-    add_column :revals, :periode, :string
+    add_column :revals, :period, :string
   end
 end

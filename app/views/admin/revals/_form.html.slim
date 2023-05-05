@@ -21,16 +21,11 @@
         label.btn.btn-sm.btn-light.font-weight-bold.ml-2.my-0
           span.text-primary.font-size-base.font-weight-bolder.ml-2
             | #{@reval.new_record? ? readable_date_5(DateTime.now.localtime.to_date.prev_month.end_of_month) : readable_date_5(@reval.date)}
-          input[
-            name="reval[periode]"
-            type="text"
-            class=""
-            value="#{@reval&.date || readable_date_6(DateTime.now.localtime.to_date.prev_month.end_of_month)}"
-            readonly="readonly"
-            placeholder="Select date"
-            data-controller="picker--date-month-year"
-            style="opacity:0;width:1px;"
-          ]
+          = f.text_field :period,
+            placeholder: 'Select date',
+            data: { controller: 'picker--date-month-year' },
+            style: 'opacity:0;width:1px;',
+            readonly: 1, required: 1
     fieldset
       legend
         i.flaticon2-arrow-down.text-success.mr-1
@@ -129,7 +124,7 @@
                     | Kode Akun 
                     span.text-danger.ml-1 *
                   = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
-                    options_from_collection_for_select(Account.where(id: line.id), :id, :readable_name),
+                    options_from_collection_for_select(Account.moneter.or(Account.where(id: line.account_id)), :id, :readable_name, line.account_id),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',
@@ -260,7 +255,7 @@
                     | Kode Akun 
                     span.text-danger.ml-1 *
                   = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
-                    options_from_collection_for_select(Account.where(id: line.id), :id, :readable_name),
+                    options_from_collection_for_select(Account.moneter.or(Account.where(id: line.account_id)), :id, :readable_name, line.account_id),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',

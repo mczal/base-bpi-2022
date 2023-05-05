@@ -12,12 +12,19 @@ module GeneralTransactions
           .reorder(number_evidence: :desc)
           .limit(1)
           .first&.number_evidence
+        latest_from_reval = Reval.select(:number_evidence).distinct
+          .where('number_evidence ILIKE ?', 'BJ%')
+          .reorder(number_evidence: :desc)
+          .limit(1)
+          .first&.number_evidence
 
         if location == 'site'
           latest = latest.to_s.downcase.remove('bj-site-').strip.to_i
           loc_text = '-Site-'
         elsif location == 'jakarta'
           latest = latest.to_s.downcase.remove('bj').strip.to_i
+          latest_from_reval = latest_from_reval.to_s.downcase.remove('bj').strip.to_i
+          latest = latest_from_reval if latest_from_reval > latest
           loc_text = ' '
         end
 
