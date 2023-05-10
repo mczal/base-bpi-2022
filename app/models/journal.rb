@@ -42,5 +42,11 @@ class Journal < ApplicationRecord
         slug: company.slug, id: source_id
       )
     end
+    if self.journalable_type == 'RevalLine'
+      source_id = journalable.reval_id
+      return Rails.application.routes.url_helpers.admin_reval_path(
+        slug: company.slug, id: source_id
+      )
+    end
   end
 end

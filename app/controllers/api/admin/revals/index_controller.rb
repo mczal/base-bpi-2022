@@ -20,16 +20,28 @@ module Api
             return @revals if @revals.present?
             @revals = Reval.all
 
-            if sort.present?
+            apply_query
+            apply_sort
+
+            @revals
+          end
+
+          def apply_query
+            if date_range.present?
               @revals = @revals
-                .reorder("#{sort[:field]}": sort[:sort])
+                .where(date: date_range)
             end
             if query.present? && query.dig(:search).present?
               @revals = @revals
                 .search(query[:search])
             end
+          end
 
-            @revals
+          def apply_sort
+            if sort.present?
+              @revals = @revals
+                .reorder("#{sort[:field]}": sort[:sort])
+            end
           end
 
           def paginated_revals
@@ -71,6 +83,8 @@ module Api
                 updated_at: helpers.readable_timestamp_2(reval.updated_at.localtime),
                 date: helpers.readable_date_4(reval.date),
                 number_of_account: reval.account_count,
+                number_evidence: reval.number_evidence || '-',
+                status_html: reval.status_for_html,
                 show_path: admin_reval_path(id: reval.id, slug: current_company.slug),
                 edit_path: admin_edit_reval_path(id: reval.id, slug: current_company.slug),
                 delete_path: admin_reval_path(id: reval.id, slug: current_company.slug)
@@ -85,6 +99,15 @@ module Api
             end
 
             ((page[:page].to_i - 1) * page[:perpage].to_i) + 1
+          end
+
+          def date_range
+            return @date_range if @date_range.present?
+
+            if params[:date].present?
+              date = Date.strptime(params[:date], '%m-%Y')
+              return @date_range = (date.beginning_of_month..date.end_of_month)
+            end
           end
       end
     end

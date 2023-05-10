@@ -37,16 +37,11 @@ module Admin
       service = Approvals::UpdateService.new(approval, approval_params)
       if !service.run
         flash[:danger] = "Gagal melakukan approval #{service.error_messages.to_sentence}"
-        return redirect_to admin_approval_path(id: approval.id, slug: current_company.slug)
+        return redirect_approvals_after_update
       end
 
-      binding.pry
       flash[:success] = "Berhasil melakukan approval"
-      next_sibl = approval.next
-      if next_sibl.present? && current_user.roles_name.include?(next_sibl.role)
-        return redirect_to admin_approval_path(id: next_sibl.id, slug: current_company.slug)
-      end
-      return redirect_to admin_approvals_path
+      return redirect_approvals_after_update
     end
 
     def send_notification

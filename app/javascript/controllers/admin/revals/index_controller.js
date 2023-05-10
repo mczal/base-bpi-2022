@@ -52,6 +52,20 @@ export default class extends DatatablesController {
         }
       },
       {
+        field: 'number_evidence',
+        title: 'Nomor Bukti',
+        template: function(data) {
+          return `<span class="font-weight-bolder">${data.number_evidence}</span>`;
+        }
+      },
+      {
+        field: 'status',
+        title: 'Status',
+        template: function(data) {
+          return `${data.status_html}`;
+        }
+      },
+      {
         field: 'number_of_account',
         sortable: false,
         title: 'Total Akun',

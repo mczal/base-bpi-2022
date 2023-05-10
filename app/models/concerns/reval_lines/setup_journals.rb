@@ -15,19 +15,16 @@ module RevalLines
       )
       journal.assign_attributes(
         date: self.reval.date,
-        code: self.code,
-        number_evidence: self.general_transaction.number_evidence,
-        location: self.general_transaction.location,
-        company_id: self.general_transaction.company_id,
+        code: self.account.code,
+        number_evidence: self.reval.number_evidence,
+        location: 'jakarta',
+        company_id: Company.bpi.id,
         description: self.description,
-        debit_idr: (self.debit? ? self.idr : 0),
-        credit_idr: (self.credit? ? self.idr : 0),
-        debit_usd: (self.debit? ? self.usd : 0),
-        credit_usd: (self.credit? ? self.usd : 0),
-        rates_options: {
-          id: self.general_transaction.fixed_rates_options['id'],
-          price: self.rate.amount
-        },
+        debit_idr: (self.debit? ? self.price_idr : 0),
+        credit_idr: (self.credit? ? self.price_idr : 0),
+        debit_usd: (self.debit? ? self.price_usd : 0),
+        credit_usd: (self.credit? ? self.price_usd : 0),
+        rates_options: nil,
       )
       journal.save! if journal.new_record? || journal.changed?
     end
