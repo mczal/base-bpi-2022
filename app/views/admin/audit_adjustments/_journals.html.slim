@@ -1,0 +1,84 @@
+.card-body
+  .table-responsive[
+    style="max-height:50vh;"
+  ]
+    table.table.table-head-custom.table-head-bg.table-borderless.table-vertical-center[
+      style="overflow-x:scroll;"
+    ]
+      thead
+        tr
+          th[style="width: 40px;"]
+            span
+              | #
+          th[style="width: 100px;"]
+            span
+              | Tanggal
+          th.vertical-sticky[style="width: 110px;"]
+            span
+              | Akun
+          th[style="width: 110px;"]
+            span
+              | Debit (IDR)
+          th[style="width: 110px;"]
+            span
+              | Kredit (IDR)
+          th[style="width: 110px;"]
+            span
+              | Kurs
+          th[style="width: 110px;"]
+            span
+              | Debit (USD)
+          th[style="width: 110px;"]
+            span
+              | Kredit (USD)
+      tbody
+        - @audit_adjustment.journals.each.with_index(1) do |journal,i|
+          tr
+            td
+              span[style="overflow: visible; position: relative; width: 40px;"]
+                span.font-weight-bolder
+                  | #{i}.
+            td
+              span[style="overflow: visible; position: relative; width: 100px;"]
+                span.svg-icon.svg-icon-light-dark[
+                  data-controller="base--popover"
+                  data-base--popover-html="1"
+                  data-base--popover-trigger="hover"
+                  data-content="Dibuat: #{readable_timestamp_4(journal.created_at.localtime)} <br/> Diubah: #{readable_timestamp_4(journal.updated_at.localtime)}"
+                  data-title="Dibuat/Diubah" style="cursor:pointer;"
+                ]
+                  svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                    g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                      rect[x="0" y="0" width="24" height="24"]
+                      circle[fill="#000000" opacity="0.3" cx="12" cy="12" r="10"]
+                      rect[fill="#000000" x="11" y="10" width="2" height="7" rx="1"]
+                      rect[fill="#000000" x="11" y="7" width="2" height="2" rx="1"]
+                span.font-weight-bolder
+                  | #{readable_date_3 journal.date}
+            td.vertical-sticky
+              span[style="overflow: visible; position: relative; width: 110px;"]
+                div
+                  b
+                    | #{journal.code}
+                div
+                  |   #{journal.account.name}
+            td
+              span[style="overflow: visible; position: relative; width: 110px;"]
+                span.font-weight-bolder
+                  = (journal.debit_idr != 0 ? print_money(journal.debit_idr) : '-')
+            td
+              span[style="overflow: visible; position: relative; width: 110px;"]
+                span.font-weight-bolder
+                  = (journal.credit_idr != 0 ? print_money(journal.credit_idr) : '-')
+            td
+              span[style="overflow: visible; position: relative; width: 110px;"]
+                span.font-weight-bolder
+                  = print_money journal.rate_money
+            td
+              span[style="overflow: visible; position: relative; width: 110px;"]
+                span.font-weight-bolder
+                  = (journal.debit_usd != 0 ? print_money(journal.debit_usd) : '-')
+            td
+              span[style="overflow: visible; position: relative; width: 110px;"]
+                span.font-weight-bolder
+                  = (journal.credit_usd != 0 ? print_money(journal.credit_usd) : '-')

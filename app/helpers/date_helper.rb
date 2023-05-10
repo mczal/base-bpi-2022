@@ -43,6 +43,10 @@ module DateHelper
     return "-" unless date.present?
     I18n.l(date, format: '%m-%Y')
   end
+  def readable_date_7 date
+    return "-" unless date.present?
+    I18n.l(date, format: '%Y')
+  end
 
   def readable_timestamp date
     return "-" unless date.present?

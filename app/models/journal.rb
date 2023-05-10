@@ -48,5 +48,11 @@ class Journal < ApplicationRecord
         slug: company.slug, id: source_id
       )
     end
+    if self.journalable_type == 'AuditAdjustmentLine'
+      source_id = journalable.audit_adjustment_id
+      return Rails.application.routes.url_helpers.admin_audit_adjustment_path(
+        slug: company.slug, id: source_id
+      )
+    end
   end
 end

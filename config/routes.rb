@@ -199,10 +199,10 @@ Rails.application.routes.draw do
         as: :update_account_configuration
     end
 
-    resources :adjustment_audits, only: %i[index show create update destroy]
-    post 'adjustment_audits/:id/edit',
-      to: 'adjustment_audits#edit',
-      as: :edit_adjustment_audit
+    resources :audit_adjustments, only: %i[index show create update destroy]
+    post 'audit_adjustments/:id/edit',
+      to: 'audit_adjustments#edit',
+      as: :edit_audit_adjustment
 
     post 'active_storages/:resource_id/:resource_type/:registered_name/upload_document',
       to: 'active_storages#upload_document',
@@ -224,9 +224,6 @@ Rails.application.routes.draw do
 
     namespace :admin do
       namespace :general_transactions do
-        post 'get-all', to: 'index#show', as: :index
-      end
-      namespace :revals do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :journals do
@@ -264,6 +261,13 @@ Rails.application.routes.draw do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :invoices do
+        post 'get-all', to: 'index#show', as: :index
+      end
+
+      namespace :revals do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :audit_adjustments do
         post 'get-all', to: 'index#show', as: :index
       end
     end

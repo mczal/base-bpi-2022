@@ -79,7 +79,7 @@
                 label
                   | 1. BNI
                 = select_tag "account_for_number_evidence",
-                  options_from_collection_for_select(Account.where('name ILIKE ?','%bni%'), :id, :readable_name),
+                  options_from_collection_for_select(current_company.accounts.where('name ILIKE ?','%bni%'), :id, :readable_name),
                   include_blank: '== Pilih ==',
                   class: 'form-control',
                   placeholder: 'Kode Akun',

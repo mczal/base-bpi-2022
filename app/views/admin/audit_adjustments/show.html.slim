@@ -1,0 +1,153 @@
+scss:
+  table thead tr {
+    & th {
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index:10;
+    }
+    &:nth-child(2) th {
+      top: 47px;
+    }
+  }
+
+#kt_content.content.d-flex.flex-column.flex-column-fluid
+  #kt_subheader.subheader.py-2.py-lg-6.subheader-solid
+    .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+      .d-flex.align-items-center.flex-wrap.mr-1
+        button#kt_subheader_mobile_toggle.burger-icon.burger-icon-left.mr-4.d-inline-block.d-lg-none data-controller="base--mobile-mode"
+          span
+        .d-flex.align-items-baseline.flex-wrap.mr-5
+          h5.text-dark.font-weight-bold.my-1.mr-5
+            | Adjustment Audit Periode: #{readable_date_5 @audit_adjustment.date} - #{@audit_adjustment.number_evidence}
+            span.ml-2
+              |  #{@audit_adjustment.status_for_html}
+      #kt_subheader_search.d-flex.align-items-center
+        .ml-0.ml-sm-2
+          a.btn.btn-light-primary.font-weight-bold.ml-2[
+            href="javascript:void(0);"
+            data-toggle="modal"
+            data-target="#Edit"
+            data-controller="admin--edit"
+            data-action="click->admin--edit#handleClick"
+            data-admin--edit-path="#{admin_edit_audit_adjustment_path(id: @audit_adjustment.id, slug: current_company.slug)}"
+          ]
+            i.la.la-pencil-alt
+            |  Ubah 
+          a.btn.btn-light-danger.font-weight-bold.ml-2[
+            href="#{admin_audit_adjustment_path(id: @audit_adjustment.id, slug: current_company.slug)}"
+            data-method="delete"
+            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+            title="Delete"
+          ]
+            i.la.la-trash
+            |  Hapus
+
+  .d-flex.flex-column-fluid.mb-3
+    = render partial: 'shared/resources/edit'
+    .container
+      .d-flex.flex-row
+        #kt_profile_aside.flex-row-auto.offcanvas-mobile.w-300px.w-xl-400px
+          .fixed_position_card.card.card-custom
+            .card-header
+              .card-title
+                | Informasi Umum
+            .card-body.pt-4
+              .pt-2.pb-1
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Dibuat Pada:
+                  .text-right
+                    = readable_timestamp_2 @audit_adjustment.created_at.localtime
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Dibuat Oleh:
+                  .text-right
+                    = @audit_adjustment.first_log.user&.readable_name
+                hr.m-0
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Terakhir Diubah Pada:
+                  .text-right
+                    = readable_timestamp_2 @audit_adjustment.updated_at.localtime
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Terakhir Diubah Oleh:
+                  .text-right
+                    = @audit_adjustment.last_log.user&.readable_name
+              .pt-3.pb-3
+                .d-flex.align-items-top.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Nomor Bukti:
+                  .text-right
+                    .font-weight-bolder
+                      | #{@audit_adjustment.number_evidence}
+                .d-flex.align-items-top.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Periode:
+                  .text-right
+                    .font-weight-bolder
+                      | #{@audit_adjustment.period}
+                    .mt-n1.text-muted.text-hover-dark
+                      | Per #{readable_date_2 @audit_adjustment.date}
+        .flex-row-fluid.ml-lg-8          
+          .card.card-custom.card-stretch.gutter-b
+            .card-header.border-0.pt-5
+              .card-title.font-weight-bolder
+                .card-label
+                  ul#myTab.nav.nav-tabs[role="tablist"]
+                    li.nav-item
+                      a#home-tab12a.nav-link[
+                        data-toggle="tab"
+                        href="#documents"
+                        class="#{'active' if 1==1}"
+                      ]
+                        span.nav-icon
+                          i.flaticon2-layers-1
+                        span.nav-text
+                          | 1. Dokumen
+                    li.nav-item
+                      a#profile-tab14a.nav-link[
+                        data-toggle="tab"
+                        href="#approvals"
+                        aria-controls="approvals"
+                        class="#{''}"
+                      ]
+                        span.nav-icon
+                          i.far.fa-calendar-check
+                        span.nav-text
+                          | 2. Approval
+                    li.nav-item
+                      a#profile-tab12.nav-link[
+                        data-toggle="tab"
+                        href="#journals"
+                        aria-controls="journals"
+                        class="#{''}"
+                      ]
+                        span.nav-icon
+                          i.fas.fa-random
+                        span.nav-text
+                          | 3. Jurnal
+            #myTabContent.tab-content.mt-5
+              #documents.tab-pane.fade[
+                role="tabpanel" aria-labelledby="documents"
+                class="#{'active show' if 1==1}"
+              ]
+                .card-body.pt-0
+                  = render partial: 'shared/document_v2',
+                    collection: @audit_adjustment.files, as: :file,
+                    locals: { file_name: 'Dokumen Lainnya' }
+              #approvals.tab-pane.fade[
+                role="tabpanel" aria-labelledby="approvals"
+                class="#{''}"
+              ]
+                .card-body
+                  .d-flex.align-items-center.flex-wrap
+                    - @audit_adjustment.functioned_approvals.each do |approval|
+                      = render partial: 'shared/approvals/item',
+                        locals: {approval: approval}
+              #journals.tab-pane.fade[
+                role="tabpanel" aria-labelledby="journals"
+                class="#{''}"
+              ]
+                = render partial: 'journals'
+      = render partial: 'lines'
+      / = render partial: 'shared/data_history',
+          locals: {\
+            auditable_id: @audit_adjustment.id,\
+            auditable_type: 'GeneralTransaction'\
+          }

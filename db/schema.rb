@@ -101,25 +101,6 @@ ActiveRecord::Schema.define(version: 2023_05_05_043501) do
     t.index ["contract_id"], name: "index_addendums_on_contract_id"
   end
 
-  create_table "adjustment_audit_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "group"
-    t.decimal "price_idr_cents", default: "0.0", null: false
-    t.string "price_idr_currency", default: "IDR", null: false
-    t.decimal "price_usd_cents", default: "0.0", null: false
-    t.string "price_usd_currency", default: "USD", null: false
-    t.string "description"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.uuid "account_id"
-    t.index ["account_id"], name: "index_adjustment_audit_lines_on_account_id"
-  end
-
-  create_table "adjustment_audits", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.date "date"
-  end
-
   create_table "approval_configurations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -144,6 +125,32 @@ ActiveRecord::Schema.define(version: 2023_05_05_043501) do
     t.index ["approvable_type", "approvable_id"], name: "index_approvals_on_approvable"
     t.index ["order"], name: "index_approvals_on_order"
     t.index ["user_id"], name: "index_approvals_on_user_id"
+  end
+
+  create_table "audit_adjustment_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "group"
+    t.decimal "price_idr_cents", default: "0.0", null: false
+    t.string "price_idr_currency", default: "IDR", null: false
+    t.decimal "price_usd_cents", default: "0.0", null: false
+    t.string "price_usd_currency", default: "USD", null: false
+    t.uuid "audit_adjustment_id"
+    t.string "description"
+    t.decimal "rate_cents", default: "0.0", null: false
+    t.string "rate_currency", default: "IDR", null: false
+    t.uuid "account_id"
+    t.index ["account_id"], name: "index_audit_adjustment_lines_on_account_id"
+    t.index ["audit_adjustment_id"], name: "index_audit_adjustment_lines_on_audit_adjustment_id"
+  end
+
+  create_table "audit_adjustments", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.date "date"
+    t.string "period"
+    t.string "status"
+    t.string "number_evidence"
   end
 
   create_table "audits", force: :cascade do |t|
@@ -507,8 +514,9 @@ ActiveRecord::Schema.define(version: 2023_05_05_043501) do
   add_foreign_key "active_storage_attachments", "active_storage_blobs", column: "blob_id"
   add_foreign_key "active_storage_variant_records", "active_storage_blobs", column: "blob_id"
   add_foreign_key "addendums", "contracts"
-  add_foreign_key "adjustment_audit_lines", "accounts"
   add_foreign_key "approvals", "users"
+  add_foreign_key "audit_adjustment_lines", "accounts"
+  add_foreign_key "audit_adjustment_lines", "audit_adjustments"
   add_foreign_key "bas", "accounts", column: "accrued_credit_id"
   add_foreign_key "bas", "contracts"
   add_foreign_key "clients", "banks"

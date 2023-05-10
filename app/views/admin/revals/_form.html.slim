@@ -25,6 +25,7 @@
             placeholder: 'Select date',
             data: { controller: 'picker--date-month-year' },
             style: 'opacity:0;width:1px;',
+            value: (@reval.period.present? ? @reval.period : readable_date_6(DateTime.now.localtime.to_date.prev_month.end_of_month)),
             readonly: 1, required: 1
     fieldset
       legend
@@ -41,7 +42,7 @@
             ]
               i.fas.fa-plus.mr-1
               | Tambah
-          - Account.moneter.each_with_index do |account, i|
+          - current_company.accounts.moneter.each_with_index do |account, i|
             .js-item-container.pl-5.position-relative.mb-4.pb-4[
               style="border-bottom:1px solid #e8e8e8;"
             ]
@@ -62,7 +63,7 @@
                     | Kode Akun 
                     span.text-danger.ml-1 *
                   = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
-                    options_from_collection_for_select(Account.where(id: account.id), :id, :readable_name, account.id),
+                    options_from_collection_for_select(current_company.accounts.where(id: account.id), :id, :readable_name, account.id),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',
@@ -124,7 +125,7 @@
                     | Kode Akun 
                     span.text-danger.ml-1 *
                   = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
-                    options_from_collection_for_select(Account.moneter.or(Account.where(id: line.account_id)), :id, :readable_name, line.account_id),
+                    options_from_collection_for_select(current_company.accounts.moneter.or(current_company.accounts.where(id: line.account_id)), :id, :readable_name, line.account_id),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',
@@ -168,8 +169,8 @@
             ]
               i.fas.fa-plus.mr-1
               | Tambah
-          - start = Account.moneter.count
-          - Account.moneter.each_with_index do |account,j|
+          - start = current_company.accounts.moneter.count
+          - current_company.accounts.moneter.each_with_index do |account,j|
             - i = start + j
             .js-item-container.pl-5.position-relative.mb-4.pb-4[
               style="border-bottom:1px solid #e8e8e8;"
@@ -191,7 +192,7 @@
                     | Kode Akun 
                     span.text-danger.ml-1 *
                   = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
-                    options_from_collection_for_select(Account.where(id: account.id), :id, :readable_name, account.id),
+                    options_from_collection_for_select(current_company.accounts.where(id: account.id), :id, :readable_name, account.id),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',
@@ -255,7 +256,7 @@
                     | Kode Akun 
                     span.text-danger.ml-1 *
                   = select_tag "reval[reval_lines_attributes][#{i}][account_id]",
-                    options_from_collection_for_select(Account.moneter.or(Account.where(id: line.account_id)), :id, :readable_name, line.account_id),
+                    options_from_collection_for_select(current_company.accounts.moneter.or(current_company.accounts.where(id: line.account_id)), :id, :readable_name, line.account_id),
                     include_blank: '== Pilih ==',
                     class: 'form-control',
                     placeholder: 'Kode Akun',

@@ -19,6 +19,7 @@ class Approval < ApplicationRecord
   enum approvable_type: {
     GeneralTransaction: "GeneralTransaction",
     Reval: "Reval",
+    AuditAdjustment: "AuditAdjustment",
   }
 
   default_scope { order(order: :asc) }
