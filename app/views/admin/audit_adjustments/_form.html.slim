@@ -6,6 +6,7 @@
     button.close aria-label="Close" data-dismiss="modal" type="button" 
       i.ki.ki-close aria-hidden="true"
   .modal-body
+    = render partial: 'edit_alerts'
     .row
       .col-lg-6.form-group
         label[
@@ -159,14 +160,14 @@
               .row
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 IDR
-                  = text_field_tag "audit_adjustment[audit_adjustment_lines_attributes][#{i}][price_idr]", line.idr.amount,
+                  = text_field_tag "audit_adjustment[audit_adjustment_lines_attributes][#{i}][price_idr]", line.price_idr.amount,
                   class: 'form-control pl-10 js-nominal',
                   data: {\
                     controller: "base--input-price"\
                   }, required: 1
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 USD
-                  = text_field_tag "audit_adjustment[audit_adjustment_lines_attributes][#{i}][price_usd]", line.usd.amount,
+                  = text_field_tag "audit_adjustment[audit_adjustment_lines_attributes][#{i}][price_usd]", line.price_usd.amount,
                   class: 'form-control pl-12 js-nominal',
                   data: {\
                     controller: "base--input-price"\
@@ -313,14 +314,14 @@
               .row
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 IDR
-                  = text_field_tag "audt_adjustment[audt_adjustment_lines_attributes][#{i}][price_idr]", line.idr.amount,
+                  = text_field_tag "audt_adjustment[audt_adjustment_lines_attributes][#{i}][price_idr]", line.price_idr.amount,
                     class: 'form-control pl-10 js-nominal',
                     data: {\
                       controller: "base--input-price"\
                     }, required: 1
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 USD
-                  = text_field_tag "audt_adjustment[audt_adjustment_lines_attributes][#{i}][price_usd]", line.usd.amount,
+                  = text_field_tag "audt_adjustment[audt_adjustment_lines_attributes][#{i}][price_usd]", line.price_usd.amount,
                     class: 'form-control pl-12 js-nominal',
                     data: {\
                       controller: "base--input-price"\

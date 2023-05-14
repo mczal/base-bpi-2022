@@ -17,6 +17,18 @@ module GeneralTransactions
         handle_status_change_if_from_draft
 
         general_transaction.save!
+
+        revoke_journals
+        revoke_all_approvals
+      end
+
+      def revoke_journals
+        return unless general_transaction.approvals.present?
+        general_transaction.journals.destroy_all
+      end
+
+      def revoke_all_approvals
+        general_transaction.approvals.update(status: :waiting)
       end
 
       def handle_status_change_if_from_draft

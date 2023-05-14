@@ -1,6 +1,7 @@
 class GeneralTransaction < ApplicationRecord
   audited
   include PgSearch::Model
+  include Audited::Logs
   include Approvable::AfterHooks
   include GeneralTransactions::Approvals
   include GeneralTransactions::AssignDefaultValues

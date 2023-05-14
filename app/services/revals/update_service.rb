@@ -16,6 +16,18 @@ module Revals
         handle_status_change_if_from_draft
 
         reval.save!
+
+        revoke_journals
+        revoke_all_approvals
+      end
+
+      def revoke_journals
+        return unless reval.approvals.present?
+        reval.journals.destroy_all
+      end
+
+      def revoke_all_approvals
+        reval.approvals.update(status: :waiting)
       end
 
       def handle_status_change_if_from_draft
