@@ -3,6 +3,7 @@
 class User < ApplicationRecord
   rolify
   include Clearance::User
+  include Users::ApprovalAsNotifications
 
   has_one_attached :avatar
   belongs_to :company

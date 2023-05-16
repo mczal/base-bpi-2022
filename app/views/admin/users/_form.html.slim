@@ -46,7 +46,7 @@
       label Hak Akses
       .input-group
         = select_tag 'role[]',
-          options_from_collection_for_select(Role.select(:name), :name, :readable_name, @user.roles_name),
+          options_from_collection_for_select(Role.select(:name), :name, :name, @user.roles_name),
           include_blank: '== Pilih ==',
           class: 'form-control',
           multiple: 1,

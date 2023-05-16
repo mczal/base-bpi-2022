@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_11_083429) do
+ActiveRecord::Schema.define(version: 2023_05_05_043501) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -484,20 +484,6 @@ ActiveRecord::Schema.define(version: 2023_05_11_083429) do
     t.index ["report_line_id"], name: "index_saved_report_lines_on_report_line_id"
   end
 
-  create_table "user_notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
-    t.uuid "user_id"
-    t.string "notifiable_type", null: false
-    t.uuid "notifiable_id", null: false
-    t.string "group"
-    t.string "title"
-    t.string "source_path"
-    t.datetime "read_at"
-    t.index ["notifiable_type", "notifiable_id"], name: "index_user_notifications_on_notifiable"
-    t.index ["user_id"], name: "index_user_notifications_on_user_id"
-  end
-
   create_table "users", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -560,6 +546,5 @@ ActiveRecord::Schema.define(version: 2023_05_11_083429) do
   add_foreign_key "reval_lines", "accounts"
   add_foreign_key "reval_lines", "revals"
   add_foreign_key "saved_report_lines", "report_lines"
-  add_foreign_key "user_notifications", "users"
   add_foreign_key "users", "companies"
 end

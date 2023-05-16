@@ -3,10 +3,12 @@ class Approval < ApplicationRecord
   include Approvals::StatusLabel
   include Approvals::Siblings
   include Approvals::AssignDefaultValues
+  include Approvals::NotificationText
   include Audited::Logs
 
   belongs_to :approvable, polymorphic: true
   belongs_to :user, optional: true
+  has_many :user_notifications, as: :notifiable, dependent: :destroy
 
   after_save :synchronize_to_approvable
 
@@ -29,8 +31,7 @@ class Approval < ApplicationRecord
   end
 
   def approvers
-    User
-      .with_role(self.role)
+    User.with_role(self.role)
   end
 
   def pre_approvals
