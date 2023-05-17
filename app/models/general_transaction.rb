@@ -7,6 +7,7 @@ class GeneralTransaction < ApplicationRecord
   include GeneralTransactions::AssignDefaultValues
   include GeneralTransactions::Price
   include GeneralTransactions::Statuses
+  include GeneralTransactions::Revokes
   extend GeneralTransactions::NumberEvidenceRetrievers
 
   belongs_to :company

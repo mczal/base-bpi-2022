@@ -9,8 +9,34 @@
           h5.text-dark.font-weight-bold.my-1.mr-5
             span[style="display:inline-block;vertical-align:middle;"]
               | Invoice #{@invoice.ref_number}
-            span.ml-2[style="display:inline-block;vertical-align:middle;"]
+            span.ml-2.pr-2[
+              style="display:inline-block;vertical-align:middle;border-right:3px solid black;"
+            ]
               | #{@invoice.status_html.html_safe}
+            span.ml-4[
+              style="display:inline-block;vertical-align:middle;"
+            ]
+              .d-flex.align-items-center[
+                style="flex-direction: column;"
+              ]
+                div[
+                  style="font-size:13px;color:#626262;font-weight:normal;"
+                ]
+                  | Status verifikasi invoice:&nbsp;
+                div.mt-1
+                  | #{@invoice.general_transactions.invoice_approved.first&.status_for_html || 'Belum ada'}
+            span.ml-4[
+              style="display:inline-block;vertical-align:middle;"
+            ]
+              .d-flex.align-items-center[
+                style="flex-direction: column;"
+              ]
+                div[
+                  style="font-size:13px;color:#626262;font-weight:normal;"
+                ]
+                  | Status pembayaran invoice:&nbsp;
+                div.mt-1
+                  | #{@invoice.general_transactions.invoice_paid.first&.status_for_html || 'Belum ada'}
       #kt_subheader_search.d-flex.align-items-center
         .ml-0.ml-sm-2
           a.btn.btn-light-primary.font-weight-bold.ml-2[

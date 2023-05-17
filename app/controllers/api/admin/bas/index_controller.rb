@@ -91,6 +91,8 @@ module Api
                 realized_at: helpers.readable_date_4(ba.realized_at),
                 number_of_days_late: ba.number_of_days_late,
 
+                general_transaction_status: ba.general_transactions.first&.status_for_html,
+
                 status_docs: ba.status_docs,
                 show_path: admin_inv_trackings_accountings_ba_path(id: ba.id, slug: params[:slug])
               }

@@ -47,6 +47,10 @@ module Invoices
 
       credit_fine_account_if_exist!
       debit_bonus_account_if_exist!
+
+      # revoke 17 Mei 2023
+      @general_transaction_after_save_for_approved.revoke_journals
+      @general_transaction_after_save_for_approved.revoke_all_approvals
     end
 
     # TODO: ...

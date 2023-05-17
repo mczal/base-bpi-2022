@@ -9,6 +9,25 @@ module Invoices
       invoice.assign_attributes(invoice_attributes.except(:other_files))
       invoice.status = invoice_status
       invoice.save!
+
+      if %i[draft ok].include?(invoice_status)
+        invoice.general_transactions.destroy_all
+      end
+      if invoice_status == :verified
+        invoice.general_transactions.invoice_paid.destroy_all
+        gt = invoice.general_transactions.invoice_approved.first
+        if gt.present?
+          gt.revoke_journals
+          gt.revoke_all_approvals
+        end
+      end
+      if invoice_status == :paid
+        gt = invoice.general_transactions.invoice_paid.first
+        if gt.present?
+          gt.revoke_journals
+          gt.revoke_all_approvals
+        end
+      end
     end
 
     def invoice
@@ -24,19 +43,21 @@ module Invoices
       end
 
       def invoice_status
+        return @invoice_status if @invoice_status.present?
+
         if invoice_attributes[:bank_account_id].present?
-          return :paid
+          return @invoice_status = :paid
         end
         if @params[:commit].to_s == 'Simpan as Draft'
-          return :draft
+          return @invoice_status = :draft
         end
         if @params[:commit].to_s.match(/simpan/i)
-          return :ok
+          return @invoice_status = :ok
         end
         if @invoice.accrued_credit_id.present?
-          return :verified
+          return @invoice_status = :verified
         end
-        :ok
+        @invoice_status = :ok
       end
 
       def invoice_attributes

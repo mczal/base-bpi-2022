@@ -86,8 +86,7 @@ scss:
           options_from_collection_for_select(Account.select(:id,:name,:code), :id, :readable_name, @invoice.fine_account_id),
           {include_blank: '== Pilih =='},
           class: 'form-control',
-          data: { controller: 'select2' },
-          required: 1
+          data: { controller: 'select2' }
   .form-group.mb-8
     label
       | Bonus (Rp)
@@ -102,8 +101,7 @@ scss:
           options_from_collection_for_select(Account.select(:id,:name,:code), :id, :readable_name, @invoice.bonus_account_id),
           {include_blank: '== Pilih =='},
           class: 'form-control',
-          data: { controller: 'select2' },
-          required: 1
+          data: { controller: 'select2' }
 
   .form-group.mt-3.text-center
     button.btn.btn-sm.btn-primary[

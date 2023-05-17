@@ -95,6 +95,9 @@ module Api
                 tax_receipt_number: invoice.tax_receipt_number,
                 tax_receipt_date: helpers.readable_date_4(invoice.tax_receipt_date),
 
+                general_transaction_invoice_approved_status: (invoice.general_transactions.invoice_approved.first&.status_for_html || 'Belum ada'),
+                general_transaction_invoice_paid_status: (invoice.general_transactions.invoice_paid.first&.status_for_html || 'Belum ada'),
+
                 show_path: admin_inv_trackings_finances_invoice_path(id: invoice.id, slug: params[:slug])
               }
             end

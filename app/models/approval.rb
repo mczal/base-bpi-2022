@@ -8,7 +8,6 @@ class Approval < ApplicationRecord
 
   belongs_to :approvable, polymorphic: true
   belongs_to :user, optional: true
-  has_many :user_notifications, as: :notifiable, dependent: :destroy
 
   after_save :synchronize_to_approvable
 

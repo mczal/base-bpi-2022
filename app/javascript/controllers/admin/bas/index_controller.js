@@ -116,6 +116,16 @@ export default class extends DatatablesController {
         }
       },
       {
+        field: 'general_transaction_status',
+        title: 'Status Transaksi (Jurnal)',
+        sortable: false,
+        template: function(data) {
+          return `
+          ${data.general_transaction_status}
+          `;
+        }
+      },
+      {
         field: 'Actions',
         title: 'Actions',
         sortable: false,

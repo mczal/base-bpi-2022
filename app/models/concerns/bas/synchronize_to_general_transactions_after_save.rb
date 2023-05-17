@@ -8,8 +8,14 @@ module Bas
 
     # TODO: Handle price if price currency is USD
     def synchronize_to_general_transactions_after_save
+      if !general_transaction.new_record?
+        general_transaction.general_transaction_lines.destroy_all
+      end
+
       general_transaction.assign_attributes(gt_params)
       general_transaction.save!
+      general_transaction.revoke_journals
+      general_transaction.revoke_all_approvals
     end
 
     def general_transaction

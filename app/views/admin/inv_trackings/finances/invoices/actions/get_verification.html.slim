@@ -83,6 +83,7 @@ fieldset
           | 7. Nilai Harus Dibayar (3 - 4 - 5 + 6)
         td.px-3.py-2.text-right.font-weight-bolder
           = print_money (@invoice.payable_price)
+  = render partial: 'edit_alerts'
   .form-group.mt-3.text-right
     button.btn.btn-sm.btn-success[
       type="submit"

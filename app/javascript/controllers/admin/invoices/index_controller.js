@@ -87,17 +87,6 @@ export default class extends DatatablesController {
         }
       },
       {
-        field: 'status',
-        title: 'Status',
-        autoHide: false,
-        sortable: false,
-        template: function(data) {
-          return `
-            ${data.status}
-          `;
-        }
-      },
-      {
         field: 'receipt_number',
         title: 'SPP/Kwitansi',
         width: 100,
@@ -129,6 +118,39 @@ export default class extends DatatablesController {
         width: 170,
         template: function(data) {
           return `${data.price}`;
+        }
+      },
+      {
+        field: 'status',
+        title: 'Status',
+        autoHide: false,
+        sortable: false,
+        template: function(data) {
+          return `
+            ${data.status}
+          `;
+        }
+      },
+      {
+        field: 'status_general_transaction_invoice_approved',
+        title: 'Status Transaksi Verifikasi Invoice (Jurnal Hutang)',
+        autoHide: false,
+        sortable: false,
+        template: function(data) {
+          return `
+            ${data.general_transaction_invoice_approved_status}
+          `;
+        }
+      },
+      {
+        field: 'status_general_transaction_invoice_paid',
+        title: 'Status Transaksi Paid Invoice  (Jurnal Kas)',
+        autoHide: false,
+        sortable: false,
+        template: function(data) {
+          return `
+            ${data.general_transaction_invoice_paid_status}
+          `;
         }
       },
       {

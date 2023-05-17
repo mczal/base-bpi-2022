@@ -20,7 +20,7 @@ module Bas
     end
 
     def status_html
-      <<-EOS
+      <<-EOS.html_safe
         <span class='label label-light-#{status_label} label-pill label-inline mr-2'>
           #{status.present? ? I18n.t(status) : '-'}
         </span>
@@ -28,7 +28,7 @@ module Bas
     end
 
     def status_docs
-      <<-EOS
+      <<-EOS.html_safe
         <div class="text-#{invoices.present? ? 'success':'danger'}">
           Inv: #{invoices.present? ? 'OK':'NO'}
         </div>
