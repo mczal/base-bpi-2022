@@ -26,11 +26,19 @@ module Revals
 
     def synchronize_status_after_approval
       approval_statuses = functioned_approvals.pluck(:status)
-      return if !approval_statuses.all? "accepted"
-
-      accepted!
-      reval_lines.each do |line|
-        line.setup_journals
+      if approval_statuses.include?('rejected')
+        rejected!
+        return
+      end
+      if approval_statuses.include?('waiting')
+        waiting_for_approval!
+        return
+      end
+      if approval_statuses.all? "accepted"
+        accepted!
+        reval_lines.each do |line|
+          line.setup_journals
+        end
       end
     end
   end
