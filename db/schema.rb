@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_05_043501) do
+ActiveRecord::Schema.define(version: 2023_05_26_140811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -272,6 +272,45 @@ ActiveRecord::Schema.define(version: 2023_05_05_043501) do
     t.index ["status"], name: "index_contracts_on_status"
   end
 
+  create_table "faktur_pajak_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "faktur_pajak_id"
+    t.string "nama"
+    t.decimal "harga_satuan_cents", default: "0.0", null: false
+    t.string "harga_satuan_currency", default: "IDR", null: false
+    t.integer "jumlah_barang"
+    t.decimal "diskon_cents", default: "0.0", null: false
+    t.string "diskon_currency", default: "IDR", null: false
+    t.decimal "dpp_cents", default: "0.0", null: false
+    t.string "dpp_currency", default: "IDR", null: false
+    t.decimal "ppn_cents", default: "0.0", null: false
+    t.string "ppn_currency", default: "IDR", null: false
+    t.decimal "tarif_ppnbm"
+    t.decimal "ppnbm_cents", default: "0.0", null: false
+    t.string "ppnbm_currency", default: "IDR", null: false
+    t.index ["faktur_pajak_id"], name: "index_faktur_pajak_lines_on_faktur_pajak_id"
+  end
+
+  create_table "faktur_pajaks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "invoice_id"
+    t.string "kd_jenis_transaksi"
+    t.string "fg_pengganti"
+    t.string "nomor_faktur"
+    t.date "tanggal_faktur"
+    t.string "npwp_penjual"
+    t.string "nama_penjual"
+    t.string "alamat_penjual"
+    t.string "npwp_lawan_transaksi"
+    t.string "nama_lawan_transaksi"
+    t.string "status_approval"
+    t.string "status_faktur"
+    t.string "referensi"
+    t.index ["invoice_id"], name: "index_faktur_pajaks_on_invoice_id"
+  end
+
   create_table "general_transaction_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "code"
     t.string "description"
@@ -528,6 +567,8 @@ ActiveRecord::Schema.define(version: 2023_05_05_043501) do
   add_foreign_key "contracts", "master_business_units", column: "master_business_unit_activity_id"
   add_foreign_key "contracts", "master_business_units", column: "master_business_unit_area_id"
   add_foreign_key "contracts", "master_business_units", column: "master_business_unit_location_id"
+  add_foreign_key "faktur_pajak_lines", "faktur_pajaks"
+  add_foreign_key "faktur_pajaks", "invoices"
   add_foreign_key "general_transaction_lines", "general_transactions"
   add_foreign_key "general_transaction_lines", "master_business_units"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_activity_id"
