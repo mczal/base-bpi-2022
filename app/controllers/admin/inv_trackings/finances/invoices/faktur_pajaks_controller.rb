@@ -16,6 +16,7 @@ module Admin
                 message: "Gagal, #{service.full_error_messages_html}"
               }, status: :bad_request
             end
+            ::FakturPajakFactory.assign_from_hash_link(service.faktur_pajak)
 
             @faktur_pajak = service.faktur_pajak
             return render json: {

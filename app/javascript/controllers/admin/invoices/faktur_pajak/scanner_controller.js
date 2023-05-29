@@ -46,6 +46,9 @@ export default class extends Controller {
     const parsedResponse = JSON.parse(responseText);
     console.error('[ERROR]', responseText);
     window.Flash.show('danger', parsedResponse.message);
+
+    // Tambahan 29 Mei 2023 . Simpan Faktur Pajak .
+    document.querySelector('.dz-remove').click();
   }
   handleDone(){
     window.KTApp.unblockPage();
@@ -70,9 +73,9 @@ export default class extends Controller {
   }
 
   get inputPng(){
-    return this.element.querySelector('input[type="hidden"][name="faktur_pajak[png]"]');
+    return this.element.querySelector('input[type="hidden"][name="invoice[faktur_pajak_attributes][png]"]');
   }
   get inputPdf(){
-    return this.element.querySelector('input[type="hidden"][name="faktur_pajak[pdf]"]');
+    return this.element.querySelector('input[type="hidden"][name="invoice[faktur_pajak_attributes][pdf]"]');
   }
 }

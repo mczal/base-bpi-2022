@@ -38,7 +38,7 @@ scss:
         html: {\
           data: {\
             controller: 'admin--finances--invoices--submit-summary-verification',\
-            action: 'submit>admin--finances--invoices--submit-summary-verification#handleSubmit'\
+            action: 'submit->admin--finances--invoices--submit-summary-verification#handleSubmit'\
           }\
         } do |f|
         .modal-header
@@ -67,7 +67,8 @@ scss:
                     data: {\
                       controller: 'select2',\
                       required: 1\
-                    }
+                    },
+                    required: 1
             .row[
               style="min-height:100px;"
               data-controller="admin--invoices--get-ba-detail"
@@ -186,7 +187,11 @@ scss:
               = f.text_field :spp_number,
                 placeholder: 'No. Surat Permintaan Bayar',
                 class: 'form-control',
-                required:1, required: 1
+                data: {\
+                  controller: 'admin--invoices--conditional-mandatory-field-adapter',\
+                  'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice[spp_checked]',\
+                },
+                required:1
             .row
               .col-6.form-group[style="margin-bottom:5px;"]
                 label
@@ -194,14 +199,20 @@ scss:
                   span.required *
                 = f.text_field :date, class: 'form-control',
                   value: html_input_date(@invoice.date),
-                  required: 1,
-                  data: { controller: 'picker--date' },
-                  readonly: 1
+                  data: {\
+                    controller: 'picker--date admin--invoices--conditional-mandatory-field-adapter',\
+                    'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice[invoice_checked]',\
+                  },
+                  required: 1
               .col-6.form-group[style="margin-bottom:5px;"]
                 label
                   | No. Invoice
                   span.required *
                 = f.text_field :ref_number, class: 'form-control',
+                  data: {\
+                    controller: 'admin--invoices--conditional-mandatory-field-adapter',\
+                    'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice[invoice_checked]',\
+                  },
                   required: 1
             .row
               .col-6.form-group[style="margin-bottom:5px;"]
@@ -211,6 +222,10 @@ scss:
                   span.required *
                 = f.text_field :receipt_number,
                   class: 'form-control',
+                  data: {\
+                    controller: 'admin--invoices--conditional-mandatory-field-adapter',\
+                    'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice[kwitansi_checked]',\
+                  },
                   required: 1
             .row
               .col-2.form-group
@@ -295,14 +310,20 @@ scss:
                     span.required *
                   = f.text_field :tax_receipt_date, class: 'form-control',
                     value: html_input_date(@invoice.date),
-                    required: 1,
-                    data: { controller: 'picker--date' },
-                    readonly: 1
+                    data: {\
+                      controller: 'picker--date admin--invoices--conditional-mandatory-field-adapter',\
+                      'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice[faktur_pajak_checked]',\
+                    },
+                    required: 1
                 .form-group[style="margin-bottom:5px;"]
                   label
                     | No. Faktur Pajak
                     span.required *
                   = f.text_field :tax_receipt_number, class: 'form-control',
+                    data: {\
+                      controller: 'admin--invoices--conditional-mandatory-field-adapter',\
+                      'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice[faktur_pajak_checked]',\
+                    },
                     required: 1
               .col-6
                 div[
@@ -340,8 +361,8 @@ scss:
                           data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
                           data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
                         ]
-                          input.d-none[
-                            name="faktur_pajak[png]"
+                          input[
+                            name="invoice[faktur_pajak_attributes][png]"
                             type="file"
                             data-base--dropzone-target="input"
                             data-direct-upload-url="#{rails_direct_uploads_path}"
@@ -373,7 +394,7 @@ scss:
                           data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
                         ]
                           input.d-none[
-                            name="faktur_pajak[pdf]"
+                            name="invoice[faktur_pajak_attributes][pdf]"
                             type="file"
                             data-base--dropzone-target="input"
                             data-direct-upload-url="#{rails_direct_uploads_path}"

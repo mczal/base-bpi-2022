@@ -17,7 +17,7 @@ module FakturPajaks
         return false
       end
 
-      faktur_pajak.result = result
+      faktur_pajak.faktur_link = result
     end
 
     def faktur_pajak

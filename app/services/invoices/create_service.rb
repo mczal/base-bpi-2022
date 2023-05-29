@@ -44,7 +44,10 @@ module Invoices
           :bank_account_id, :spp_checked,
           :invoice_checked, :kwitansi_checked,
           :faktur_pajak_checked,
-          other_files: []
+          other_files: [],
+          faktur_pajak_attributes: [
+            :faktur_link, :file_png, :file_pdf,
+          ]
         )
       end
   end

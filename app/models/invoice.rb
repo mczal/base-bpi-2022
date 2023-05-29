@@ -25,6 +25,7 @@ class Invoice < ApplicationRecord
 
   has_many :approvals, as: :approvable, dependent: :destroy
   has_many :general_transactions, as: :transactionable, dependent: :destroy
+  has_one :faktur_pajak, dependent: :destroy
 
   has_one_attached :file
   has_one_attached :receipt_file
@@ -54,6 +55,8 @@ class Invoice < ApplicationRecord
     rejected: 'rejected',
     paid: 'paid',
   }
+
+  accepts_nested_attributes_for :faktur_pajak
 
   def ppn_biaya_account
     @ppn_biaya_account ||= Account.find_by(code: '25140')

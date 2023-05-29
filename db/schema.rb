@@ -277,18 +277,20 @@ ActiveRecord::Schema.define(version: 2023_05_26_140811) do
     t.datetime "updated_at", precision: 6, null: false
     t.uuid "faktur_pajak_id"
     t.string "nama"
+    t.integer "jumlah_barang"
     t.decimal "harga_satuan_cents", default: "0.0", null: false
     t.string "harga_satuan_currency", default: "IDR", null: false
-    t.integer "jumlah_barang"
     t.decimal "diskon_cents", default: "0.0", null: false
     t.string "diskon_currency", default: "IDR", null: false
     t.decimal "dpp_cents", default: "0.0", null: false
     t.string "dpp_currency", default: "IDR", null: false
     t.decimal "ppn_cents", default: "0.0", null: false
     t.string "ppn_currency", default: "IDR", null: false
-    t.decimal "tarif_ppnbm"
     t.decimal "ppnbm_cents", default: "0.0", null: false
     t.string "ppnbm_currency", default: "IDR", null: false
+    t.decimal "harga_total_cents", default: "0.0", null: false
+    t.string "harga_total_currency", default: "IDR", null: false
+    t.decimal "tarif_ppnbm"
     t.index ["faktur_pajak_id"], name: "index_faktur_pajak_lines_on_faktur_pajak_id"
   end
 
@@ -303,11 +305,20 @@ ActiveRecord::Schema.define(version: 2023_05_26_140811) do
     t.string "npwp_penjual"
     t.string "nama_penjual"
     t.string "alamat_penjual"
+    t.decimal "jumlah_dpp_cents", default: "0.0", null: false
+    t.string "jumlah_dpp_currency", default: "IDR", null: false
+    t.decimal "jumlah_ppn_cents", default: "0.0", null: false
+    t.string "jumlah_ppn_currency", default: "IDR", null: false
+    t.decimal "jumlah_ppn_bm_cents", default: "0.0", null: false
+    t.string "jumlah_ppn_bm_currency", default: "IDR", null: false
     t.string "npwp_lawan_transaksi"
     t.string "nama_lawan_transaksi"
+    t.string "alamat_lawan_transaksi"
     t.string "status_approval"
     t.string "status_faktur"
     t.string "referensi"
+    t.string "faktur_link"
+    t.json "raw_result_from_link", default: {}
     t.index ["invoice_id"], name: "index_faktur_pajaks_on_invoice_id"
   end
 
