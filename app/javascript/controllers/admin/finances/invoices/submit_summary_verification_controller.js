@@ -19,15 +19,37 @@ export default class extends Controller {
       return true;
     }
 
+    if(this.isFakturPajakPngFilled()){
+      return true;
+    }
+    if(this.isFakturPajakPdfFilled()){
+      return true;
+    }
+
+    return false;
+  }
+
+  isFakturPajakPngFilled(){
     const png = this.element.querySelector('input[name="invoice[faktur_pajak_attributes][png]"][type="hidden"]');
     if(png && png.value){
       return true;
     }
+    if(this.element.querySelector('input[type="hidden"][name="faktur_pajak_uploaded"]')){
+      return true;
+    }
+
+    return false
+  }
+  isFakturPajakPdfFilled(){
     const pdf = this.element.querySelector('input[name="invoice[faktur_pajak_attributes][pdf]"][type="hidden"]');
     if(pdf && pdf.value){
       return true;
     }
-    return false;
+    if(this.element.querySelector('input[type="hidden"][name="faktur_pajak_uploaded"]')){
+      return true;
+    }
+
+    return false
   }
 
   teardown(){

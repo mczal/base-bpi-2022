@@ -41,6 +41,8 @@ scss:
             action: 'submit->admin--finances--invoices--submit-summary-verification#handleSubmit'\
           }\
         } do |f|
+        - if @invoice.faktur_pajak.present?
+          = hidden_field_tag 'faktur_pajak_uploaded', 1
         .modal-header
           h5#exampleModalLabel.modal-title Tambah Invoice
           button.close aria-label="Close" data-dismiss="modal" type="button" 
@@ -154,30 +156,76 @@ scss:
                         | #{@invoice.ba&.contract&.price&.format}
           fieldset
             legend Checklist Dokumen
-            .form-group
-              label.checkbox.mb-1
-                b.mr-2
-                  | SPP (1 Dokumen)
-                = f.check_box :spp_checked
-                span
-            .form-group
-              label.checkbox.mb-1
-                b.mr-2
-                  | Invoice (1 Dokumen)
-                = f.check_box :invoice_checked
-                span
-            .form-group
-              label.checkbox.mb-1
-                b.mr-2
-                  | Kwitansi (1 Dokumen)
-                = f.check_box :kwitansi_checked
-                span
-            .form-group
-              label.checkbox.mb-1
-                b.mr-2
-                  | Faktur Pajak (1 Dokumen)
-                = f.check_box :faktur_pajak_checked
-                span
+            .row
+              .col-lg-6
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | SPP (1 Dokumen)
+                    = f.check_box :spp_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | Invoice (1 Dokumen)
+                    = f.check_box :invoice_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | Kwitansi (1 Dokumen)
+                    = f.check_box :kwitansi_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | Faktur Pajak (1 Dokumen)
+                    = f.check_box :faktur_pajak_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | BAMP (1 Dokumen)
+                    = f.check_box :bamp_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | BAPB (1 Dokumen)
+                    = f.check_box :bapb_checked
+                    span
+
+              .col-lg-6
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | BASTP (1 Dokumen)
+                    = f.check_box :bapb_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | Copy Perjanjian (1 Dokumen)
+                    = f.check_box :copy_perjanjian_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | Copy SPMK (1 Dokumen)
+                    = f.check_box :copy_spmk_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | Copy NPWP & PKP (1 Dokumen)
+                    = f.check_box :copy_npwp_pkp_checked
+                    span
+                .form-group
+                  label.checkbox.mb-1
+                    b.mr-2
+                      | Jaminan Pemeliharaan (1 Dokumen)
+                    = f.check_box :jaminan_pemeliharaan_checked
+                    span
           fieldset
             legend Invoice
             .form-group[style="margin-bottom:5px;"]

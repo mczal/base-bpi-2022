@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_05_26_140811) do
+ActiveRecord::Schema.define(version: 2023_06_05_101921) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -401,6 +401,13 @@ ActiveRecord::Schema.define(version: 2023_05_26_140811) do
     t.decimal "bonus_cents", default: "0.0", null: false
     t.string "bonus_currency", default: "IDR", null: false
     t.uuid "bonus_account_id"
+    t.boolean "bamp_checked", default: false
+    t.boolean "bapb_checked", default: false
+    t.boolean "bastp_checked", default: false
+    t.boolean "copy_perjanjian_checked", default: false
+    t.boolean "copy_spmk_checked", default: false
+    t.boolean "copy_npwp_pkp_checked", default: false
+    t.boolean "jaminan_pemeliharaan_checked", default: false
     t.index ["accrued_credit_id"], name: "index_invoices_on_accrued_credit_id"
     t.index ["bank_account_id"], name: "index_invoices_on_bank_account_id"
     t.index ["bonus_account_id"], name: "index_invoices_on_bonus_account_id"

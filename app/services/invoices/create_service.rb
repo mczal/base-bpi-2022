@@ -44,6 +44,10 @@ module Invoices
           :bank_account_id, :spp_checked,
           :invoice_checked, :kwitansi_checked,
           :faktur_pajak_checked,
+          :bamp_checked, :bapb_checked,
+          :bastp_checked, :copy_perjanjian_checked,
+          :copy_spmk_checked, :copy_npwp_pkp_checked,
+          :jaminan_pemeliharaan_checked,
           other_files: [],
           faktur_pajak_attributes: [
             :faktur_link, :file_png, :file_pdf,
