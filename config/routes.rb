@@ -186,6 +186,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :invoice_direct_externals,  only: %i[index show create update destroy]
+
     resources :revals, only: %i[index show create update destroy]
     post 'revals/:id/edit',
       to: 'revals#edit',
@@ -268,6 +270,10 @@ Rails.application.routes.draw do
         post 'get-all', to: 'index#show', as: :index
       end
       namespace :audit_adjustments do
+        post 'get-all', to: 'index#show', as: :index
+      end
+
+      namespace :invoice_direct_externals do
         post 'get-all', to: 'index#show', as: :index
       end
     end

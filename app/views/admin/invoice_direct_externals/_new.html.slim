@@ -1,0 +1,341 @@
+scss: 
+  .dropzone-msg.dz-message.needsclick {
+    margin:0;
+  }
+  .required {
+    color:#F44336;
+    margin-left:2px;
+  }
+  .ol {
+    padding-left: 16px !important;
+  }
+  #FakturPajakTable {
+    & td {
+      vertical-align:top;
+      border: 1px solid grey;
+      padding: 5px 8px;
+    }
+  }
+  .dz-remove {
+    &:hover {
+      background-color:#F64E60;
+    }
+    & i {
+      line-height: 18px;
+    }
+  }
+
+#add.add-contract.modal.fade[
+  aria-hidden="true" 
+  aria-labelledby="staticBackdrop" 
+  data-backdrop="static"
+  role="dialog"
+  tabindex="-1"
+] 
+  .modal-dialog.modal-dialog-centered.modal-lg role="document" 
+    .modal-content
+      = form_for [:admin,@invoice_direct_external],
+        html: {\
+          data: {\
+            controller: 'admin--finances--invoices--submit-summary-verification',\
+            action: 'submit->admin--finances--invoices--submit-summary-verification#handleSubmit'\
+          }\
+        } do |f|
+        - if @invoice_direct_external.faktur_pajak.present?
+          = hidden_field_tag 'faktur_pajak_uploaded', 1
+        .modal-header
+          h5#exampleModalLabel.modal-title Tambah Invoice
+          button.close aria-label="Close" data-dismiss="modal" type="button" 
+            i.ki.ki-close aria-hidden="true"
+        .modal-body
+          / = render partial: 'edit_alerts'
+          fieldset
+            legend Checklist Dokumen
+            .form-group
+              label.checkbox.mb-1
+                b.mr-2
+                  | Faktur Pajak (1 Dokumen)
+                = f.check_box :faktur_pajak_checked
+                span
+          fieldset
+            legend Invoice
+            .row
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | Tanggal Invoice
+                  span.required *
+                = f.text_field :date, class: 'form-control',
+                  value: html_input_date(@invoice_direct_external.date),
+                  data: { controller: 'picker--date' },
+                  required: 1
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | No. Invoice
+                  span.required *
+                = f.text_field :ref_number, class: 'form-control',
+                  required: 1
+            .row
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
+                  | No. Kwitansi
+                  span.required *
+                = f.text_field :receipt_number,
+                  class: 'form-control',
+                  required: 1
+                / data: {\
+                  / controller: 'admin--invoices--conditional-mandatory-field-adapter',\
+                  / 'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice[kwitansi_checked]',\
+                / },
+            .row
+              .col-lg-12.form-group[style="margin-bottom:5px;"]
+                label
+                  | Perihal
+                  span.required *
+                = f.text_area :description,
+                  class: 'form-control',
+                  required: 1
+          fieldset
+            legend Nilai Invoice
+            .row
+              .col-2.form-group
+                label
+                  | Nilai
+                  span.required *
+                = f.select :price_currency,
+                  options_for_select([['Rp','IDR'],['$','USD']], @invoice_direct_external.price_currency || 'IDR'),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+              .col-10.form-group
+                label
+                  | &nbsp;
+                .input-group
+                  = f.text_field :price,
+                    class: 'form-control',
+                    data: { controller: 'base--input-price' },
+                    required: 1,
+                    placeholder: 'Nilai Invoice',
+                    value: @invoice_direct_external.price.amount
+            .row
+              .col-12.form-group.mt-n5
+                label
+                  | PPN
+                  span.required *
+                .radio-inline
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice_direct_external[ppn_percentage]"
+                      value="10"
+                      required="required"
+                      checked=(@invoice_direct_external.ppn_percentage.to_i == 10)
+                    ]
+                    span
+                    | 10%
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice_direct_external[ppn_percentage]"
+                      value="11"
+                      required="required"
+                      checked=(@invoice_direct_external.ppn_percentage.to_i == 11)
+                    ]
+                    span
+                    | 11%
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice_direct_external[ppn_percentage]"
+                      value="12"
+                      required="required"
+                      checked=(@invoice_direct_external.ppn_percentage.to_i == 12)
+                    ]
+                    span
+                    | 12%
+                .radio-inline
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice_direct_external[ppn_group]"
+                      value="include"
+                      required="required"
+                      checked=(@invoice_direct_external.ppn_include?)
+                    ]
+                    span
+                    | Include
+                  label.radio
+                    input[
+                      type="radio"
+                      name="invoice_direct_external[ppn_group]"
+                      value="exclude"
+                      required="required"
+                      checked=(@invoice_direct_external.ppn_exclude?)
+                    ]
+                    span
+                    | Exclude
+          fieldset
+            legend Faktur Pajak
+            .row
+              .col-6
+                .font-weight-bolder.mb-5.text-center[style="text-decoration:underline;"]
+                  | Inputan Faktur Pajak di Sistem
+                .form-group[style="margin-bottom:5px;"]
+                  label
+                    | Tanggal Faktur Pajak
+                    span.required *
+                  = f.text_field :tax_receipt_date, class: 'form-control',
+                    value: html_input_date(@invoice_direct_external.date),
+                    data: {\
+                      controller: 'picker--date admin--invoices--conditional-mandatory-field-adapter',\
+                      'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice_direct_external[faktur_pajak_checked]',\
+                    },
+                    required: 1
+                .form-group[style="margin-bottom:5px;"]
+                  label
+                    | No. Faktur Pajak
+                    span.required *
+                  = f.text_field :tax_receipt_number, class: 'form-control',
+                    data: {\
+                      controller: 'admin--invoices--conditional-mandatory-field-adapter',\
+                      'admin--invoices--conditional-mandatory-field-adapter-field-name': 'invoice_direct_external[faktur_pajak_checked]',\
+                    },
+                    required: 1
+              .col-6
+                div[
+                  data-controller="admin--invoices--faktur-pajak--scanner"
+                  data-admin--invoices--faktur-pajak--scanner-path="#{admin_inv_trackings_finances_invoices_faktur_pajak_verify_path(group: 'xxx', signed: 'yyy')}"
+                ]
+                  .font-weight-bolder.mb-5.text-center[style="text-decoration:underline;"]
+                    | Verifikasi QR Code Faktur Pajak
+                    button.btn.btn-text-dark-50.btn-icon-info.btn-hover-icon-danger.font-weight-bold.btn-hover-bg-light.ml-2[
+                      type="button"
+                      data-action="click->admin--invoices--faktur-pajak--scanner#refresh"
+                    ]
+                      i.flaticon-refresh
+                      | Refresh
+                  .js-result
+                  .js-input-container
+                    .form-group
+                      label.checkbox.mb-1[
+                        data-controller="base--popover"
+                        data-title="Kriteria Gambar yang Di-upload"
+                        data-base--popover-html="1"
+                        data-base--popover-trigger="hover"
+                        data-content='<ol><li>Screenshot/Crop pada bagian QR Code faktur pajak;</li> <li>Upload hasil Screenshot/Crop gambar QR Code dari faktur pajak yang akan di verifikasi</li></ol>'
+                      ]
+                        i.fas.fa-question-circle.mr-1.text-warning
+                        b.mr-2
+                          | Upload File Gambar QRCode (.PNG)
+                      .input-group.d-block
+                        #kt_dropzone_2.dropzone.dropzone-default.js-dropzone-fp-png[
+                          data-controller='base--dropzone'
+                          data-base--dropzone-max-files="1"
+                          data-base--dropzone-max-file-size="20"
+                          data-base--dropzone-accepted-files="image/png"
+                          data-base--dropzone-add-remove-links='1'
+                          data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                          data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                        ]
+                          input[
+                            name="invoice_direct_external[faktur_pajak_attributes][png]"
+                            type="file"
+                            data-base--dropzone-target="input"
+                            data-direct-upload-url="#{rails_direct_uploads_path}"
+                            required="1"
+                          ]
+                          .dropzone-msg.dz-message.needsclick
+                            span.dropzone-msg-desc
+                              | Letakan dokumen disini atau
+                              |  klik untuk unggah dokumen.
+                    .form-group
+                      label.checkbox.mb-1[
+                        data-controller="base--popover"
+                        data-title="Kriteria File yang Di-upload"
+                        data-base--popover-html="1"
+                        data-base--popover-trigger="hover"
+                        data-content='<ol><li>Upload File PDF Faktur Pajak Asli</li> <li>Pastikan File PDF Faktur Pajak yang di-upload memiliki QRCode dibagian bawahnya</li> <li>Jika QR Code terletak TIDAK di Halaman 1 File PDF Faktur Pajak, Maka sistem tidak akan bisa melakukan scan otomatis file faktur pajak. Silahkan menggunakan fitur upload menggunakan Gambar</li></ol>'
+                      ]
+                        i.fas.fa-question-circle.mr-1.text-warning
+                        b.mr-2
+                          | Upload File PDF Faktur Pajak (.PDF)
+                      .input-group.d-block
+                        #kt_dropzone_3.dropzone.dropzone-default.js-dropzone-fp-pdf[
+                          data-controller='base--dropzone'
+                          data-base--dropzone-max-files="1"
+                          data-base--dropzone-max-file-size="20"
+                          data-base--dropzone-accepted-files=".pdf,application/pdf"
+                          data-base--dropzone-add-remove-links='1'
+                          data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                          data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+                        ]
+                          input.d-none[
+                            name="invoice_direct_external[faktur_pajak_attributes][pdf]"
+                            type="file"
+                            data-base--dropzone-target="input"
+                            data-direct-upload-url="#{rails_direct_uploads_path}"
+                            required="1"
+                          ]
+                          .dropzone-msg.dz-message.needsclick
+                            span.dropzone-msg-desc
+                              | Letakan dokumen disini atau
+                              |  klik untuk unggah dokumen.
+          hr
+          .form-group
+            label Dokumen (maks. 10 Dokumen)
+            .input-group.d-block
+              #kt_dropzone_2.dropzone.dropzone-default[
+                data-controller='base--dropzone'
+                data-base--dropzone-max-files="10"
+                data-base--dropzone-max-file-size="20"
+                data-base--dropzone-accepted-files=".pdf,application/pdf"
+                data-base--dropzone-add-remove-links='1'
+                data-base--dropzone-submit-button-selector='button[data-wizard-type="action-next"]'
+                data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
+              ]
+                input.d-none[
+                  name="invoice_direct_external[other_files][]"
+                  type="file"
+                  data-base--dropzone-target="input"
+                  data-direct-upload-url="#{rails_direct_uploads_path}"
+                ]
+                .dropzone-msg.dz-message.needsclick
+                  span.dropzone-msg-desc
+                    | Letakan dokumen disini atau
+                    |  klik untuk unggah dokumen.
+            .m-1.d-flex
+              - @invoice_direct_external.other_files.each do |file|
+                .mr-1
+                  a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
+                    data-title="#{file.blob.filename}"
+                    data-content="Tipe: #{file.blob.content_type}<br/>Diupload: #{readable_timestamp_5 file.blob.created_at.localtime}<br/>Ukuran: #{convert_bytesize_to_readable_bytetypes file.blob.byte_size}"
+                    data-popover-html=1
+                    data-controller="popover"
+                    data-popover-trigger="hover"
+                    style="cursor:pointer;position:relative;"
+                    target="_blank"
+                    href="#{url_for file}"
+                  ]
+                    button.btn.btn-icon.btn-sm.btn-light-danger.remove-document[
+                      data-controller='admin--invoice-trackings--actions--remove-documents'
+                      data-action='click->admin--invoice-trackings--actions--remove-documents#handleClick'
+                      data-admin--invoice-trackings--actions--remove-documents-url="#{admin_active_storages_remove_document_path(attachment_id: file.id)}"
+                    ]
+                      i.fas.fa-times
+                    span.svg-icon.svg-icon-primary.svg-icon-2x
+                      svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                        g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                          polygon[points="0 0 24 0 24 24 0 24"]
+                          path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                          rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
+                          rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
+
+        .modal-footer
+          button.btn.btn-light-primary.font-weight-bold[
+            data-dismiss="modal"
+            type="button"
+          ] Batal
+          = f.submit "Simpan as Draft", class: "btn btn-outline-warning"
+          = f.submit "Simpan", class: "btn btn-outline-info"
+          = f.submit "Simpan & Lanjut ke Invoice", class: "btn btn-outline-primary"

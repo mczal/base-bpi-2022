@@ -2,16 +2,9 @@
 
 class Invoice < ApplicationRecord
   include Invoices::Statuses
-  # include Invoices::Approvals
-  # include Approvable::AfterHooks
   include Approvals::Helpers
-
-  # include Invoices::SynchronizeToJournalsAfterSaveForApproved
   include Invoices::SynchronizeToGeneralTransactionsAfterSaveForApproved
-
-  # include Invoices::SynchronizeToJournalsAfterSaveForPaid
   include Invoices::SynchronizeToGeneralTransactionsAfterSaveForPaid
-
   include Invoices::SynchronizeToDebtAgeStartedAtBeforeSave
   include Invoices::SynchronizeToReceivedAtBeforeSave
 
@@ -25,7 +18,8 @@ class Invoice < ApplicationRecord
 
   has_many :approvals, as: :approvable, dependent: :destroy
   has_many :general_transactions, as: :transactionable, dependent: :destroy
-  has_one :faktur_pajak, dependent: :destroy
+
+  has_one :faktur_pajak, as: :faktur_pajakable, dependent: :destroy
 
   has_one_attached :file
   has_one_attached :receipt_file

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_05_101921) do
+ActiveRecord::Schema.define(version: 2023_06_06_114347) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -297,7 +297,6 @@ ActiveRecord::Schema.define(version: 2023_06_05_101921) do
   create_table "faktur_pajaks", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.uuid "invoice_id"
     t.string "kd_jenis_transaksi"
     t.string "fg_pengganti"
     t.string "nomor_faktur"
@@ -319,7 +318,9 @@ ActiveRecord::Schema.define(version: 2023_06_05_101921) do
     t.string "referensi"
     t.string "faktur_link"
     t.json "raw_result_from_link", default: {}
-    t.index ["invoice_id"], name: "index_faktur_pajaks_on_invoice_id"
+    t.string "faktur_pajakable_type"
+    t.uuid "faktur_pajakable_id"
+    t.index ["faktur_pajakable_type", "faktur_pajakable_id"], name: "index_faktur_pajaks_on_faktur_pajakable"
   end
 
   create_table "general_transaction_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -366,6 +367,44 @@ ActiveRecord::Schema.define(version: 2023_06_05_101921) do
     t.string "origin_id"
     t.index ["company_id"], name: "index_general_transactions_on_company_id"
     t.index ["transactionable_type", "transactionable_id"], name: "index_general_transactions_on_transactionable"
+  end
+
+  create_table "invoice_direct_externals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "ref_number"
+    t.date "date"
+    t.string "receipt_number"
+    t.decimal "price_cents", default: "0.0", null: false
+    t.string "price_currency", default: "IDR", null: false
+    t.string "ppn_group"
+    t.string "status"
+    t.boolean "faktur_pajak_checked", default: false
+    t.date "tax_receipt_date"
+    t.string "tax_receipt_number"
+    t.string "ppn_cost_group"
+    t.decimal "ppn_percentage"
+    t.uuid "client_id"
+    t.uuid "bank_id"
+    t.string "account_number"
+    t.string "account_holder"
+    t.string "description"
+    t.string "location"
+    t.uuid "bank_account_id"
+    t.uuid "cost_center_id"
+    t.boolean "is_master_business_units_enabled", default: false
+    t.uuid "master_business_unit_id"
+    t.uuid "master_business_unit_location_id"
+    t.uuid "master_business_unit_area_id"
+    t.uuid "master_business_unit_activity_id"
+    t.index ["bank_account_id"], name: "index_invoice_direct_externals_on_bank_account_id"
+    t.index ["bank_id"], name: "index_invoice_direct_externals_on_bank_id"
+    t.index ["client_id"], name: "index_invoice_direct_externals_on_client_id"
+    t.index ["cost_center_id"], name: "index_invoice_direct_externals_on_cost_center_id"
+    t.index ["master_business_unit_activity_id"], name: "ide_mbuact"
+    t.index ["master_business_unit_area_id"], name: "ide_mbuare"
+    t.index ["master_business_unit_id"], name: "ide_mbu"
+    t.index ["master_business_unit_location_id"], name: "ide_mbul"
   end
 
   create_table "invoices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -586,13 +625,20 @@ ActiveRecord::Schema.define(version: 2023_06_05_101921) do
   add_foreign_key "contracts", "master_business_units", column: "master_business_unit_area_id"
   add_foreign_key "contracts", "master_business_units", column: "master_business_unit_location_id"
   add_foreign_key "faktur_pajak_lines", "faktur_pajaks"
-  add_foreign_key "faktur_pajaks", "invoices"
   add_foreign_key "general_transaction_lines", "general_transactions"
   add_foreign_key "general_transaction_lines", "master_business_units"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_activity_id"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_area_id"
   add_foreign_key "general_transaction_lines", "master_business_units", column: "master_business_unit_location_id"
   add_foreign_key "general_transactions", "companies"
+  add_foreign_key "invoice_direct_externals", "accounts", column: "bank_account_id"
+  add_foreign_key "invoice_direct_externals", "accounts", column: "cost_center_id"
+  add_foreign_key "invoice_direct_externals", "banks"
+  add_foreign_key "invoice_direct_externals", "clients"
+  add_foreign_key "invoice_direct_externals", "master_business_units"
+  add_foreign_key "invoice_direct_externals", "master_business_units", column: "master_business_unit_activity_id"
+  add_foreign_key "invoice_direct_externals", "master_business_units", column: "master_business_unit_area_id"
+  add_foreign_key "invoice_direct_externals", "master_business_units", column: "master_business_unit_location_id"
   add_foreign_key "invoices", "accounts", column: "accrued_credit_id"
   add_foreign_key "invoices", "accounts", column: "bank_account_id"
   add_foreign_key "invoices", "accounts", column: "bonus_account_id"

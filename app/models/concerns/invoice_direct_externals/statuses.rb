@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Invoices
+module InvoiceDirectExternals
   module Statuses extend ActiveSupport::Concern
     # def refresh_status!
       # refresh_status
@@ -16,9 +16,6 @@ module Invoices
       end
       if status == 'ok'
         return 'primary'
-      end
-      if status == 'verified'
-        return 'info'
       end
       if status == 'rejected'
         return 'dark'
@@ -36,9 +33,7 @@ module Invoices
         if self.draft?
           res = 'Draft'
         elsif self.ok?
-          res = 'Menunggu Verifikasi'
-        elsif self.verified?
-          res = 'Terverifikasi - Menunggu Approval'
+          res = 'Menunggu Approval'
         elsif self.rejected?
           res = 'Approval Ditolak - Menunggu Perbaikan'
         elsif self.approved?

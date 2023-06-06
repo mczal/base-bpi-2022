@@ -2,7 +2,8 @@ class FakturPajak < ApplicationRecord
   include FakturPajaks::Html
   include FakturPajaks::AssignDefaultValues
 
-  belongs_to :invoice
+  # belongs_to :invoice
+  belongs_to :faktur_pajakable, polymorphic: true
 
   has_one_attached :file_png
   has_one_attached :file_pdf
