@@ -23,6 +23,12 @@ scss:
             |  - #{@general_transaction.number_evidence}
             span.ml-2
               |  #{@general_transaction.status_for_html}
+            - if @general_transaction.accepted? && !@general_transaction.number_evidence.match(/bj/i)
+              a.btn.btn-icon.btn-success.btn-circl.btn-sm.ml-1[
+                href="#{admin_general_transactions_printout_path(id: @general_transaction.id, format: :pdf)}"
+                target="_blank"
+              ]
+                i.flaticon2-print
       #kt_subheader_search.d-flex.align-items-center
         .ml-0.ml-sm-2
           a.btn.btn-light-primary.font-weight-bold.ml-2[

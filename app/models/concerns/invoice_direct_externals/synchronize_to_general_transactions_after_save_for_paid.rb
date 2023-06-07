@@ -84,7 +84,12 @@ module InvoiceDirectExternals
         price_usd: usd,
         code: self.cost_center.code,
         rate: @general_transaction_after_save_for_paid.rate_money,
-        description: self.description
+        description: self.description,
+        is_master_business_units_enabled: self.is_master_business_units_enabled,
+        master_business_unit_id: self.master_business_unit_id,
+        master_business_unit_location_id: self.master_business_unit_location_id,
+        master_business_unit_area_id: self.master_business_unit_area_id,
+        master_business_unit_activity_id: self.master_business_unit_activity_id,
       )
       @realized_debit_gt_line
     end

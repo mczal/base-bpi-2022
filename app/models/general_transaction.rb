@@ -8,12 +8,14 @@ class GeneralTransaction < ApplicationRecord
   include GeneralTransactions::Price
   include GeneralTransactions::Statuses
   include GeneralTransactions::Revokes
+  include PdfPrintable
   extend GeneralTransactions::NumberEvidenceRetrievers
 
   belongs_to :company
   belongs_to :transactionable, polymorphic: true, optional: true
   has_many :general_transaction_lines, dependent: :destroy
   has_many :approvals, as: :approvable, dependent: :destroy
+  has_one_attached :printout
   has_many_attached :files
 
   validate :closed_book
@@ -92,5 +94,66 @@ class GeneralTransaction < ApplicationRecord
       return @rates_source_name = 'KEMENKEU'
     end
     @rates_source_name = ''
+  end
+
+
+
+  def client
+    if transactionable_type == 'Ba'
+      return @client = transactionable.contract.client
+    elsif transactionable_type == 'Invoice'
+      return @client = transactionable.ba.contract.client
+    elsif transactionable_type == 'InvoiceDirectExternal'
+      return @client = transactionable.client
+    end
+  end
+  def po_kontrak
+    if transactionable_type == 'Ba'
+      return @po_kontrak = transactionable.contract.ref_number
+    elsif transactionable_type == 'Invoice'
+      return @po_kontrak = transactionable.ba.contract.ref_number
+    elsif transactionable_type == 'InvoiceDirectExternal'
+      return @po_kontrak = ''
+    end
+  end
+  def tanggal_po_kontrak
+    if transactionable_type == 'Invoice'
+      return @tanggal_po_kontrak = transactionable.ba.contract.started_at
+    elsif transactionable_type == 'InvoiceDirectExternal'
+      return @tanggal_po_kontrak = ''
+    end
+  end
+  def nomor_invoice
+    if transactionable_type == 'Invoice'
+      return @nomor_invoice = transactionable.ref_number
+    elsif transactionable_type == 'InvoiceDirectExternal'
+      return @nomor_invoice = transactionable.ref_number
+    end
+  end
+  def nilai_kontrak
+    if transactionable_type == 'Invoice'
+      return @nilai_kontrak = transactionable.ba.contract.price.to_money
+    end
+  end
+  def nilai_invoice
+    if transactionable_type == 'Invoice'
+      return @nilai_invoice = transactionable.ba.price.to_money
+    elsif transactionable_type == 'InvoiceDirectExternal'
+      return @nilai_invoice = transactionable.price.to_money
+    end
+  end
+  def mata_uang
+    if transactionable_type == 'Invoice'
+      return @mata_uang = transactionable.ba.price_currency
+    elsif transactionable_type == 'InvoiceDirectExternal'
+      return @nilai_invoice = transactionable.price_currency
+    end
+  end
+  def deskripsi
+    if transactionable_type == 'Invoice'
+      return @perihal = transactionable.ba.description
+    elsif transactionable_type == 'InvoiceDirectExternal'
+      return @perihal = transactionable.description
+    end
   end
 end

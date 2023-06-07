@@ -1,0 +1,600 @@
+doctype html
+html
+  head
+    = csrf_meta_tags
+    = csp_meta_tag
+    meta[charset="utf-8"]
+    title
+      | #{@general_transaction.number_evidence} Printout Form Bukti Pembayaran
+    meta[name="viewport" content="width=device-width, initial-scale=1.0"]
+    meta[content="SIAP PT BPI" name="description"]
+    meta[content="SIAP PT BPI" name="author"]
+    meta[http-equiv="X-UA-Compatible" content="IE=edge"]
+
+    scss:
+      div {
+        font-size: 15px;
+      }
+      table {
+        border-collapse: collapse;
+        & td {
+          padding: 5px;
+
+          &.border-left {
+            border:none;
+            border-left:1px solid black;
+          }
+          &.border-right{
+            border:none;
+            border-right:1px solid black;
+          }
+          &.no-border {
+            border:none;
+          }
+        }
+      }
+      .my-checklist-doc {
+        margin-top:-20px;
+        & div {
+          text-align:center;
+        }
+        & > div {
+          display:inline-block;
+          margin-left: 5px;
+          margin-top:20px;
+          width: 100px;
+          & > div {
+            padding: 2px 5px;
+            border:1px solid black;
+            &:nth-child(1) {
+              padding:3px 0;
+            }
+            &:nth-child(2) {
+              padding:15px 5px;
+            }
+            &:nth-child(3) {
+              padding: 10px 0;
+            }
+          }
+        }
+      }
+      .table-4 {
+        & td, & th {
+          border:1px solid black;
+          padding: 5px 10px;
+        }
+      }
+
+  body[style="position:relative;"]
+    div[
+      style="display:flex;align-items:center;justify-content:space-even;"
+    ]
+      h3[
+        style=""
+      ]
+        | PT BUKTI PEMBANGKIT INNOVATIVE
+      div[alt="img"]
+    h2[
+      style="text-decoration:underline;text-align:center;"
+    ]
+      | BUKTI PEMBAYARAN
+    div[
+      style="display:block;margin-left:138px;"
+    ]
+      table.table-1[
+        style=""
+      ]
+        tr
+          td[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+          td[
+            style="border-top:1px solid black;border-bottom:1px solid black;width:100px;"
+          ]
+            b Nomor Bukti
+          td[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{@general_transaction.number_evidence}
+          td[
+            style="width:30px;"
+          ]
+          td[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            b Tanggal Bayar
+          td[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td[
+            style="border-top:1px solid black;border-bottom:1px solid black;width:150px;"
+          ]
+            | #{readable_date @general_transaction.approvals.reorder(updated_at: :desc).first.updated_at}
+          td[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+    h4[
+      style=""
+    ]
+      | I. DATA TAGIHAN
+    div[
+      style="display:block;margin-left:20px;"
+    ]
+      table.table-2[
+        style=""
+      ]
+        tr
+          td.t2-t2[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 1. Nama Rekanan
+          td.t2-t3[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t4[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{@general_transaction.client&.name}
+          td.t2-t5[
+            style="width:30px;"
+          ]
+          td.t2-t6[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 7. No. PO / Kontrak
+          td.t2-t7[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t8[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{@general_transaction.po_kontrak}
+          td.t2-t9[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+        tr
+          td.t2-t2[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 2. Nomor Rekanan
+          td.t2-t3[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t4[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{''}
+          td.t2-t5[
+            style="width:30px;"
+          ]
+          td.t2-t6[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 8. Tanggal PO / Kontrak
+          td.t2-t7[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t8[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{@general_transaction.tanggal_po_kontrak}
+          td.t2-t9[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+        tr
+          td.t2-t2[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 3. Nomor Invoice
+          td.t2-t3[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t4[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{@general_transaction.nomor_invoice}
+          td.t2-t5[
+            style="width:30px;"
+          ]
+          td.t2-t6[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 9. Jangka Waktu
+          td.t2-t7[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t8[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{}
+          td.t2-t9[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+        tr
+          td.t2-t2[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 4. Tanggal Invoice
+          td.t2-t3[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t4[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{readable_date_8(@general_transaction.transactionable.date)}
+          td.t2-t5[
+            style="width:30px;"
+          ]
+          td.t2-t6[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 10. Nilai Kontrak
+          td.t2-t7[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t8[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{print_money @general_transaction.nilai_kontrak, precision:2}
+          td.t2-t9[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+        tr
+          td.t2-t2[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 5. Nilai Invoice
+          td.t2-t3[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t4[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{print_money @general_transaction.nilai_invoice, precision:2}
+          td.t2-t5[
+            style="width:30px;"
+          ]
+          td.t2-t6[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 11. Komulatif Bayar
+          td.t2-t7[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t8[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{}
+          td.t2-t9[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+        tr
+          td.t2-t2[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 6. Mata Uang
+          td.t2-t3[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t4[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{@general_transaction.mata_uang}
+          td.t2-t5[
+            style="width:30px;border:none;"
+          ]
+            | &nbsp;
+          td.t2-t6[
+            style="border-left:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | 12. Mata Anggaran
+          td.t2-t7[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | :
+          td.t2-t8[
+            style="border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+            | #{}
+          td.t2-t9[
+            style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
+          ]
+        tr
+          td[
+            colspan="100%"
+            style="border:none;"
+          ]
+            | &nbsp;
+        tr
+          td.t2-t1[
+            style=""
+            colspan="2"
+          ]
+            | Deskripsi
+          td
+          td.t2-t2[
+            style="border:1px solid black;"
+            colspan="5"
+          ]
+            | #{@general_transaction.deskripsi}
+    h4[
+      style=""
+    ]
+      | II. KELENGKAPAN TAGIHAN
+    div.my-checklist-doc[
+      style="display:block;margin-left:20px;"
+    ]
+      - n = 1
+      - if @general_transaction.transactionable_type == 'Invoice'
+        - invoice = @general_transaction.transactionable
+        div
+          div
+            | 1.
+          div
+            | SPP
+          div
+            - if invoice.spp_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 2.
+          div
+            | Invoice
+          div
+            - if invoice.invoice_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 3.
+          div
+            | Kwitansi
+          div
+            - if invoice.kwitansi_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 4.
+          div
+            | Kwitansi
+          div
+            - if invoice.kwitansi_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 5.
+          div
+            | Faktur Pajak
+          div
+            - if invoice.faktur_pajak_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 6.
+          div
+            | BAMP
+          div
+            - if invoice.bamp_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 7.
+          div
+            | BAPB
+          div
+            - if invoice.bapb_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 8.
+          div
+            | BASTP
+          div
+            - if invoice.bastp_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 9.
+          div
+            | Perjanjian
+          div
+            - if invoice.copy_perjanjian_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 10.
+          div
+            | SPMK
+          div
+            - if invoice.copy_spmk_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 11.
+          div
+            | NPWP
+          div
+            - if invoice.copy_npwp_pkp_checked?
+              b OK
+            - else
+              | -
+        div
+          div
+            | 12.
+          div
+            | Jaminan P.
+          div
+            - if invoice.jaminan_pemeliharaan_checked?
+              b OK
+            - else
+              | -
+      - if @general_transaction.transactionable_type == 'InvoiceDirectExternal'
+        - invoice_direct_external = @general_transaction.transactionable
+        div
+          div
+            | 1.
+          div
+            | Faktur Pajak
+          div
+            - if invoice_direct_external.faktur_pajak_checked?
+              b OK
+            - else
+              | -
+      table.table-3[
+        style="width:70%;margin-top:20px;"
+      ]
+        tr
+          td.t3-t1[
+            style=""
+            colspan="2"
+          ]
+            | Dokumen diterima Lengkap & Benar
+          td
+          td.t3-t2[
+            style="border:1px solid black;"
+            colspan="5"
+          ]
+            | #{readable_date @general_transaction.approvals.reorder(updated_at: :desc).first.updated_at}
+    h4[
+      style=""
+    ]
+      | III. PERHITUNGAN TAGIHAN
+    div.my-checklist-doc[
+      style="display:block;margin-left:20px;margin-top:20px;"
+    ]
+      table.table-4[
+        style=""
+      ]
+        thead
+          tr
+            th[
+            ]
+              | Uraian
+            th[
+            ]
+              | CR
+            th[
+            ]
+              | Jumlah
+            th[
+            ]
+              | Kode Perkiraan
+            th[
+            ]
+              | D/K
+        tbody
+          - @general_transaction.general_transaction_lines.debit.each do |general_transaction_line|
+            tr
+              td[
+                style="width:360px;"
+              ]
+                | #{general_transaction_line.description}
+              td[
+                style="width:30px;"
+              ]
+                | #{general_transaction_line.price_idr_currency}
+              td[
+                style="width:200px;"
+              ]
+                | #{print_money general_transaction_line.price_idr, precision:2}
+              td[
+                style="width:150px;"
+              ]
+                - if general_transaction_line.is_master_business_units_enabled?
+                  | #{general_transaction_line.master_business_units_string}
+                - else
+                  | #{general_transaction_line.code}
+              td[
+                style="width:30px;"
+              ]
+                - if general_transaction_line.debit?
+                  | D
+                - else
+                  | K
+      table.table-5[
+        style="width:70%;margin-top:20px;"
+      ]
+        tr
+          td.t3-t1[
+            style=""
+            colspan="2"
+          ]
+            | Terbilang
+          td
+          td.t3-t2[
+            style="border:1px solid black;"
+            colspan="5"
+          ]
+            i #{Terbilang.convert(@general_transaction.general_transaction_lines.debit.sum(&:price_idr).amount).titlecase} Rupiah
+    h4[
+      style=""
+    ]
+      | IV. ALUR PROSES TAGIHAN
+    table.table-6[
+      style="width:70%;margin-top:20px;"
+    ]
+      tr
+        td.t6-t1[
+          style=""
+        ]
+          | Dibuat Oleh
+        td.t6-t2[
+        ]
+          | #{@general_transaction.first_log.user.name}
+        td.t6-t3[
+        ]
+          | #{readable_date_8 @general_transaction.created_at}
+    table.table-6[
+      style="width:70%;margin-top:10px;"
+    ]
+      tr
+        td.t6-t1[
+          style=""
+          colspan="100%"
+        ]
+          | Disetujui Oleh
+      - @general_transaction.approvals.each.with_index(1) do |approval,i|
+        tr
+          td.t6-1[
+            style=""
+          ]
+            | #{i}. #{approval.role.titlecase} / #{approval.last_log.user.name}
+          td.t6-1[
+            style=""
+          ]
+            | Approved tanggal #{readable_timestamp_6 approval.updated_at.localtime}

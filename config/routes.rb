@@ -31,6 +31,9 @@ Rails.application.routes.draw do
       post 'actions/get_number_evidence/:location/:group/:cash_account_id',
         to: 'actions#get_number_evidence',
         as: :get_number_evidence
+      get ':id/printouts',
+        to: 'printouts#show',
+        as: :printout
     end
 
     resources :accounts, only: %i[index show update destroy create]

@@ -450,6 +450,7 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     temple (0.8.2)
+    terbilang (0.0.6)
     thor (1.1.0)
     thwait (0.2.0)
       e2mmap
@@ -547,6 +548,7 @@ DEPENDENCIES
   sidekiq-scheduler
   slim-rails
   spring
+  terbilang
   turbolinks (~> 5)
   twilio-ruby
   tzinfo-data

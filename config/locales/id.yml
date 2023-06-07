@@ -287,3 +287,4 @@ id:
   invoice_approved: 'Akrual Invoice Verifikasi Hutang'
   invoice_paid: 'Invoice Terbayar'
   calculator: 'Kalkulator'
+  invoice_direct_external_paid: 'Invoice Direct External'

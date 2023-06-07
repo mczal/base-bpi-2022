@@ -41,6 +41,8 @@ gem 'webpacker', '~> 5.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 
+gem "terbilang"
+
 gem 'capybara', '>= 2.15'
 gem 'nokogiri'
 gem 'selenium-webdriver'
