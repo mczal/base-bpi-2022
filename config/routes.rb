@@ -187,6 +187,11 @@ Rails.application.routes.draw do
     end
 
     resources :invoice_direct_externals,  only: %i[index show create update destroy]
+    namespace :invoice_direct_externals do
+      post 'actions/:client_id/get_client_detail',
+        to: 'actions#get_client_detail',
+        as: 'get_client_detail'
+    end
 
     resources :revals, only: %i[index show create update destroy]
     post 'revals/:id/edit',

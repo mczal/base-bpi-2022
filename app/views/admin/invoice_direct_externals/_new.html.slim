@@ -37,8 +37,8 @@ scss:
       = form_for [:admin,@invoice_direct_external],
         html: {\
           data: {\
-            controller: 'admin--finances--invoices--submit-summary-verification',\
-            action: 'submit->admin--finances--invoices--submit-summary-verification#handleSubmit'\
+            controller: 'admin--invoice-direct-externals--submit-summary-verification',\
+            action: 'submit->admin--invoice-direct-externals--submit-summary-verification#handleSubmit'\
           }\
         } do |f|
         - if @invoice_direct_external.faktur_pajak.present?
@@ -48,7 +48,78 @@ scss:
           button.close aria-label="Close" data-dismiss="modal" type="button" 
             i.ki.ki-close aria-hidden="true"
         .modal-body
-          / = render partial: 'edit_alerts'
+          = render partial: 'edit_alerts'
+          fieldset
+            legend INFORMASI CLIENT
+            .row
+              .form-group.col-6
+                label
+                  | Client
+                  span.required *
+                .input-group
+                  = f.select :client_id, options_from_collection_for_select(\
+                      Client.select(:id,:name).all,\
+                      'id',\
+                      'name',\
+                      @invoice_direct_external.client_id\
+                    ),
+                    {include_blank: '== Pilih =='},
+                    class: 'form-control',
+                    data: {\
+                      controller: 'select2',\
+                      required: 1\
+                    }
+            .row[
+              style="min-height:100px;"
+              data-controller="admin--invoice-direct-externals--get-client-detail"
+              data-admin--invoice-direct-externals--get-client-detail-path="#{admin_invoice_direct_externals_get_client_detail_path(client_id: '-1')}"
+            ]
+              .col-6.form-group
+                table
+                  thead
+                  tbody
+                    tr
+                      td
+                        | Alamat
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = @invoice_direct_external.client&.address
+                    tr
+                      td
+                        | NPWP
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        |
+                    tr
+                      td
+                        | Jenis PKP
+                      td.pl-1
+                        | :
+                      td.pl-3
+                        = @invoice_direct_external.client&.pkp_group.to_s.titlecase.upcase
+              .col-6
+                .form-group
+                  label.mr-1 Bank
+                  = f.select :bank_id,
+                    options_from_collection_for_select(Bank.all, :id, :name, @invoice_direct_external.bank_id),
+                    {include_blank: '== Pilih =='},
+                    class: 'form-control',
+                    data: { controller: 'select2' },
+                    required: 1, disabled: !@invoice_direct_external.client.present?
+                .form-group
+                  label No Rekening
+                  = f.text_field :account_number,
+                    placeholder: 'No. Rekening Bank',
+                    class: 'form-control',
+                    required: 1, disabled: !@invoice_direct_external.client.present?
+                .form-group
+                  label A/N
+                  = f.text_field :account_holder,
+                    placeholder: 'Nama pemilik rekening',
+                    class: 'form-control',
+                    required: 1, disabled: !@invoice_direct_external.client.present?
           fieldset
             legend Checklist Dokumen
             .form-group
@@ -70,12 +141,26 @@ scss:
                   required: 1
               .col-lg-6.form-group[style="margin-bottom:5px;"]
                 label
+                  | Pilih Lokasi
+                  span.text-danger.ml-1 *
+                .checkbox-inline
+                  label.checkbox
+                    = f.radio_button :location,
+                      'jakarta', required: 1
+                    span
+                    | Jakarta
+                  label.checkbox
+                    = f.radio_button :location,
+                      'site',required: 1
+                    span
+                    | Site
+            .row
+              .col-lg-6.form-group[style="margin-bottom:5px;"]
+                label
                   | No. Invoice
                   span.required *
                 = f.text_field :ref_number, class: 'form-control',
                   required: 1
-            .row
-              .col-lg-6.form-group[style="margin-bottom:5px;"]
               .col-lg-6.form-group[style="margin-bottom:5px;"]
                 label
                   | No. Kwitansi
@@ -118,8 +203,134 @@ scss:
                     required: 1,
                     placeholder: 'Nilai Invoice',
                     value: @invoice_direct_external.price.amount
+            .row.js-item-container
+              .col-6.form-group
+                label
+                  | Debit (Cost Center)
+                  span.required *
+                = f.select :cost_center_id,
+                  options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, @invoice_direct_external.cost_center_id),
+                  {},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+              .col-6.form-group
+                label
+                  b Kode Karyawan/Business-Unit?
+                .d-flex.align-items-center.justify-content-start
+                  span.switch.switch-icon
+                    label
+                      = check_box_tag 'invoice_direct_external[is_master_business_units_enabled]',
+                        true, @invoice_direct_external.is_master_business_units_enabled?, data: {\
+                          controller: 'admin--invoice-direct-externals--master-business-unit-activated',\
+                          action: 'change->admin--invoice-direct-externals--master-business-unit-activated#handleChange',\
+                        }
+                      span
+                  h6
+                    span.mbu
+                      - if @invoice_direct_external.is_master_business_units_enabled?
+                        | #{@invoice_direct_external.master_business_unit.code}
+                      - else
+                        | _
+                    span.mbul
+                      - if @invoice_direct_external.is_master_business_units_enabled?
+                        | #{@invoice_direct_external.master_business_unit_location.code}
+                      - else
+                        |  _ _
+                    span.mbuar
+                      - if @invoice_direct_external.is_master_business_units_enabled?
+                        | #{@invoice_direct_external.master_business_unit_area.code}
+                      - else
+                        |  _ _ _ _ _
+                    span.mbuact
+                      - if @invoice_direct_external.is_master_business_units_enabled?
+                        | #{@invoice_direct_external.master_business_unit_activity.code}
+                      - else
+                        |  _ _ _ _
+                    span.mbuaccount
+                      - if @invoice_direct_external.is_master_business_units_enabled?
+                        | #{@invoice_direct_external.cost_center.code}
+                      - else
+                        |  _ _ _ _
+                .mt-5.js-business-unit[
+                  class="#{@invoice_direct_external.is_master_business_units_enabled? ? '':'d-none'}"
+                ]
+                  .row.mb-3
+                    .col-6.form-group.mb-1
+                      label
+                        | Business Unit
+                        span.text-danger.ml-1 *
+                      .checkbox-list
+                        - MasterBusinessUnit.business_unit.each do |mbu|
+                          label.checkbox
+                            = radio_button_tag 'invoice_direct_external[master_business_unit_id]',
+                              mbu.id, @invoice_direct_external.master_business_unit_id.to_s == mbu.id,
+                              data: {\
+                                controller: 'admin--general-transactions--master-business-unit-change',\
+                                action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
+                                code: mbu.code\
+                              }, required: 1, readonly: 1
+                            span
+                            | #{mbu.readable_name}
+                    .col-6.form-group.mb-1
+                      label
+                        | Business Unit Location
+                        span.text-danger.ml-1 *
+                      .checkbox-list
+                        - MasterBusinessUnit.business_unit_location.each do |mbu|
+                          label.checkbox
+                            = radio_button_tag 'invoice_direct_external[master_business_unit_location_id]',
+                              mbu.id, @invoice_direct_external.master_business_unit_location_id.to_s == mbu.id,
+                              data: {\
+                                controller: 'admin--general-transactions--master-business-unit-location-change',\
+                                action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
+                                code: mbu.code\
+                              }, required: 1, readonly: 1
+                            span
+                            | #{mbu.readable_name}
+                  .form-group[style="margin-bottom:5px;"]
+                    label
+                      | Business Unit Area
+                      span.text-danger.ml-1 *
+                    = select_tag 'invoice_direct_external[master_business_unit_area_id]',
+                      options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, @invoice_direct_external.master_business_unit_area_id),
+                      include_blank: '== Pilih ==',
+                      class: 'form-control',
+                      placeholder: 'Business Unit Area',
+                      data: {\
+                        controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
+                      },
+                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                  .form-group[style="margin-bottom:5px;"]
+                    label
+                      | Business Unit Activity
+                      span.text-danger.ml-1 *
+                    = select_tag 'invoice_direct_external[master_business_unit_activity_id]',
+                      options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, @invoice_direct_external.master_business_unit_activity_id),
+                      include_blank: '== Pilih ==',
+                      class: 'form-control',
+                      placeholder: 'Business Unit Activity',
+                      data: {\
+                        controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
+                      },
+                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
             .row
-              .col-12.form-group.mt-n5
+              .col-12.form-group
+                label
+                  | Kas / Bank
+                  span.required *
+                = f.select :bank_account_id,
+                  options_from_collection_for_select(Account.select(:id,:name,:code).where('code ILIKE ?','2%',), :id, :readable_name, @invoice_direct_external.bank_account_id),
+                  {include_blank: '== Pilih =='},
+                  class: 'form-control',
+                  data: { controller: 'select2' },
+                  required: 1
+            hr
+            .row
+              .col-12.form-group[
+                data-controller="admin--invoice-direct-externals--conditional-mandatory-field-adapter-for-ppn"
+                data-admin--invoice-direct-externals--conditional-mandatory-field-adapter-for-ppn-field-name="invoice_direct_external[faktur_pajak_checked]"
+              ]
                 label
                   | PPN
                   span.required *
@@ -175,6 +386,25 @@ scss:
                     ]
                     span
                     | Exclude
+                .radio-inline
+                  label.radio
+                    input[
+                      type="radio" name="invoice_direct_external[ppn_cost_group]" value="biaya"
+                      required="required"
+                      checked=(@invoice_direct_external.ppn_cost_biaya?)
+                    ]
+                    span
+                    div
+                      | 25140
+                  label.radio
+                    input[
+                      type="radio" name="invoice_direct_external[ppn_cost_group]" value="non_biaya"
+                      required="required"
+                      checked=(@invoice_direct_external.ppn_cost_non_biaya?)
+                    ]
+                    span
+                    div
+                      | Cost Center
           fieldset
             legend Faktur Pajak
             .row
@@ -204,14 +434,14 @@ scss:
                     required: 1
               .col-6
                 div[
-                  data-controller="admin--invoices--faktur-pajak--scanner"
-                  data-admin--invoices--faktur-pajak--scanner-path="#{admin_inv_trackings_finances_invoices_faktur_pajak_verify_path(group: 'xxx', signed: 'yyy')}"
+                  data-controller="admin--invoice-direct-externals--faktur-pajak--scanner"
+                  data-admin--invoice-direct-externals--faktur-pajak--scanner-path="#{admin_inv_trackings_finances_invoices_faktur_pajak_verify_path(group: 'xxx', signed: 'yyy', field_name: 'invoice_direct_external[faktur_pajak_attributes][faktur_link]')}"
                 ]
                   .font-weight-bolder.mb-5.text-center[style="text-decoration:underline;"]
                     | Verifikasi QR Code Faktur Pajak
                     button.btn.btn-text-dark-50.btn-icon-info.btn-hover-icon-danger.font-weight-bold.btn-hover-bg-light.ml-2[
                       type="button"
-                      data-action="click->admin--invoices--faktur-pajak--scanner#refresh"
+                      data-action="click->admin--invoice-direct-externals--faktur-pajak--scanner#refresh"
                     ]
                       i.flaticon-refresh
                       | Refresh
@@ -337,5 +567,4 @@ scss:
             type="button"
           ] Batal
           = f.submit "Simpan as Draft", class: "btn btn-outline-warning"
-          = f.submit "Simpan", class: "btn btn-outline-info"
-          = f.submit "Simpan & Lanjut ke Invoice", class: "btn btn-outline-primary"
+          = f.submit "Simpan", class: "btn btn-outline-primary"

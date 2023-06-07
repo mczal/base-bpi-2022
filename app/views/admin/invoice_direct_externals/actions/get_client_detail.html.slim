@@ -1,0 +1,46 @@
+.col-6.form-group
+  table
+    thead
+    tbody
+      tr
+        td[style="vertical-align:top;"]
+          | Alamat
+        td.pl-1[style="vertical-align:top;"]
+          | :
+        td.pl-3[style="vertical-align:top;"]
+          | #{@client.address}
+      tr
+        td[style="vertical-align:top;"]
+          | NPWP
+        td.pl-1[style="vertical-align:top;"]
+          | :
+        td.pl-3[style="vertical-align:top;"]
+          | #{@client.formatted_npwp}
+      tr
+        td[style="vertical-align:top;"]
+          | Jenis PKP
+        td.pl-1[style="vertical-align:top;"]
+          | :
+        td.pl-3[style="vertical-align:top;"]
+          | #{@client.pkp_group.to_s.titlecase}
+.col-6
+  .form-group
+    label Bank
+    = select_tag 'invoice_direct_external[bank_id]',
+      options_from_collection_for_select(Bank.all, :id, :name, @client.bank_id),
+      include_blank: '== Pilih ==',
+      class: 'form-control',
+      data: { controller: 'select2' },
+      required: 1
+  .form-group
+    label No Rekening
+    = text_field_tag 'invoice_direct_external[account_number]', @client.account_number,
+      placeholder: 'No. Rekening Bank',
+      class: 'form-control',
+      required: 1
+  .form-group
+    label A/N
+    = text_field_tag 'invoice_direct_external[account_holder]', @client.account_name,
+      placeholder: 'Nama pemilik rekening',
+      class: 'form-control',
+      required: 1

@@ -143,6 +143,12 @@ scss:
                         target="_blank"
                       ]
                         i.fas.fa-external-link-alt.ml-2.font-size-sm
+                    - if @general_transaction.invoice_direct_external_paid?
+                      a[
+                        href="#{admin_invoice_direct_external_path(id: @general_transaction.transactionable_id)}"
+                        target="_blank"
+                      ]
+                        i.fas.fa-external-link-alt.ml-2.font-size-sm
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Sumber:
                     b.text-right
@@ -152,17 +158,19 @@ scss:
                         | Invoice Approved - Akrual Hutang
                       - if @general_transaction.invoice_paid?
                         | Invoice Lunas 
+                      - if @general_transaction.invoice_direct_external_paid?
+                        | Invoice Direct Eksternal
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 No.:
                     b.text-right
                       - if @general_transaction.ba?
                         | #{@general_transaction.transactionable.reference_number}
-                      - if @general_transaction.invoice_approved? || @general_transaction.invoice_paid?
+                      - if @general_transaction.invoice_approved? || @general_transaction.invoice_paid? || @general_transaction.invoice_direct_external_paid?
                         | #{@general_transaction.transactionable.ref_number}
                   .d-flex.align-items-center.justify-content-between.mb-2
                     span.font-weight-bold.mr-2 Deskripsi:
                     b.text-right
-                      - if @general_transaction.ba?
+                      - if @general_transaction.ba? || @general_transaction.invoice_direct_external_paid?
                         | #{@general_transaction.transactionable.description}
                       - if @general_transaction.invoice_approved?
                         | 

@@ -1,2 +1,5 @@
 = @faktur_pajak.pretty_hash.html_safe
-= hidden_field_tag 'invoice[faktur_pajak_attributes][faktur_link]', @faktur_pajak.faktur_link
+- if params[:field_name].present?
+  = hidden_field_tag params[:field_name], @faktur_pajak.faktur_link
+- else
+  = hidden_field_tag 'invoice[faktur_pajak_attributes][faktur_link]', @faktur_pajak.faktur_link

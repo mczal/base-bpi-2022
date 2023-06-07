@@ -130,7 +130,7 @@
                     | Invoices
         li.menu-item.menu-item-submenu[
           aria-haspopup="true"
-          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoices\/?/)}") 
+          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/[invoice_direct_externals|invoice_direct_internals]\/?/)}") 
           data-menu-toggle="hover"
         ]
           a.menu-link.menu-toggle[href="javascript:;"]
@@ -147,13 +147,13 @@
           .menu-submenu[kt-hidden-height="80" style=""]
             i.menu-arrow
             ul.menu-subnav
-              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoices\/externals\/?/)}") data-menu-toggle="hover"
+              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoice_direct_externals\/?/)}") data-menu-toggle="hover"
                 a.menu-link[href="#{admin_invoice_direct_externals_path(slug: current_company.slug)}"]
                   i.menu-bullet.menu-bullet-dot
                     span
                   span.menu-text
                     | External
-              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoices\/internals\/?/)}") data-menu-toggle="hover"
+              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoice_direct_internals\/?/)}") data-menu-toggle="hover"
                 a.menu-link[href="#{admin_invoice_direct_externals_path(slug: current_company.slug)}"]
                   i.menu-bullet.menu-bullet-dot
                     span

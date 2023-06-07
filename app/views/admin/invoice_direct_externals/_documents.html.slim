@@ -1,0 +1,28 @@
+.card-body.pt-0
+  h5.mb-2.ml-2 Checklist Dokumen
+  .d-flex.align-items-center.my-5
+    span.bullet.bullet-bar.bg-success.align-self-stretch
+    label.checkbox.checkbox-lg.checkbox-light-success.checkbox-inline.flex-shrink-0.m-0.mx-4
+      input[
+        type="checkbox"
+        name="select"
+        disabled="disabled"
+        readonly="readonly"
+        checked=(@invoice_direct_external.faktur_pajak_checked?)
+      ]
+      span
+    .d-flex.flex-column.flex-grow-1[
+      style="overflow-wrap:anywhere;"
+    ]
+      a.text-dark-75.text-hover-primary.font-weight-bold.font-size-lg.mb-1[
+        href="javascript:void(0);"
+        title="Faktur Pajak"
+        data-controller="tooltip"
+      ]
+        | Faktur Pajak
+
+  hr
+  h5.mb-2.ml-2 Dokumen Attachment
+  = render partial: 'shared/document_v2',
+    collection: @invoice_direct_external.other_files, as: :file,
+    locals: { file_name: 'Dokumen Lainnya' }

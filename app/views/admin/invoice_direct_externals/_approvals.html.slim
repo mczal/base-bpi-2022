@@ -1,0 +1,70 @@
+/ scss:
+  .select2.select2-container {
+    width: 100%;
+  }
+/ .card-body
+  .d-flex.align-items-center.flex-wrap
+    - @invoice_direct_external.functioned_approvals.each do |approval|
+      = render partial: 'shared/approvals/item',
+        locals: {approval: approval}
+.card-body.pt-2.pb-0.mt-n3
+  .table-responsive
+    table.table.table-borderless.table-vertical-center
+      thead
+        tr[
+          style="border-bottom:1px solid #D4D4D4;"
+        ]
+          th
+          th.p-0.min-w-200px
+            | Tanggal
+          th.p-0.min-w-125px
+            | Nomor Bukti
+          th.p-0.min-w-125px
+            | Lokasi
+          th.p-0.min-w-125px
+            | Status
+          th.p-0.min-w-125px
+            | Actions
+      tbody
+        - @invoice_direct_external.general_transactions.invoice_direct_external_paid.each.with_index(1) do |general_transaction,i|
+            tr
+              td.datatable-cell-left.datatable-cell[data-field="index" aria-label="1"]
+                span[style="width: 40px;"]
+                  span.font-weight-bolder
+                    | #{i}.
+              td.datatable-cell[data-field="date" aria-label="20 Jan 2023"]
+                span[style="width: 100px;"]
+                  span.svg-icon.svg-icon-light-dark[
+                    data-controller="base--popover"
+                    data-base--popover-html="1"
+                    data-base--popover-trigger="hover"
+                    data-content="Dibuat: #{readable_timestamp_2 general_transaction.created_at.localtime} <br/> Diubah: #{readable_timestamp_2 general_transaction.updated_at.localtime}"
+                    data-title="Dibuat/Diubah"
+                    style="cursor:pointer;"
+                  ]
+                    svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                      g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                        rect[x="0" y="0" width="24" height="24"]
+                        circle[fill="#000000" opacity="0.3" cx="12" cy="12" r="10"]
+                        rect[fill="#000000" x="11" y="10" width="2" height="7" rx="1"]
+                        rect[fill="#000000" x="11" y="7" width="2" height="2" rx="1"]
+                  span.font-weight-bolder
+                    = readable_date_2 general_transaction.date
+              td.datatable-cell[data-field="number_evidence" aria-label="BJ 0699"]
+                span[style="width: 164px;"]
+                  span.font-weight-bolder
+                    = general_transaction.number_evidence
+              td.datatable-cell[data-field="location" aria-label="Jakarta"]
+                span[style="width: 164px;"]
+                  span.font-weight-bolder
+                    = general_transaction.location.to_s.titlecase
+              td.datatable-cell[data-field="status" aria-label="null"]
+                span[style="width: 164px;"]
+                  = general_transaction.status_for_html
+              td.datatable-cell-center.datatable-cell[data-field="Actions" data-autohide-disabled="false" aria-label="null"]
+                span[style="overflow: visible; position: relative; width: 125px;"]
+                  a.btn.btn-sm.btn-clean.btn-icon[
+                    href="#{admin_general_transaction_path(id: general_transaction.id, slug: params[:slug])}"
+                    target="_blank"
+                  ]
+                    i.la.la-eye.text-primary

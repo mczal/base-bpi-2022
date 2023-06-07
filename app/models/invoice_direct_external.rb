@@ -2,9 +2,11 @@
 
 class InvoiceDirectExternal < ApplicationRecord
   include ::InvoiceDirectExternals::Statuses
-  # include ::InvoiceDirectExternals::SynchronizeToGeneralTransactionsAfterSaveForApproved
-  # include ::InvoiceDirectExternals::SynchronizeToGeneralTransactionsAfterSaveForPaid
+  include Contracts::Clients
+  include ::InvoiceDirectExternals::SynchronizeToGeneralTransactionsAfterSaveForPaid
 
+  belongs_to :client
+  belongs_to :bank
   belongs_to :bank_account, class_name: "Account", optional: true
   belongs_to :cost_center, class_name: "Account"
   belongs_to :master_business_unit, optional: true
@@ -54,7 +56,7 @@ class InvoiceDirectExternal < ApplicationRecord
   end
 
   def is_dpp_rounded?
-    dpp_price_original.amount % 1 != 0
+   dpp_price_original.amount % 1 != 0
   end
   def dpp_price_original
     if !faktur_pajak_checked? || ppn_exclude?

@@ -78,6 +78,9 @@ module GeneralTransactions
         if self.invoice_approved?
           self.transactionable.approved!
         end
+        if self.invoice_direct_external_paid?
+          self.transactionable.paid!
+        end
       end
     end
   end
