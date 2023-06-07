@@ -72,6 +72,14 @@ html
       }
 
   body[style="position:relative;"]
+    .logo[style="position:absolute;height:50px;top:0px;right:-20px;width:100%;z-index:-1;"]
+      div[
+        style="position:absolute;right:18px;top:0;font-size:12px;width:190px;line-height:13px;"
+      ]
+        img[
+          src="#{wicked_pdf_asset_base64('logo_bpi.png')}"
+          style="position:absolute;right:0px;top:0px;height:70px;"
+        ]
     div[
       style="display:flex;align-items:center;justify-content:space-even;"
     ]
@@ -120,7 +128,7 @@ html
           td[
             style="border-top:1px solid black;border-bottom:1px solid black;width:150px;"
           ]
-            | #{readable_date @general_transaction.approvals.reorder(updated_at: :desc).first.updated_at}
+            | #{readable_date @general_transaction.approvals.reorder(updated_at: :desc).first&.updated_at}
           td[
             style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
           ]
@@ -239,7 +247,7 @@ html
           td.t2-t4[
             style="border-right:1px solid black;border-top:1px solid black;border-bottom:1px solid black;"
           ]
-            | #{readable_date_8(@general_transaction.transactionable.date)}
+            | #{readable_date_8(@general_transaction.transactionable&.date)}
           td.t2-t5[
             style="width:30px;"
           ]
@@ -495,7 +503,7 @@ html
             style="border:1px solid black;"
             colspan="5"
           ]
-            | #{readable_date @general_transaction.approvals.reorder(updated_at: :desc).first.updated_at}
+            | #{readable_date @general_transaction.approvals.reorder(updated_at: :desc).first&.updated_at}
     h4[
       style=""
     ]
