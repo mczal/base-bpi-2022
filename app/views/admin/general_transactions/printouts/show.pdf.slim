@@ -34,7 +34,7 @@ html
         }
       }
       .my-checklist-doc {
-        margin-top:-20px;
+        margin-top:-35px;
         & div {
           text-align:center;
         }
@@ -50,10 +50,10 @@ html
               padding:3px 0;
             }
             &:nth-child(2) {
-              padding:15px 5px;
+              padding:10px 5px;
             }
             &:nth-child(3) {
-              padding: 10px 0;
+              padding: 5px 0;
             }
           }
         }
@@ -63,6 +63,12 @@ html
           border:1px solid black;
           padding: 5px 10px;
         }
+      }
+      .text-center {
+        text-align:center;
+      }
+      .text-right {
+        text-align:right;
       }
 
   body[style="position:relative;"]
@@ -518,34 +524,236 @@ html
             ]
               | D/K
         tbody
-          - @general_transaction.general_transaction_lines.debit.each do |general_transaction_line|
+          - if @general_transaction.transactionable_type == 'InvoiceDirectExternal'
+            / DPP
             tr
               td[
                 style="width:360px;"
               ]
-                | #{general_transaction_line.description}
+                | #{@general_transaction.transactionable.description}
               td[
                 style="width:30px;"
               ]
-                | #{general_transaction_line.price_idr_currency}
-              td[
+                | #{@general_transaction.transactionable.price_currency}
+              td.text-right[
                 style="width:200px;"
               ]
-                | #{print_money general_transaction_line.price_idr, precision:2}
+                | #{print_money @general_transaction.transactionable.dpp_price, precision:2}
+              td.text-center[
+                style="width:150px;"
+              ]
+                - if @general_transaction.transactionable.is_master_business_units_enabled?
+                  | #{@general_transaction.transactionable.master_business_units_string}
+                - else
+                  | #{@general_transaction.transactionable.cost_center.code}
+              td.text-center[
+                style="width:30px;"
+              ]
+                  | D
+            - if @general_transaction.transactionable.faktur_pajak_checked?
+              / PPN
+              tr
+                td[
+                  style="width:360px;"
+                ]
+                  | PPN
+                td[
+                  style="width:30px;"
+                ]
+                  | #{@general_transaction.transactionable.price_currency}
+                td.text-right[
+                  style="width:200px;"
+                ]
+                  | #{print_money @general_transaction.transactionable.ppn_price, precision:2}
+                td.text-center[
+                  style="width:150px;"
+                ]
+                  - if @general_transaction.transactionable.ppn_cost_biaya?
+                    | #{@general_transaction.transactionable.ppn_biaya_account.code}
+                  - else
+                    - if @general_transaction.transactionable.is_master_business_units_enabled?
+                      | #{@general_transaction.transactionable.master_business_units_string}
+                    - else
+                      | #{@general_transaction.transactionable.cost_center.code}
+                td.text-center[
+                  style="width:30px;"
+                ]
+                    | D
+              tr
+                td[
+                  colspan="100%"
+                ]
+                  | &nbsp;
+              tr
+                td[
+                  style="width:360px;"
+                ]
+                  b Jumlah
+                td[
+                  style="width:30px;"
+                ]
+                  | #{@general_transaction.transactionable.price_currency}
+                td.text-right[
+                  style="width:200px;"
+                ]
+                  | #{print_money @general_transaction.general_transaction_lines.debit.sum(&:price_idr).to_money, precision:2}
+                td[
+                  style="width:150px;"
+                ]
+                  | 
+                td[
+                  style="width:30px;"
+                ]
+                  |
+          - if @general_transaction.transactionable_type == 'Invoice'
+            / DPP
+            tr
+              td[
+                style="width:360px;"
+              ]
+                | #{@general_transaction.transactionable.ba.description}
+              td[
+                style="width:30px;"
+              ]
+                | #{@general_transaction.transactionable.ba.price_currency}
+              td.text-right[
+                style="width:200px;"
+              ]
+                | #{print_money @general_transaction.transactionable.dpp_price, precision:2}
+              td.text-center[
+                style="width:150px;"
+              ]
+                - if @general_transaction.transactionable.ba.contract.is_master_business_units_enabled?
+                  | #{@general_transaction.transactionable.ba.contract.master_business_units_string}
+                - else
+                  | #{@general_transaction.transactionable.ba.contract.accrued_debit.code}
+              td.text-center[
+                style="width:30px;"
+              ]
+                  | D
+            / PPN
+            tr
+              td[
+                style="width:360px;"
+              ]
+                | PPN
+              td[
+                style="width:30px;"
+              ]
+                | #{@general_transaction.transactionable.ba.price_currency}
+              td.text-right[
+                style="width:200px;"
+              ]
+                | #{print_money @general_transaction.transactionable.ppn_price, precision:2}
+              td.text-center[
+                style="width:150px;"
+              ]
+                - if @general_transaction.transactionable.ppn_cost_biaya?
+                  | #{@general_transaction.transactionable.ppn_biaya_account.code}
+                - else
+                  - if @general_transaction.transactionable.ba.contract.is_master_business_units_enabled?
+                    | #{@general_transaction.transactionable.ba.contract.master_business_units_string}
+                  - else
+                    | #{@general_transaction.transactionable.ba.contract.accrued_debit.code}
+              td.text-center[
+                style="width:30px;"
+              ]
+                  | D
+            / PPH
+            - if @general_transaction.transactionable.pph_percentage.present? && @general_transaction.transactionable.pph.present?
+              tr
+                td[
+                  style="width:360px;"
+                ]
+                  | #{@general_transaction.transactionable.pph.name} (#{@general_transaction.transactionable.pph_percentage}%)
+                td[
+                  style="width:30px;"
+                ]
+                  | #{@general_transaction.transactionable.ba.price_currency}
+                td.text-right[
+                  style="width:200px;"
+                ]
+                  | #{print_money -@general_transaction.transactionable.pph_price, precision:2}
+                td.text-center[
+                  style="width:150px;"
+                ]
+                  | #{@general_transaction.transactionable.pph.code}
+                td.text-center[
+                  style="width:30px;"
+                ]
+                    | K
+            / Denda
+            - if @general_transaction.transactionable.fine > 0 && @general_transaction.transactionable.fine_account.present?
+              tr
+                td[
+                  style="width:360px;"
+                ]
+                  | Denda
+                td[
+                  style="width:30px;"
+                ]
+                  | #{@general_transaction.transactionable.ba.price_currency}
+                td.text-right[
+                  style="width:200px;"
+                ]
+                  | #{print_money -@general_transaction.transactionable.fine, precision:2}
+                td.text-center[
+                  style="width:150px;"
+                ]
+                  | #{@general_transaction.transactionable.fine_account.code}
+                td.text-center[
+                  style="width:30px;"
+                ]
+                    | K
+            / Bonus
+            - if @general_transaction.transactionable.bonus > 0 && @general_transaction.transactionable.bonus_account.present?
+              tr
+                td[
+                  style="width:360px;"
+                ]
+                  | Bonus
+                td[
+                  style="width:30px;"
+                ]
+                  | #{@general_transaction.transactionable.ba.price_currency}
+                td.text-right[
+                  style="width:200px;"
+                ]
+                  | #{print_money @general_transaction.transactionable.bonus, precision:2}
+                td.text-center[
+                  style="width:150px;"
+                ]
+                  | #{@general_transaction.transactionable.bonus_account.code}
+                td.text-center[
+                  style="width:30px;"
+                ]
+                    | D
+            tr
+              td[
+                colspan="100%"
+              ]
+                | &nbsp;
+            tr
+              td[
+                style="width:360px;"
+              ]
+                b Jumlah
+              td[
+                style="width:30px;"
+              ]
+                | #{@general_transaction.transactionable.ba.price_currency}
+              td.text-right[
+                style="width:200px;"
+              ]
+                | #{print_money @general_transaction.general_transaction_lines.debit.sum(&:price_idr).to_money, precision:2}
               td[
                 style="width:150px;"
               ]
-                - if general_transaction_line.is_master_business_units_enabled?
-                  | #{general_transaction_line.master_business_units_string}
-                - else
-                  | #{general_transaction_line.code}
+                | 
               td[
                 style="width:30px;"
               ]
-                - if general_transaction_line.debit?
-                  | D
-                - else
-                  | K
+                |
       table.table-5[
         style="width:70%;margin-top:20px;"
       ]

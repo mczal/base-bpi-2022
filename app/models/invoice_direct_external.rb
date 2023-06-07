@@ -4,6 +4,7 @@ class InvoiceDirectExternal < ApplicationRecord
   include ::InvoiceDirectExternals::Statuses
   include Contracts::Clients
   include ::InvoiceDirectExternals::SynchronizeToGeneralTransactionsAfterSaveForPaid
+  include InvoiceDirectExternals::MasterBusinessUnits
 
   belongs_to :client
   belongs_to :bank

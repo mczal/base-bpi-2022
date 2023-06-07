@@ -10,7 +10,7 @@ module InvoiceDirectExternals
       location = master_business_unit_location.code
       area = master_business_unit_area.code
       activity = master_business_unit_activity.code
-      @master_business_units_string = "#{code}#{location}#{area}#{activity}#{self.accrued_debit.code}"
+      @master_business_units_string = "#{code}#{location}#{area}#{activity}#{self.cost_center.code}"
     end
 
     def master_business_units_for_popover
