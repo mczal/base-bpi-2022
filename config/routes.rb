@@ -195,6 +195,7 @@ Rails.application.routes.draw do
         to: 'actions#get_client_detail',
         as: 'get_client_detail'
     end
+    resources :invoice_direct_internals,  only: %i[index show create update destroy]
 
     resources :revals, only: %i[index show create update destroy]
     post 'revals/:id/edit',
@@ -282,6 +283,9 @@ Rails.application.routes.draw do
       end
 
       namespace :invoice_direct_externals do
+        post 'get-all', to: 'index#show', as: :index
+      end
+      namespace :invoice_direct_internals do
         post 'get-all', to: 'index#show', as: :index
       end
     end

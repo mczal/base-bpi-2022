@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_06_114347) do
+ActiveRecord::Schema.define(version: 2023_06_08_000011) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -407,6 +407,38 @@ ActiveRecord::Schema.define(version: 2023_06_06_114347) do
     t.index ["master_business_unit_location_id"], name: "ide_mbul"
   end
 
+  create_table "invoice_direct_internal_lines", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.uuid "invoice_direct_internal_id"
+    t.string "name"
+    t.decimal "price_cents", default: "0.0", null: false
+    t.string "price_currency", default: "IDR", null: false
+    t.string "location"
+    t.uuid "cost_center_id"
+    t.boolean "is_master_business_units_enabled", default: false
+    t.uuid "master_business_unit_id"
+    t.uuid "master_business_unit_location_id"
+    t.uuid "master_business_unit_area_id"
+    t.uuid "master_business_unit_activity_id"
+    t.index ["cost_center_id"], name: "index_invoice_direct_internal_lines_on_cost_center_id"
+    t.index ["invoice_direct_internal_id"], name: "idi_idil"
+    t.index ["master_business_unit_activity_id"], name: "idi_mbuact"
+    t.index ["master_business_unit_area_id"], name: "idi_mbuare"
+    t.index ["master_business_unit_id"], name: "idi_mbu"
+    t.index ["master_business_unit_location_id"], name: "idi_mbul"
+  end
+
+  create_table "invoice_direct_internals", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "ref_number"
+    t.date "date"
+    t.string "description"
+    t.uuid "bank_account_id"
+    t.index ["bank_account_id"], name: "index_invoice_direct_internals_on_bank_account_id"
+  end
+
   create_table "invoices", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
@@ -639,6 +671,13 @@ ActiveRecord::Schema.define(version: 2023_06_06_114347) do
   add_foreign_key "invoice_direct_externals", "master_business_units", column: "master_business_unit_activity_id"
   add_foreign_key "invoice_direct_externals", "master_business_units", column: "master_business_unit_area_id"
   add_foreign_key "invoice_direct_externals", "master_business_units", column: "master_business_unit_location_id"
+  add_foreign_key "invoice_direct_internal_lines", "accounts", column: "cost_center_id"
+  add_foreign_key "invoice_direct_internal_lines", "invoice_direct_internals"
+  add_foreign_key "invoice_direct_internal_lines", "master_business_units"
+  add_foreign_key "invoice_direct_internal_lines", "master_business_units", column: "master_business_unit_activity_id"
+  add_foreign_key "invoice_direct_internal_lines", "master_business_units", column: "master_business_unit_area_id"
+  add_foreign_key "invoice_direct_internal_lines", "master_business_units", column: "master_business_unit_location_id"
+  add_foreign_key "invoice_direct_internals", "accounts", column: "bank_account_id"
   add_foreign_key "invoices", "accounts", column: "accrued_credit_id"
   add_foreign_key "invoices", "accounts", column: "bank_account_id"
   add_foreign_key "invoices", "accounts", column: "bonus_account_id"

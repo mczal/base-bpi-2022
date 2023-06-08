@@ -8,7 +8,7 @@ class InvoiceDirectExternal < ApplicationRecord
 
   belongs_to :client
   belongs_to :bank
-  belongs_to :bank_account, class_name: "Account", optional: true
+  belongs_to :bank_account, class_name: "Account"
   belongs_to :cost_center, class_name: "Account"
   belongs_to :master_business_unit, optional: true
   belongs_to :master_business_unit_location,
