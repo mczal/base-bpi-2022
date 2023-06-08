@@ -776,7 +776,7 @@ html
             style="border:1px solid black;"
             colspan="5"
           ]
-            i #{Terbilang.convert(@general_transaction.general_transaction_lines.debit.sum(&:price_idr).amount).titlecase} Rupiah
+            i #{@general_transaction.general_transaction_lines.debit.sum(&:price_idr).amount.humanize.titlecase} Rupiah
     h4[
       style=""
     ]

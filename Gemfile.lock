@@ -238,6 +238,7 @@ GEM
       oauth (>= 0.3.6)
       oauth2 (>= 0.5.0)
     htmlentities (4.3.4)
+    humanize (2.5.1)
     i18n (1.8.11)
       concurrent-ruby (~> 1.0)
     image_processing (1.12.1)
@@ -450,7 +451,6 @@ GEM
       net-scp (>= 1.1.2)
       net-ssh (>= 2.8.0)
     temple (0.8.2)
-    terbilang (0.0.6)
     thor (1.1.0)
     thwait (0.2.0)
       e2mmap
@@ -521,6 +521,7 @@ DEPENDENCIES
   dotenv-rails
   fog-aws
   google-analytics-rails (= 1.1.1)
+  humanize
   image_processing (>= 1.2)
   jbuilder (~> 2.7)
   kaminari
@@ -548,7 +549,6 @@ DEPENDENCIES
   sidekiq-scheduler
   slim-rails
   spring
-  terbilang
   turbolinks (~> 5)
   twilio-ruby
   tzinfo-data

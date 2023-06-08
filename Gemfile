@@ -41,7 +41,7 @@ gem 'webpacker', '~> 5.0'
 gem 'wicked_pdf'
 gem 'wkhtmltopdf-binary'
 
-gem "terbilang"
+gem 'humanize'
 
 gem 'capybara', '>= 2.15'
 gem 'nokogiri'
