@@ -66,6 +66,36 @@ namespace :rates do
           month: 11,
           year: 2022
         },
+        {
+          price: 15592,
+          month: 12,
+          year: 2022
+        },
+        {
+          price: 14992,
+          month: 1,
+          year: 2023
+        },
+        {
+          price: 15240,
+          month: 2,
+          year: 2023
+        },
+        {
+          price: 14977,
+          month: 3,
+          year: 2023
+        },
+        {
+          price: 14661,
+          month: 4,
+          year: 2023
+        },
+        {
+          price: 15003,
+          month: 5,
+          year: 2023
+        },
       ]
 
       data.each do |entry|
@@ -153,6 +183,36 @@ namespace :rates do
           price: 15688,
           month: 11,
           year: 2022
+        },
+        {
+          price: 15606,
+          month: 12,
+          year: 2022
+        },
+        {
+          price: 15109,
+          month: 1,
+          year: 2023
+        },
+        {
+          price: 15191,
+          month: 2,
+          year: 2023
+        },
+        {
+          price: 15304,
+          month: 3,
+          year: 2023
+        },
+        {
+          price: 14824,
+          month: 4,
+          year: 2023
+        },
+        {
+          price: 14919,
+          month: 5,
+          year: 2023
         },
       ]
 
