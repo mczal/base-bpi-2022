@@ -5,6 +5,8 @@ class CreateInvoiceDirectInternals < ActiveRecord::Migration[6.1]
       t.string "ref_number"
       t.date "date"
       t.string 'description'
+      t.string 'location'
+      t.string 'status'
     end
 
     add_reference :invoice_direct_internals, :bank_account, index: true, type: :uuid

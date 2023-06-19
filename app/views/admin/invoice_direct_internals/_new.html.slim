@@ -34,7 +34,7 @@ scss:
 ] 
   .modal-dialog.modal-dialog-centered.modal-lg role="document" 
     .modal-content
-      = form_for [:admin,@invoice_direct_external] do |f|
+      = form_for [:admin,@invoice_direct_internal] do |f|
         .modal-header
           h5#exampleModalLabel.modal-title Tambah Invoice
           button.close aria-label="Close" data-dismiss="modal" type="button" 
@@ -49,7 +49,7 @@ scss:
                   | Tanggal Invoice
                   span.required *
                 = f.text_field :date, class: 'form-control',
-                  value: html_input_date(@invoice_direct_external.date),
+                  value: html_input_date(@invoice_direct_internal.date),
                   data: { controller: 'picker--date' },
                   required: 1
               .col-lg-6.form-group[style="margin-bottom:5px;"]
@@ -88,145 +88,297 @@ scss:
                   | Kas / Bank
                   span.required *
                 = f.select :bank_account_id,
-                  options_from_collection_for_select(Account.select(:id,:name,:code).where('code ILIKE ?','2%',), :id, :readable_name, @invoice_direct_external.bank_account_id),
+                  options_from_collection_for_select(Account.select(:id,:name,:code).where('code ILIKE ?','2%',), :id, :readable_name, @invoice_direct_internal.bank_account_id),
                   {include_blank: '== Pilih =='},
                   class: 'form-control',
                   data: { controller: 'select2' },
                   required: 1
           fieldset
             legend Rincian
-            .row
-              .col-2.form-group
-                label
-                  | Nilai
-                  span.required *
-                = f.select :price_currency,
-                  options_for_select([['Rp','IDR'],['$','USD']], @invoice_direct_external.price_currency || 'IDR'),
-                  {},
-                  class: 'form-control',
-                  data: { controller: 'select2' },
-                  required: 1
-              .col-10.form-group
-                label
-                  | &nbsp;
-                .input-group
-                  = f.text_field :price,
-                    class: 'form-control',
-                    data: { controller: 'base--input-price' },
-                    required: 1,
-                    placeholder: 'Nilai Invoice',
-                    value: @invoice_direct_external.price.amount
-            .row.js-item-container
-              .col-12.form-group
-                label
-                  | Bank Kas
-                  span.required *
-                = f.select :bank_account_id,
-                  options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, @invoice_direct_external.bank_account_id),
-                  {},
-                  class: 'form-control',
-                  data: { controller: 'select2' },
-                  required: 1
-              .col-6.form-group
-                label
-                  b Kode Karyawan/Business-Unit?
-                .d-flex.align-items-center.justify-content-start
-                  span.switch.switch-icon
-                    label
-                      = check_box_tag 'invoice_direct_external[is_master_business_units_enabled]',
-                        true, @invoice_direct_external.is_master_business_units_enabled?, data: {\
-                          controller: 'admin--invoice-direct-externals--master-business-unit-activated',\
-                          action: 'change->admin--invoice-direct-externals--master-business-unit-activated#handleChange',\
-                        }
-                      span
-                  h6
-                    span.mbu
-                      - if @invoice_direct_external.is_master_business_units_enabled?
-                        | #{@invoice_direct_external.master_business_unit.code}
-                      - else
-                        | _
-                    span.mbul
-                      - if @invoice_direct_external.is_master_business_units_enabled?
-                        | #{@invoice_direct_external.master_business_unit_location.code}
-                      - else
-                        |  _ _
-                    span.mbuar
-                      - if @invoice_direct_external.is_master_business_units_enabled?
-                        | #{@invoice_direct_external.master_business_unit_area.code}
-                      - else
-                        |  _ _ _ _ _
-                    span.mbuact
-                      - if @invoice_direct_external.is_master_business_units_enabled?
-                        | #{@invoice_direct_external.master_business_unit_activity.code}
-                      - else
-                        |  _ _ _ _
-                    span.mbuaccount
-                      - if @invoice_direct_external.is_master_business_units_enabled?
-                        | #{@invoice_direct_external.cost_center.code}
-                      - else
-                        |  _ _ _ _
-                .mt-5.js-business-unit[
-                  class="#{@invoice_direct_external.is_master_business_units_enabled? ? '':'d-none'}"
+            .pb-8.position-relative[
+              data-controller="base--dynamic-input-v2"
+            ]
+              .position-absolute.right-0.bottom-0[style="z-index:10;"]
+                button.btn-sm.btn.btn-outline-primary.mr-3[
+                  type="button"
+                  data-action="click->base--dynamic-input-v2#add"
                 ]
-                  .row.mb-3
-                    .col-6.form-group.mb-1
-                      label
-                        | Business Unit
-                        span.text-danger.ml-1 *
-                      .checkbox-list
-                        - MasterBusinessUnit.business_unit.each do |mbu|
-                          label.checkbox
-                            = radio_button_tag 'invoice_direct_external[master_business_unit_id]',
-                              mbu.id, @invoice_direct_external.master_business_unit_id.to_s == mbu.id,
-                              data: {\
-                                controller: 'admin--general-transactions--master-business-unit-change',\
-                                action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
-                                code: mbu.code\
-                              }, required: 1, readonly: 1
-                            span
-                            | #{mbu.readable_name}
-                    .col-6.form-group.mb-1
-                      label
-                        | Business Unit Location
-                        span.text-danger.ml-1 *
-                      .checkbox-list
-                        - MasterBusinessUnit.business_unit_location.each do |mbu|
-                          label.checkbox
-                            = radio_button_tag 'invoice_direct_external[master_business_unit_location_id]',
-                              mbu.id, @invoice_direct_external.master_business_unit_location_id.to_s == mbu.id,
-                              data: {\
-                                controller: 'admin--general-transactions--master-business-unit-location-change',\
-                                action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
-                                code: mbu.code\
-                              }, required: 1, readonly: 1
-                            span
-                            | #{mbu.readable_name}
+                  i.fas.fa-plus.mr-1
+                  | Tambah
+              - if @invoice_direct_internal.new_record?
+                .js-item-container.pl-5.position-relative.mb-4.pb-4[
+                  style="border-bottom:1px solid #e8e8e8;"
+                ]
+                  .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                    | 1.
+                  .position-absolute.right-0.top-0[
+                    style="z-index:10;"
+                  ]
+                    button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                      type="button"
+                      data-action="click->base--dynamic-input-v2#remove"
+                    ]
+                      i.fas.fa-times
+                  = hidden_field_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][group]', 'debit'
                   .form-group[style="margin-bottom:5px;"]
                     label
-                      | Business Unit Area
+                      | Nama
                       span.text-danger.ml-1 *
-                    = select_tag 'invoice_direct_external[master_business_unit_area_id]',
-                      options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, @invoice_direct_external.master_business_unit_area_id),
-                      include_blank: '== Pilih ==',
-                      class: 'form-control',
-                      placeholder: 'Business Unit Area',
-                      data: {\
-                        controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
-                      },
-                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-                  .form-group[style="margin-bottom:5px;"]
+                    = text_field_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][name]',
+                      nil, class: 'form-control', placeholder: 'Nama', required: 1
+                  .row.mb-2
+                    .col-lg-6.form-group[style="margin-bottom:5px;"]
+                      label
+                        | Cost Center
+                        span.text-danger.ml-1 *
+                      = select_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][cost_center_id]',
+                        options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, nil),
+                        include_blank: '== Pilih ==',
+                        class: 'form-control',
+                        placeholder: 'Kode Akun',
+                        data: { target: 'base--dynamic-input.input', controller: "select2" },
+                        id: "a#{SecureRandom.uuid}", required: 1
+                    .col-lg-6.form-group[style="margin-bottom:5px;"]
+                      label
+                        b Kode Karyawan/Business-Unit?
+                      .d-flex.align-items-center.justify-content-start
+                        span.switch.switch-icon
+                          label
+                            = check_box_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][is_master_business_units_enabled]',
+                              true, false, data: {\
+                                controller: 'admin--invoice-direct-internals--master-business-unit-activated',\
+                                action: 'change->admin--invoice-direct-internals--master-business-unit-activated#handleChange',\
+                              }
+                            span
+                        h6
+                          span.mbu
+                            | _
+                          span.mbul
+                            |  _ _
+                          span.mbuar
+                            |  _ _ _ _ _
+                          span.mbuact
+                            |  _ _ _ _
+                          span.mbuaccount
+                            |  _ _ _ _
+                      .mt-5.d-none.js-business-unit
+                        .row.mb-3
+                          .col-6.form-group.mb-1
+                            label
+                              | Business Unit
+                              span.text-danger.ml-1 *
+                            .checkbox-list
+                              - MasterBusinessUnit.business_unit.each do |mbu|
+                                label.checkbox
+                                  = radio_button_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][master_business_unit_id]',
+                                    mbu.id, false,
+                                    data: {\
+                                      controller: 'admin--general-transactions--master-business-unit-change',\
+                                      action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
+                                      code: mbu.code\
+                                    }, required: 1, readonly: 1
+                                  span
+                                  | #{mbu.readable_name}
+                          .col-6.form-group.mb-1
+                            label
+                              | Business Unit Location
+                              span.text-danger.ml-1 *
+                            .checkbox-list
+                              - MasterBusinessUnit.business_unit_location.each do |mbu|
+                                label.checkbox
+                                  = radio_button_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][master_business_unit_location_id]',
+                                    mbu.id, false,
+                                    data: {\
+                                      controller: 'admin--general-transactions--master-business-unit-location-change',\
+                                      action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
+                                      code: mbu.code\
+                                    }, required: 1, readonly: 1
+                                  span
+                                  | #{mbu.readable_name}
+                        .form-group[style="margin-bottom:5px;"]
+                          label
+                            | Business Unit Area
+                            span.text-danger.ml-1 *
+                          = select_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][master_business_unit_area_id]',
+                            options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
+                            include_blank: '== Pilih ==',
+                            class: 'form-control',
+                            placeholder: 'Business Unit Area',
+                            data: {\
+                              controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
+                            },
+                            id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                        .form-group[style="margin-bottom:5px;"]
+                          label
+                            | Business Unit Activity
+                            span.text-danger.ml-1 *
+                          = select_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][master_business_unit_activity_id]',
+                            options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}),
+                            include_blank: '== Pilih ==',
+                            class: 'form-control',
+                            placeholder: 'Business Unit Activity',
+                            data: {\
+                              controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
+                            },
+                            id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                  .form-group[style="margin-bottom:5px;position:relative;"]
                     label
-                      | Business Unit Activity
+                      | Nominal
                       span.text-danger.ml-1 *
-                    = select_tag 'invoice_direct_external[master_business_unit_activity_id]',
-                      options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, @invoice_direct_external.master_business_unit_activity_id),
-                      include_blank: '== Pilih ==',
-                      class: 'form-control',
-                      placeholder: 'Business Unit Activity',
+                  .row.js-general-transactions-nominal-idr-usd
+                    .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                      .position-absolute.p-3 IDR
+                      = text_field_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][price]', nil,
+                      class: 'form-control pl-10 js-nominal',
                       data: {\
-                        controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
-                      },
-                      id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                        controller: "base--input-price admin--general-transactions--idr-to-usd"\
+                      }, required: 1
+              - else
+                - @invoice_direct_internal.invoice_direct_internal_lines.each_with_index do |line,i|
+                  .js-item-container.pl-5.position-relative.mb-4.pb-4[
+                    style="border-bottom:1px solid #e8e8e8;"
+                  ]
+                    = hidden_field_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][id]", line.id
+                    .position-absolute.left-0.top-0.js-item-index.font-weight-bolder
+                      | #{i+1}.
+                    .position-absolute.right-0.top-0[
+                      style="z-index:10;"
+                    ]
+                      button.btn.btn-icon.btn-light-danger.btn-circle.btn-sm.mr-2[
+                        type="button"
+                        data-action="click->base--dynamic-input-v2#remove"
+                      ]
+                        i.fas.fa-times
+                    .form-group[style="margin-bottom:5px;"]
+                      label
+                        | Nama
+                        span.text-danger.ml-1 *
+                      = text_field_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][name]",
+                        line.name, class: 'form-control', placeholder: 'Nama', required: 1
+                    .row.mb-2
+                      .col-lg-6.form-group[style="margin-bottom:5px;"]
+                        label
+                          | Cost Center
+                          span.text-danger.ml-1 *
+                        = select_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][cost_center_id]",
+                          options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, line.cost_center_id),
+                          include_blank: '== Pilih ==',
+                          class: 'form-control',
+                          placeholder: 'Kode Akun',
+                          data: { target: 'base--dynamic-input.input', controller: "select2" },
+                          id: "a#{SecureRandom.uuid}", required: 1
+                      .col-lg-6.form-group[style="margin-bottom:5px;"]
+                        label
+                          b Kode Karyawan/Business-Unit?
+                        .d-flex.align-items-center.justify-content-start
+                          span.switch.switch-icon
+                            label
+                              = check_box_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][is_master_business_units_enabled]",
+                                true, line.is_master_business_units_enabled?, data: {\
+                                  controller: 'admin--invoice-direct-internals--master-business-unit-activated',\
+                                  action: 'change->admin--invoice-direct-internals--master-business-unit-activated#handleChange',\
+                                }
+                              span
+                          h6
+                            span.mbu
+                              - if line.is_master_business_units_enabled?
+                                | #{line.master_business_unit&.code}
+                              - else
+                                | _
+                            span.mbul
+                              - if line.is_master_business_units_enabled?
+                                | #{line.master_business_unit_location&.code}
+                              - else
+                                |  _ _
+                            span.mbuar
+                              - if line.is_master_business_units_enabled?
+                                | #{line.master_business_unit_area&.code}
+                              - else
+                                |  _ _ _ _ _
+                            span.mbuact
+                              - if line.is_master_business_units_enabled?
+                                | #{line.master_business_unit_activity&.code}
+                              - else
+                                |  _ _ _ _
+                            span.mbuaccount
+                              - if line.is_master_business_units_enabled?
+                                | #{line.code}
+                              - else
+                                |  _ _ _ _
+                        .mt-5.js-business-unit[
+                          class="#{line.is_master_business_units_enabled? ? '':'d-none'}"
+                        ]
+                          .row.mb-3
+                            .col-6.form-group.mb-1
+                              label
+                                | Business Unit
+                                span.text-danger.ml-1 *
+                              .checkbox-list
+                                - MasterBusinessUnit.business_unit.each do |mbu|
+                                  label.checkbox
+                                    = radio_button_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][master_business_unit_id]",
+                                      mbu.id, line.master_business_unit_id.to_s == mbu.id,
+                                      data: {\
+                                        controller: 'admin--general-transactions--master-business-unit-change',\
+                                        action: 'change->admin--general-transactions--master-business-unit-change#handleChange',\
+                                        code: mbu.code\
+                                      }, required: 1, readonly: 1
+                                    span
+                                    | #{mbu.readable_name}
+                            .col-6.form-group.mb-1
+                              label
+                                | Business Unit Location
+                                span.text-danger.ml-1 *
+                              .checkbox-list
+                                - MasterBusinessUnit.business_unit_location.each do |mbu|
+                                  label.checkbox
+                                    = radio_button_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][master_business_unit_location_id]",
+                                      mbu.id, line.master_business_unit_location_id.to_s == mbu.id,
+                                      data: {\
+                                        controller: 'admin--general-transactions--master-business-unit-location-change',\
+                                        action: 'change->admin--general-transactions--master-business-unit-location-change#handleChange',\
+                                        code: mbu.code\
+                                      }, required: 1, readonly: 1
+                                    span
+                                    | #{mbu.readable_name}
+                          .form-group[style="margin-bottom:5px;"]
+                            label
+                              | Business Unit Area
+                              span.text-danger.ml-1 *
+                            = select_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][master_business_unit_area_id]",
+                              options_for_select(MasterBusinessUnit.business_unit_area.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_area_id),
+                              include_blank: '== Pilih ==',
+                              class: 'form-control',
+                              placeholder: 'Business Unit Area',
+                              data: {\
+                                controller: 'select2 admin--general-transactions--master-business-unit-area-change',\
+                              },
+                              id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                          .form-group[style="margin-bottom:5px;"]
+                            label
+                              | Business Unit Activity
+                              span.text-danger.ml-1 *
+                            = select_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][master_business_unit_activity_id]",
+                              options_for_select(MasterBusinessUnit.business_unit_activity.map{|x|[x.readable_name, x.id, {'data-code': x.code}]}, line.master_business_unit_activity_id),
+                              include_blank: '== Pilih ==',
+                              class: 'form-control',
+                              placeholder: 'Business Unit Activity',
+                              data: {\
+                                controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
+                              },
+                              id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
+                    .form-group[style="margin-bottom:5px;position:relative;"]
+                      label
+                        | Nominal
+                        span.text-danger.ml-1 *
+                    .row.js-general-transactions-nominal-idr-usd
+                      .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
+                        .position-absolute.p-3 IDR
+                        = text_field_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][price]", line.price.amount,
+                        class: 'form-control pl-10 js-nominal',
+                        data: {\
+                          controller: "base--input-price admin--general-transactions--idr-to-usd"\
+                        }, required: 1
           hr
           .form-group
             label Dokumen (maks. 10 Dokumen)
@@ -241,7 +393,7 @@ scss:
                 data-base--dropzone-dict-remove-file='<i class="fas fa-times"></i>'
               ]
                 input.d-none[
-                  name="invoice_direct_external[other_files][]"
+                  name="invoice_direct_internal[other_files][]"
                   type="file"
                   data-base--dropzone-target="input"
                   data-direct-upload-url="#{rails_direct_uploads_path}"
@@ -251,7 +403,7 @@ scss:
                     | Letakan dokumen disini atau
                     |  klik untuk unggah dokumen.
             .m-1.d-flex
-              - @invoice_direct_external.other_files.each do |file|
+              - @invoice_direct_internal.other_files.each do |file|
                 .mr-1
                   a.btn.btn-icon.btn-clean.btn-dropdown.btn-lg.mr-1[
                     data-title="#{file.blob.filename}"
@@ -276,7 +428,6 @@ scss:
                           path[d="M5.85714286,2 L13.7364114,2 C14.0910962,2 14.4343066,2.12568431 14.7051108,2.35473959 L19.4686994,6.3839416 C19.8056532,6.66894833 20,7.08787823 20,7.52920201 L20,20.0833333 C20,21.8738751 19.9795521,22 18.1428571,22 L5.85714286,22 C4.02044787,22 4,21.8738751 4,20.0833333 L4,3.91666667 C4,2.12612489 4.02044787,2 5.85714286,2 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
                           rect[fill="#000000" x="6" y="11" width="9" height="2" rx="1"]
                           rect[fill="#000000" x="6" y="15" width="5" height="2" rx="1"]
-
         .modal-footer
           button.btn.btn-light-primary.font-weight-bold[
             data-dismiss="modal"

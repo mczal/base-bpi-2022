@@ -5,7 +5,6 @@ class CreateInvoiceDirectInternalLines < ActiveRecord::Migration[6.1]
       t.references :invoice_direct_internal, index: {name: :idi_idil}, foreign_key: true, type: :uuid
       t.string :name
       t.monetize :price
-      t.string 'location'
     end
 
     add_reference :invoice_direct_internal_lines, :cost_center, index: true, type: :uuid

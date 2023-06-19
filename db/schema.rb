@@ -414,7 +414,6 @@ ActiveRecord::Schema.define(version: 2023_06_08_000011) do
     t.string "name"
     t.decimal "price_cents", default: "0.0", null: false
     t.string "price_currency", default: "IDR", null: false
-    t.string "location"
     t.uuid "cost_center_id"
     t.boolean "is_master_business_units_enabled", default: false
     t.uuid "master_business_unit_id"
@@ -435,6 +434,8 @@ ActiveRecord::Schema.define(version: 2023_06_08_000011) do
     t.string "ref_number"
     t.date "date"
     t.string "description"
+    t.string "location"
+    t.string "status"
     t.uuid "bank_account_id"
     t.index ["bank_account_id"], name: "index_invoice_direct_internals_on_bank_account_id"
   end

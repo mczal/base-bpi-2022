@@ -50,7 +50,8 @@ class GeneralTransaction < ApplicationRecord
     invoice_paid: 'invoice_paid',
     calculator: 'calculator',
 
-    invoice_direct_external_paid: 'invoice_direct_external_paid'
+    invoice_direct_external_paid: 'invoice_direct_external_paid',
+    invoice_direct_internal_paid: 'invoice_direct_internal_paid'
   }
 
   accepts_nested_attributes_for :general_transaction_lines

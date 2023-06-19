@@ -1,0 +1,148 @@
+scss:
+  .select2.select2-container {
+    width: 100% !important;
+  }
+
+= render partial: 'new'
+#kt_content.content.d-flex.flex-column.flex-column-fluid
+  #kt_subheader.subheader.py-2.py-lg-6.subheader-solid
+    .container-fluid.d-flex.align-items-center.justify-content-between.flex-wrap.flex-sm-nowrap
+      .d-flex.align-items-center.flex-wrap.mr-1
+        button#kt_subheader_mobile_toggle.burger-icon.burger-icon-left.mr-4.d-inline-block.d-lg-none data-controller="mobile-mode"
+          span
+        .d-flex.align-items-baseline.flex-wrap.mr-5
+          h5.text-dark.font-weight-bold.my-1.mr-5
+            span[style="display:inline-block;vertical-align:middle;"]
+              | Invoice #{@invoice_direct_internal.ref_number}
+            span.ml-2.pr-2[
+              style="display:inline-block;vertical-align:middle;border-right:3px solid black;"
+            ]
+              | #{@invoice_direct_internal.status_html.html_safe}
+            span.ml-4[
+              style="display:inline-block;vertical-align:middle;"
+            ]
+              .d-flex.align-items-center[
+                style="flex-direction: column;"
+              ]
+                div[
+                  style="font-size:13px;color:#626262;font-weight:normal;"
+                ]
+                  | Status pembayaran invoice:&nbsp;
+                div.mt-1
+                  | #{@invoice_direct_internal.general_transactions.invoice_direct_internal_paid.first&.status_for_html || 'Belum ada'}
+      #kt_subheader_search.d-flex.align-items-center
+        .ml-0.ml-sm-2
+          a.btn.btn-light-primary.font-weight-bold.ml-2[
+            href="javascript:void(0);"
+            data-target="#add.add-contract"
+            data-toggle="modal"
+            type="button"
+          ]
+            i.fa.fa-pencil-alt
+            |  Ubah 
+          a.btn.btn-light-danger.font-weight-bold.ml-2[
+            href="#{admin_invoice_direct_internal_path(id: @invoice_direct_internal.id)}"
+            data-method="delete"
+            data-confirm="Apakah anda yakin ingin menghapus data ini?"
+            title="Delete"
+          ]
+            i.la.la-trash
+            |  Hapus
+
+  .d-flex.flex-column-fluid.mb-3
+    .container
+      .d-flex.flex-row
+        #kt_profile_aside.flex-row-auto.offcanvas-mobile.w-300px.w-xl-400px
+          .fixed_position_card.card.card-custom
+            .card-header
+              .card-title
+                = @invoice_direct_internal.ref_number
+            .card-body.pt-4
+              .pt-5.pb-3
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Nilai:
+                  b.text-right
+                    = print_money @invoice_direct_internal.total_price
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Tanggal Invoice:
+                  a.text-muted.text-hover-primary.text-right
+                    = readable_date_2 @invoice_direct_internal.date
+                .d-flex.align-items-center.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 No. Nota Dinas:
+                  a.text-muted.text-hover-primary.text-right
+                    = @invoice_direct_internal.ref_number
+                .d-flex.align-items-top.justify-content-between.mb-1.mt-1
+                  span.font-weight-bold.mr-2 Bank / Kas:
+                  a.text-muted.text-hover-primary.text-right
+                    div
+                      b
+                        | #{@invoice_direct_internal.bank_account.code}
+                    div
+                      | #{@invoice_direct_internal.bank_account.name}
+                hr
+            .card-header
+              .card-title
+                | Log
+            / .card-body.pt-4
+              .timeline.timeline-2
+                .timeline-bar
+                - @invoice.own_and_associated_audits.each_with_index do |audit,i|
+                  .timeline-item
+                    .timeline-badge[
+                      class="#{'bg-success' if i == 0}"
+                      data-controller="popover"
+                      data-title="#{audit.action}"
+                      data-content="#{audit.audited_changes}"
+                      data-popover-trigger="hover"
+                    ]
+                    .timeline-content.d-flex.align-items-center.flex-wrap
+                      span.font-weight-bold.text-center.mr-2 Diubah Oleh :
+                      span.text-muted.text-center.mr-1
+                        | #{audit.user&.name || '[SysAdmin]'}, #{readable_hour_2 audit.created_at.localtime}
+                      span.text-muted
+                        | #{readable_date audit.created_at.localtime}
+        .flex-row-fluid.ml-lg-8
+          .row
+            .col-lg-12
+              .card.card-custom.card-stretch.gutter-b
+                .card-header.border-0.pt-5
+                  .card-title.font-weight-bolder
+                    .card-label
+                      ul#myTab.nav.nav-tabs[role="tablist"]
+                        li.nav-item
+                          a#home-tab12a.nav-link[
+                            data-toggle="tab"
+                            href="#documents"
+                            class="#{'active' if @invoice_direct_internal.draft?}"
+                          ]
+                            span.nav-icon
+                              i.flaticon2-layers-1
+                            span.nav-text
+                              | 1. Dokumen
+                        li.nav-item
+                          a#profile-tab14a.nav-link[
+                            data-toggle="tab"
+                            href="#approval"
+                            aria-controls="approval"
+                            class="#{'active' if @invoice_direct_internal.ok? || @invoice_direct_internal.rejected?}"
+                          ]
+                            span.nav-icon
+                              i.far.fa-calendar-check
+                            span.nav-text
+                              | 2. Approval Transaksi
+                #myTabContent.tab-content.mt-5
+                  #documents.tab-pane.fade[
+                    role="tabpanel" aria-labelledby="documents"
+                    class="#{'active show' if @invoice_direct_internal.draft?}"
+                  ]
+                    = render partial: 'documents'
+                  #approval.tab-pane.fade[
+                    role="tabpanel" aria-labelledby="approval"
+                    class="#{'active show' if @invoice_direct_internal.ok? || @invoice_direct_internal.rejected?}"
+                  ]
+                    - if !@invoice_direct_internal.draft?
+                      = render partial: 'approvals'
+                    - else
+                      p.text-center
+                        | Invoice masih draft!
+      = render partial: 'lines'

@@ -130,10 +130,10 @@
                     | Invoices
         li.menu-item.menu-item-submenu[
           aria-haspopup="true"
-          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/[invoice_direct_externals|invoice_direct_internals]\/?/)}") 
+          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/(invoice_direct_externals|invoice_direct_internals)\/?/)}") 
           data-menu-toggle="hover"
         ]
-          a.menu-link.menu-toggle[href="javascript:;"]
+          a.menu-link.menu-toggle[href="javascript:void(0);"]
             span.svg-icon.menu-icon
               svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
                 g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
@@ -154,7 +154,7 @@
                   span.menu-text
                     | External
               li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoice_direct_internals\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_invoice_direct_externals_path(slug: current_company.slug)}"]
+                a.menu-link[href="#{admin_invoice_direct_internals_path(slug: current_company.slug)}"]
                   i.menu-bullet.menu-bullet-dot
                     span
                   span.menu-text

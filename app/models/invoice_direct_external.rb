@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class InvoiceDirectExternal < ApplicationRecord
+  include PgSearch::Model
   include ::InvoiceDirectExternals::Statuses
   include Contracts::Clients
   include ::InvoiceDirectExternals::SynchronizeToGeneralTransactionsAfterSaveForPaid
@@ -51,6 +52,12 @@ class InvoiceDirectExternal < ApplicationRecord
   }
 
   accepts_nested_attributes_for :faktur_pajak
+
+  pg_search_scope :search,
+    against: %i[ref_number],
+    using: {
+      tsearch: { prefix: true, any_word: true, negation: true }
+    }
 
   def ppn_biaya_account
     @ppn_biaya_account ||= Account.find_by(code: '25140')

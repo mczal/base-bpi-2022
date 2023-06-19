@@ -1,0 +1,71 @@
+.row.mt-5
+  .col-12
+    .card.card-custom.card-stretch.gutter-b
+      .card-header.border-0.py-5
+        .text-dark.text-hover-primary.font-size-h5.font-weight-bolder.mb-4
+          |  Rincian
+      .card-body.pt-0.pb-3
+        .table-responsive[
+            style="max-height:65vh;"
+          ]
+          / table.table.table-head-custom.table-head-bg.table-borderless.table-vertical-center
+          table.table.table-head-custom.table-head-bg.table-vertical-center.table-bordered
+            thead
+              tr.text-uppercase
+                th.text-center.text-dark.font-weight-bolder[
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | #
+                th.pl-7[
+                  style="min-width: 100px"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | Nama
+                th.pl-7[
+                  style="min-width: 100px"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | Elemen Biaya & Cost Center
+                th.text-center[
+                  style=""
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
+                    | Nilai
+            tbody
+              - @invoice_direct_internal.invoice_direct_internal_lines.each.with_index(1) do |line, i|
+                tr
+                  td.pt-5.text-center[style="vertical-align:top;"]
+                    | #{i}.
+                  td.pl-4.py-4
+                    div
+                      | #{line.name}
+                  td.pl-4.py-4
+                    div
+                      b
+                        | #{line.cost_center.code}
+                      - if line.is_master_business_units_enabled?
+                        span.ml-2.text-muted.font-weight-bolder.text-hover-primary[
+                          data-title="#{line.master_business_units_string}"
+                          data-content="#{line.master_business_units_for_popover}"
+                          data-controller="base--popover"
+                          data-base--popover-html="1"
+                          data-base--popover-trigger="hover"
+                        ]
+                          | -
+                          i.fas.fa-question-circle.ml-1
+                          |  #{line.master_business_units_string}
+                    div
+                      | #{line.cost_center.name}
+                  td.pl-4.py-4
+                    | #{print_money line.price}
+              tfoot[
+                style="border-top:1px solid #E5E5E5;"
+              ]
+                tr
+                  td.text-right.font-weight-bolder[
+                    colspan="3"
+                  ]
+                    | TOTAL
+                  td.font-weight-bolder.text-right[
+                  ]
+                    | #{print_money @invoice_direct_internal.total_price}

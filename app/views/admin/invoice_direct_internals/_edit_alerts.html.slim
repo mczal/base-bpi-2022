@@ -1,0 +1,19 @@
+- if !@invoice_direct_internal.new_record?
+  .alert.alert-warning.mb-5.p-5[role="alert"]
+    .alert-close
+      button.close[type="button" data-dismiss="alert" aria-label="Close"]
+        span[aria-hidden="true"]
+          i.ki.ki-close
+    h4.alert-heading
+      | Peringatan!
+    p
+      | Melakukan perubahan ketika data transaksi sudah disetujui akan
+      |  menyebabkan:
+      ol 
+        li Seluruh jurnal yang sudah terbit terhapus,
+        li Seluruh approval menjadi belum disetujui,
+        li Status invoice dikembalikan ke awal
+    .border-bottom.border-white.opacity-20.mb-5
+    p.mb-0
+      | Revoke Jurnal; Revoke Approval; Revoke Statuses
+

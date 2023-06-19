@@ -1,7 +1,8 @@
 # frozen_string_literal: true
 
 class InvoiceDirectInternalLine < ApplicationRecord
-  include ::InvoiceDirectInternalLines::SynchronizeToGeneralTransactionsAfterSaveForPaid
+  # include ::InvoiceDirectInternalLines::SynchronizeToGeneralTransactionsAfterSaveForPaid
+  include ::GeneralTransactionLines::MasterBusinessUnits
 
   belongs_to :invoice_direct_internal
   belongs_to :cost_center, class_name: "Account"
@@ -20,4 +21,8 @@ class InvoiceDirectInternalLine < ApplicationRecord
     optional: true
 
   monetize :price_cents
+
+  def code
+    @code ||= cost_center.code
+  end
 end
