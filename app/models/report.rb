@@ -34,4 +34,19 @@ class Report < ApplicationRecord
     html: 'html',
     xlsx: 'xlsx',
   }
+
+  def name_x
+    return @name_x if @name_x.present?
+
+    return @name_x = self.name if html?
+    if self.name == 'LAPORAN POSISI KEUANGAN'
+      return @name_x = 'Neraca'
+    end
+    if self.name == 'LAPORAN PENDAPATAN KOMPREHENSIF'
+      return @name_x = 'Laba Rugi'
+    end
+    if self.name == 'LAPORAN ARUS KAS'
+      return @name_x = 'Arus Kas'
+    end
+  end
 end

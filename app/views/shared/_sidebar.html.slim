@@ -245,13 +245,13 @@
           .menu-submenu[kt-hidden-height="120" style=""]
             i.menu-arrow
             ul.menu-subnav
-              - Report.html.where(company: current_company).each do |report|
+              - Report.xlsx.where(company: current_company).each do |report|
                 li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/) && request.params[:type].to_s == 'non_isak'}") data-menu-toggle="hover"
                   a.menu-link[href="#{admin_report_path(id: report.id, slug: current_company.slug, type: :non_isak)}"]
                     i.menu-bullet.menu-bullet-dot
                       span
                     span.menu-text
-                      | #{report.name}
+                      | #{report.name_x}
               - if Report.count > 0
                 li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/equity\/?/) && request.params[:type].to_s == 'non_isak'}") data-menu-toggle="hover"
                   a.menu-link[href="#{admin_report_equity_path(slug: current_company.slug, type: :non_isak)}"]

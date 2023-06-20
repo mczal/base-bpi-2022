@@ -128,6 +128,26 @@
                       i.far.fa-calendar-check
                     span.nav-text
                       | Konfigurasi
+                - if @report.xlsx?
+                  li.nav-item
+                    - report = Report.find_by(group: "#{@report.group.remove('_xlsx')}")
+                    a#profile-tab14a.nav-link[
+                      href="#{admin_report_path(slug: current_company.slug, id: report.id, date: params[:date])}"
+                    ]
+                      span.nav-icon
+                        i.fas.fa-external-link-alt
+                      span.nav-text
+                        | Lihat Detail
+                - if @report.html?
+                  li.nav-item
+                    - report = Report.find_by(group: "#{@report.group}_xlsx")
+                    a#profile-tab14a.nav-link[
+                      href="#{admin_report_path(slug: current_company.slug, id: report.id, date: params[:date])}"
+                    ]
+                      span.nav-icon
+                        i.fas.fa-external-link-alt
+                      span.nav-text
+                        | Lihat Simple
         #myTabContent.tab-content.mt-5
           #reports.tab-pane.fade[
             role="tabpanel" aria-labelledby="documents"
