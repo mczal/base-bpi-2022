@@ -30,7 +30,11 @@ module Admin
 
     private
       def report
-        @report ||= Report.find_by(id: params[:id])
+        @report ||= begin
+          report = Report.find_by(id: params[:id])
+          report_x = Report.where('reports.group ILIKE ?', "#{report.group}%").where.not(id: report.id)
+          report_x.first
+        end
       end
 
       def show_facade
