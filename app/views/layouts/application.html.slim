@@ -4,7 +4,8 @@ html lang="en"
     meta content=("text/html; charset=UTF-8") http-equiv="Content-Type"
     base href=""
     meta charset="utf-8"
-    title BPI Accounting & Finance
+    title
+      | #{'[DEV]' if Rails.env.development?} BPI Accounting & Finance
     = csrf_meta_tags
     = csp_meta_tag
     = analytics_init if GoogleAnalytics.valid_tracker?

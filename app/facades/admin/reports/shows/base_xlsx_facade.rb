@@ -83,17 +83,24 @@ module Admin
             next if report_line.title?
 
             if report_line.value?
-              source_facade.calculate_value_idr_for(report_line)
-              source_facade.calculate_value_usd_for(report_line)
+              idr = source_facade.calculate_value_idr_for(report_line)
+              usd = source_facade.calculate_value_usd_for(report_line)
             elsif report_line.accumulation?
-              source_facade.calculate_accumulation_idr_for(report_line)
-              source_facade.calculate_accumulation_usd_for(report_line)
+              idr = source_facade.calculate_accumulation_idr_for(report_line)
+              usd = source_facade.calculate_accumulation_usd_for(report_line)
             end
 
-            @source_results[report_line.name] = {
-              price_idr: source_facade.accumulated_facade.calculate_value_for(report_line)[:price_idr],
-              price_usd: source_facade.accumulated_facade.calculate_value_for(report_line)[:price_usd],
-            }
+            if report.balance_sheet_xlsx?
+              @source_results[report_line.name] = {
+                price_idr: idr.to_money,
+                price_usd: usd.to_money.with_currency(:usd),
+              }
+            else
+              @source_results[report_line.name] = {
+                price_idr: source_facade.accumulated_facade.calculate_value_for(report_line)[:price_idr],
+                price_usd: source_facade.accumulated_facade.calculate_value_for(report_line)[:price_usd],
+              }
+            end
           end
         end
         def start_date
@@ -111,4 +118,3 @@ module Admin
     end
   end
 end
-

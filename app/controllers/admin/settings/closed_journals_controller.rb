@@ -10,7 +10,7 @@ module Admin
 
       def create
         @closed_journal = ClosedJournal.new(closed_journal_params)
-        @closed_journal.name = "Jurnal ditutup tanggal #{@closed_journal.date.strftime('%d %B %Y')}"        
+        @closed_journal.name = "Jurnal ditutup tanggal #{@closed_journal.date.strftime('%d %B %Y')}"
         if @closed_journal.save
           return redirect_to admin_settings_closed_journals_path, notice: 'Closed journal was successfully updated.'
         end

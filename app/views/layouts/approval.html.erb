@@ -7,7 +7,7 @@
   <head>
     <%= csrf_meta_tags %>
     <%= csp_meta_tag %>
-    <title>Approval - PT BPI</title>
+    <title><%= '[DEV]' if Rails.env.development? %> Approval - PT BPI</title>
     <base href="" />
     <meta charset="utf-8" />
     <meta name="description" content="BPI - Accounting & Finance Information System" />
