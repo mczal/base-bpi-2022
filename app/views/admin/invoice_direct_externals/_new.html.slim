@@ -208,8 +208,9 @@ scss:
                 label
                   | Debit (Cost Center)
                   span.required *
+                  / options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, @invoice_direct_external.cost_center_id),
                 = f.select :cost_center_id,
-                  options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, @invoice_direct_external.cost_center_id),
+                  options_for_select(Account.select(:id,:name,:code).map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, @invoice_direct_external.cost_center_id),
                   {},
                   class: 'form-control',
                   data: { controller: 'select2' },

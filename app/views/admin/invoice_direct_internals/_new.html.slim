@@ -131,8 +131,9 @@ scss:
                       label
                         | Cost Center
                         span.text-danger.ml-1 *
+                        / options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, nil),
                       = select_tag 'invoice_direct_internal[invoice_direct_internal_lines_attributes][0][cost_center_id]',
-                        options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, nil),
+                        options_for_select(Account.select(:id,:name,:code).map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, nil),
                         include_blank: '== Pilih ==',
                         class: 'form-control',
                         placeholder: 'Kode Akun',
@@ -260,8 +261,9 @@ scss:
                         label
                           | Cost Center
                           span.text-danger.ml-1 *
+                          / options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, line.cost_center_id),
                         = select_tag "invoice_direct_internal[invoice_direct_internal_lines_attributes][#{i}][cost_center_id]",
-                          options_for_select(Account.select(:id,:name,:code).where('name ILIKE ?','biaya%').map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, line.cost_center_id),
+                          options_for_select(Account.select(:id,:name,:code).map{|x|[x.readable_name,x.id,{'data-code': x.code}]}, line.cost_center_id),
                           include_blank: '== Pilih ==',
                           class: 'form-control',
                           placeholder: 'Kode Akun',
