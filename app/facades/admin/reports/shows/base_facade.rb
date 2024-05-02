@@ -74,6 +74,15 @@ module Admin
           @results.each do |k,v|
             formula = formula.gsub("${#{k}}", v[:price_usd]&.amount.to_s)
           end
+          if report_line.name == 'Pajak Penghasilan Badan'
+            rate = Rate
+              .where('published_date <= ?', end_date)
+              .reorder(published_date: :desc)
+              .limit(1)
+              .first
+              .middle
+            formula = "@results[report_line.name][:price_idr].amount / rate.amount"
+          end
 
           if @results[report_line.name].present?
             @results[report_line.name][:price_usd] = eval(formula).to_money.with_currency(:usd)

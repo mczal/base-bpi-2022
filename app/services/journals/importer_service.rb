@@ -50,12 +50,27 @@ module Journals
     private
       def find_or_initialize_by_and_save(row, location)
         number_evidence = get_number_evidence(row)
-
         if @gt_params.present? && @gt_params[:number_evidence] == number_evidence # for still same
-          @gt_params[:general_transaction_lines_attributes] << line_params(row)
+
+          if get_debit_idr(row) != 0 || get_debit_usd(row) != 0
+            @gt_params[:general_transaction_lines_attributes] << line_params_with_specified_group(row, :debit)
+          end
+          if get_credit_idr(row) != 0 || get_credit_usd(row) != 0
+            @gt_params[:general_transaction_lines_attributes] << line_params_with_specified_group(row, :credit)
+          end
+
         elsif !@gt_params.present? # for new
           @gt_params = gt_params(row, location)
-          @gt_params[:general_transaction_lines_attributes] = [line_params(row)]
+
+          @gt_params[:general_transaction_lines_attributes] = []
+          if get_debit_idr(row) != 0 || get_debit_usd(row) != 0
+            @gt_params[:general_transaction_lines_attributes] << line_params_with_specified_group(row, :debit)
+          end
+          if get_credit_idr(row) != 0 || get_credit_usd(row) != 0
+            @gt_params[:general_transaction_lines_attributes] << line_params_with_specified_group(row, :credit)
+          end
+          # @gt_params[:general_transaction_lines_attributes] = [line_params(row)]
+
         elsif @gt_params[:number_evidence] != number_evidence  # for changed
           params = ActionController::Parameters.new({general_transaction: @gt_params})
           service = ::GeneralTransactions::CreateService.new(params, company)
@@ -63,7 +78,15 @@ module Journals
           @gt_params = nil
 
           @gt_params = gt_params(row, location)
-          @gt_params[:general_transaction_lines_attributes] = [line_params(row)]
+
+          @gt_params[:general_transaction_lines_attributes] = []
+          if get_debit_idr(row) != 0 || get_debit_usd(row) != 0
+            @gt_params[:general_transaction_lines_attributes] << line_params_with_specified_group(row, :debit)
+          end
+          if get_credit_idr(row) != 0 || get_credit_usd(row) != 0
+            @gt_params[:general_transaction_lines_attributes] << line_params_with_specified_group(row, :credit)
+          end
+          # @gt_params[:general_transaction_lines_attributes] = [line_params(row)]
         end
       end
 
@@ -80,6 +103,30 @@ module Journals
           fixed_rates_options: {
             id: nil
           },
+        }
+      end
+
+      def line_params_with_specified_group row, group
+        account = get_account(row)
+        if group == :debit
+          price_idr = get_debit_idr(row)
+          price_usd = get_debit_usd(row)
+        elsif group == :credit
+          price_idr = get_credit_idr(row)
+          price_usd = get_credit_usd(row)
+        end
+        {
+          group: group,
+          code: account.code,
+          is_master_business_units_enabled: false,
+          master_business_unit_id: nil,
+          master_business_unit_location_id: nil,
+          master_business_unit_area_id: nil,
+          master_business_unit_activity_id: nil,
+          description: get_description(row),
+          price_idr: price_idr,
+          price_usd: price_usd,
+          rate: get_rates_value(row),
         }
       end
 

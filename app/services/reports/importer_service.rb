@@ -58,11 +58,11 @@ module Reports
 
     def parse_and_save_saved_data row, i, report_line
       start = 10
-      12.times.each.with_index(1) do |_,i|
+      # 1.times.each.with_index(1) do |_,i|
         srl = SavedReportLine.find_or_initialize_by(
           report_line_id: report_line.id,
-          month: i, year: 2022,
-          date: Date.current.change(month:i,year:2022,day:10).end_of_month
+          month: 12, year: 2023,
+          date: Date.current.change(month:12,year:2023,day:10).end_of_month
         )
 
         price_idr = row[start].to_s.gsub('.',',')
@@ -82,14 +82,14 @@ module Reports
         srl.save! if srl.new_record? || srl.changed?
 
         start += 2
-      end
+      # end
       # TODO NOTICE ONLY: comment to make sure that only 2022 data that needs adjusted, the rest is still in check the data.
       # 2. TODO NOTICE ONLY: after comment. data is still wrong, uncomment again and add to november 2023
-      11.times.each.with_index(1) do |_,i|
+      2.times.each.with_index(1) do |_,i|
         srl = SavedReportLine.find_or_initialize_by(
           report_line_id: report_line.id,
-          month: i, year: 2023,
-          date: Date.current.change(month:i,year:2023,day:10).end_of_month
+          month: i, year: 2024,
+          date: Date.current.change(month:i,year:2024,day:10).end_of_month
         )
 
         price_idr = row[start].to_s.gsub('.',',')

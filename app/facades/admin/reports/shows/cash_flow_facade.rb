@@ -99,7 +99,7 @@ module Admin
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND number_evidence ILIKE '%BNI%'
+                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
                 GROUP BY debit_idr_currency
               EOS
             ).first&.debit_idr.to_money
@@ -111,7 +111,7 @@ module Admin
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND number_evidence ILIKE '%BNI%'
+                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
                 GROUP BY credit_idr_currency
               EOS
             ).first&.credit_idr.to_money
@@ -131,7 +131,7 @@ module Admin
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND number_evidence ILIKE '%BNI%'
+                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
                 GROUP BY debit_usd_currency
               EOS
             ).first&.debit_usd.to_money.with_currency(:usd)
@@ -143,7 +143,7 @@ module Admin
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND number_evidence ILIKE '%BNI%'
+                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
                 GROUP BY credit_usd_currency
               EOS
             ).first&.credit_usd.to_money.with_currency(:usd)
