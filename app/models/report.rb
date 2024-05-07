@@ -49,4 +49,18 @@ class Report < ApplicationRecord
       return @name_x = 'Arus Kas'
     end
   end
+
+  def short_eng_name
+    return @short_eng_name if @short_eng_name.present?
+
+    if self.name == 'Neraca'
+      return @short_eng_name = 'BS'
+    end
+    if self.name == 'Laba Rugi'
+      return @short_eng_name = 'IS'
+    end
+    if self.name == 'Arus Kas'
+      return @short_eng_name = 'CF'
+    end
+  end
 end

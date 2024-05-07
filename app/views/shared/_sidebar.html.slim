@@ -225,12 +225,26 @@
         li.menu-section.mt-1
           h4.menu-text Laporan
           i.menu-icon.ki.ki-bold-more-hor.icon-md
+        - Report.html.where(company: current_company).each do |report|
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/) && request.params[:type].to_s == 'non_isak'}") data-menu-toggle="hover"
+            a.menu-link[href="#{admin_report_path(id: report.id, slug: current_company.slug, type: :non_isak)}"]
+              span.svg-icon.menu-icon
+                | #{report.short_eng_name}
+              span.menu-text
+                | #{report.name_x}
+        - if Report.count > 0
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/equity\/?/) && request.params[:type].to_s == 'non_isak'}") data-menu-toggle="hover"
+            a.menu-link[href="#{admin_report_equity_path(slug: current_company.slug, type: :non_isak)}"]
+              span.svg-icon.menu-icon
+                | EQ
+              span.menu-text
+                | Equity
 
-        li.menu-item.menu-item-submenu[
+        / li.menu-item.menu-item-submenu[
           aria-haspopup="true"
           class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/?/) && request.params[:type].to_s == 'non_isak'}") 
           data-menu-toggle="hover"
-        ]
+        / ]
           a.menu-link.menu-toggle[href="javascript:;"]
             span.svg-icon.menu-icon
               svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
@@ -259,11 +273,11 @@
                       span
                     span.menu-text
                       | Equity
-        li.menu-item.menu-item-submenu[
+        / li.menu-item.menu-item-submenu[
           aria-haspopup="true"
           class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/?/) && request.params[:type].to_s == 'isak'}") 
           data-menu-toggle="hover"
-        ]
+        / ]
           a.menu-link.menu-toggle[href="javascript:;"]
             span.svg-icon.menu-icon
               svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
@@ -292,7 +306,6 @@
                       span
                     span.menu-text
                       | Equity
-
         / - Report.html.where(company: current_company).each do |report|
           li aria-haspopup="true" class=("menu-item #{'menu-item-active' if current_page?(admin_report_path(id: report.id, slug: current_company.slug))}") data-menu-toggle="hover" 
             a.menu-link.menu-toggle href=admin_report_path(id: report.id, slug: current_company.slug)
