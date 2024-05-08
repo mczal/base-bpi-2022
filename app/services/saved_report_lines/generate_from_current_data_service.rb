@@ -38,28 +38,28 @@ module SavedReportLines
       end
 
       def facade
-        return @show_facade if @show_facade.present?
+        return @facade if @facade.present?
         if report.html?
           if report.cash_flow?
-            return @show_facade = Admin::Reports::Shows::CashFlowFacade.new(params)
+            return @facade = Admin::Reports::Shows::CashFlowFacade.new(params)
           elsif report.income_statement?
-            return @show_facade = Admin::Reports::Shows::IncomeStatementFacade.new(params)
+            return @facade = Admin::Reports::Shows::IncomeStatementFacade.new(params)
           elsif report.balance_sheet?
-            return @show_facade = Admin::Reports::Shows::BalanceSheetFacade.new(params)
+            return @facade = Admin::Reports::Shows::BalanceSheetFacade.new(params)
           else
-            return @show_facade = Admin::Reports::ShowFacade.new(params)
+            return @facade = Admin::Reports::ShowFacade.new(params)
           end
         end
 
         if report.xlsx?
           if report.cash_flow_xlsx?
-            return @show_facade = Admin::Reports::Shows::CashFlowXlsxFacade.new(params)
+            return @facade = Admin::Reports::Shows::CashFlowXlsxFacade.new(params)
           end
           if report.income_statement_xlsx?
-            return @show_facade = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params)
+            return @facade = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params)
           end
           if report.balance_sheet_xlsx?
-            return @show_facade = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params)
+            return @facade = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params)
           end
         end
       end

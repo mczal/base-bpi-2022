@@ -52,7 +52,7 @@ module AccountBeginningBalances
       end
 
       def sheet
-        @sheet ||= xlsx.sheet('Saldo Awal 2022 - TB')
+        @sheet ||= xlsx.sheet('Saldo Awal 2024 - TB')
       end
 
       def xlsx

@@ -2,6 +2,8 @@ module Admin
   module Reports
     module Shows
       class BalanceSheetFacade < ::Admin::Reports::Shows::BaseFacade
+        attr_accessor :income_statement_facade, :income_statement_facade_status
+
         def calculate_value_idr_for report_line
           saved = report_line.saved_report_lines.find_by(month: start_date.month, year: start_date.year)
           if saved.present?
@@ -10,6 +12,23 @@ module Admin
             else
               @results[report_line.name] = {
                 price_idr: saved.price_idr
+              }
+            end
+
+            return @results[report_line.name][:price_idr]
+          end
+
+          if report_line.name == 'Laba (Rugi) Tahun Berjalan'
+            calculate_income_statement_facade
+
+            income_statement_accumulated_value = income_statement_facade
+              .accumulated_facade
+              .result['LABA (RUGI) SETELAH PAJAK'][:price_idr]
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_idr] = income_statement_accumulated_value
+            else
+              @results[report_line.name] = {
+                price_idr: income_statement_accumulated_value
               }
             end
 
@@ -72,6 +91,24 @@ module Admin
 
             return @results[report_line.name][:price_usd]
           end
+
+          if report_line.name == 'Laba (Rugi) Tahun Berjalan'
+            calculate_income_statement_facade
+
+            income_statement_accumulated_value = income_statement_facade
+              .accumulated_facade
+              .result['LABA (RUGI) SETELAH PAJAK'][:price_usd]
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_usd] = income_statement_accumulated_value
+            else
+              @results[report_line.name] = {
+                price_usd: income_statement_accumulated_value
+              }
+            end
+
+            return @results[report_line.name][:price_usd]
+          end
+
           previous_date = (start_date - 1.month)
           previous_saved = report_line.saved_report_lines.find_by(month: previous_date.month, year: previous_date.year)
           while !previous_saved.present?
@@ -173,6 +210,26 @@ module Admin
                 GROUP BY credit_usd_currency
               EOS
             ).first&.credit_usd.to_money.with_currency(:usd)
+          end
+
+          def calculate_income_statement_facade
+            return if income_statement_facade_status.to_s == 'calculated'
+
+            @income_statement_facade = ::Admin::Reports::Shows::IncomeStatementFacade.new(@params)
+            report = Report.income_statement.html.first
+            report.report_lines.each do |report_line|
+              next if report_line.title?
+              if report_line.value?
+                income_statement_facade.calculate_value_idr_for(report_line).amount.floor.to_money
+                income_statement_facade.calculate_value_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd)
+              end
+              if report_line.accumulation?
+                income_statement_facade.calculate_accumulation_idr_for(report_line).amount.floor.to_money
+                income_statement_facade.calculate_accumulation_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd)
+              end
+              income_statement_facade.accumulated_facade.calculate_value_for(report_line)
+            end
+            @income_statement_facade_status = 'calculated'
           end
       end
     end

@@ -2,6 +2,8 @@ module Admin
   module Reports
     module Shows
       class AccumulatedFacade
+        attr_reader :result
+
         def initialize start_date, end_date, origin_facade
           @start_date = start_date
           @end_date = end_date

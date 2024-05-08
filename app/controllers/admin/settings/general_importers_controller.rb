@@ -31,7 +31,7 @@ module Admin
             account_categories_service,
             accounts_service,
             account_master_business_units_service,
-            account_beginning_balances_service,
+            account_beginning_balances_v2_service,
             # journals_service,
             clients_service,
           ]
@@ -49,8 +49,11 @@ module Admin
         def account_master_business_units_service
           @account_master_business_units_service = ::AccountMasterBusinessUnits::ImporterService.new(params[:file])
         end
-        def account_beginning_balances_service
-          @account_beginning_balances_service = ::AccountBeginningBalances::ImporterService.new(params[:file])
+        # def account_beginning_balances_service
+          # @account_beginning_balances_service = ::AccountBeginningBalances::ImporterService.new(params[:file])
+        # end
+        def account_beginning_balances_v2_service
+          @account_beginning_balances_v2_service = ::AccountBeginningBalances::ImporterV2Service.new(params[:file])
         end
         # def journals_service
           # @journals_service = ::Journals::ImporterService.new(params[:file])
