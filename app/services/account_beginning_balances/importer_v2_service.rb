@@ -21,14 +21,13 @@ module AccountBeginningBalances
 
       params = ActionController::Parameters.new({general_transaction: gt_params})
       service = ::GeneralTransactions::CreateService.new(params, company)
-      service.run
     end
 
     private
       def find_or_initialize_by(row)
         account = get_account(row)
-        balance_idr = price_idr(row)
-        balance_usd = price_usd(row)
+        balance_idr = price_idr(row).to_f
+        balance_usd = price_usd(row).to_f
         if balance_idr > 0 && balance_usd > 0
           gt_params[:general_transaction_lines_attributes] << {
             group: :debit,
