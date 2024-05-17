@@ -63,4 +63,26 @@ class Report < ApplicationRecord
       return @short_eng_name = 'CF'
     end
   end
+
+  def name_without_idr_or_usd
+    @name_without_idr_or_usd ||= self.name.split('-').first.strip
+  end
+
+  def idr_version
+    if self.balance_sheet_xlsx?
+      return Report.balance_sheet_xlsx.find_by('name ILIKE ?', "%IDR%")
+    end
+    if self.income_statement_xlsx?
+      return Report.income_statement_xlsx.find_by('name ILIKE ?', "%IDR%")
+    end
+  end
+
+  def usd_version
+    if self.balance_sheet_xlsx?
+      return Report.balance_sheet_xlsx.find_by('name ILIKE ?', "%USD%")
+    end
+    if self.income_statement_xlsx?
+      return Report.income_statement_xlsx.find_by('name ILIKE ?', "%USD%")
+    end
+  end
 end

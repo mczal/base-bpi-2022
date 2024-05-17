@@ -21,6 +21,7 @@ module AccountBeginningBalances
 
       params = ActionController::Parameters.new({general_transaction: gt_params})
       service = ::GeneralTransactions::CreateService.new(params, company)
+      service.run
     end
 
     private

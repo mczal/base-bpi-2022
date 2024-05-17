@@ -226,7 +226,9 @@
           h4.menu-text Laporan
           i.menu-icon.ki.ki-bold-more-hor.icon-md
         - Report.html.where(company: current_company).each do |report|
-          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/)}") data-menu-toggle="hover"
+          - is_active_official_fs = true if report.income_statement? && request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/financial_statement\/income_statement_xlsx\/?/)
+          - is_active_official_fs = true if report.balance_sheet? && request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/financial_statement\/balance_sheet_xlsx\/?/)
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/) || is_active_official_fs}") data-menu-toggle="hover"
             a.menu-link[href="#{admin_report_path(id: report.id, slug: current_company.slug, type: :non_isak)}"]
               span.svg-icon.menu-icon
                 | #{report.short_eng_name}

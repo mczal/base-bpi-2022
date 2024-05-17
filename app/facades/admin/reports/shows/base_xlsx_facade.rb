@@ -71,7 +71,7 @@ module Admin
             @results[report_line.name][:price_usd] = eval(formula).to_money.with_currency(:usd)
           else
             @results[report_line.name] = {
-              price_usd: eval(formula).with_currency(:usd)
+              price_usd: eval(formula).to_money.with_currency(:usd)
             }
           end
 

@@ -19,6 +19,26 @@ module Admin
     def show_equity
       @show_facade = Admin::Reports::Shows::EquityFacade.new(params)
     end
+    def show_financial_statement
+      if params[:group].to_s == 'balance_sheet_xlsx'
+        @report = Report.balance_sheet_xlsx.first
+        @report_idr_version = @report.idr_version
+        @report_usd_version = @report.usd_version
+
+        @show_facade_idr = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params, @report_idr_version)
+        @show_facade_usd = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params, @report_usd_version)
+        return
+      end
+      if params[:group].to_s == 'income_statement_xlsx'
+        @report = Report.income_statement_xlsx.first
+        @report_idr_version = @report.idr_version
+        @report_usd_version = @report.usd_version
+
+        @show_facade_idr = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params, @report_idr_version)
+        @show_facade_usd = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params, @report_usd_version)
+        return
+      end
+    end
 
     def destroy
       if report.destroy
@@ -30,11 +50,7 @@ module Admin
 
     private
       def report
-        @report ||= begin
-          report = Report.find_by(id: params[:id])
-          # report_x = Report.where('reports.group ILIKE ?', "#{report.group}%").where.not(id: report.id)
-          # report_x.first
-        end
+        @report ||= report = Report.find_by(id: params[:id])
       end
 
       def show_facade

@@ -93,6 +93,9 @@ Rails.application.routes.draw do
     get 'reports/shows/equity',
       to: 'reports#show_equity',
       as: :report_equity
+    get 'reports/shows/financial_statement/:group',
+      to: 'reports#show_financial_statement',
+      as: :report_financial_statement
 
     namespace :reports do
       get "actions/download_template",

@@ -55,10 +55,10 @@ scss:
             .font-weight-bolder.text-dark.mt-2
               span.card-icon
                 .fa.fa-book.text-primary.mr-2
-                | #{@report.name} 
+                | #{@report_idr_version.name_without_idr_or_usd} 
             .text-muted.mt-3.font-weight-bold.font-size-sm              
               .mr-2 
-                | (#{readable_date_2 @show_facade.start_date} - #{readable_date_2 @show_facade.end_date})
+                | (#{readable_date_2 @show_facade_idr.start_date} - #{readable_date_2 @show_facade_idr.end_date})
           .card-toolbar
             / - if @report.html?
             - if 1==1
@@ -122,7 +122,7 @@ scss:
                       i.flaticon2-layers-1
                     span.nav-text
                       | Laporan
-                li.nav-item
+                / li.nav-item
                   a#profile-tab14a.nav-link[
                     data-toggle="tab"
                     href="#configurations"
@@ -133,117 +133,94 @@ scss:
                       i.far.fa-calendar-check
                     span.nav-text
                       | Konfigurasi
-                - if @report.xlsx?
-                  li.nav-item
-                    - report = Report.find_by(group: "#{@report.group.remove('_xlsx')}")
-                    a#profile-tab14a.nav-link[
-                      href="#{admin_report_path(slug: current_company.slug, id: report.id, date: params[:date])}"
-                    ]
-                      span.nav-icon
-                        i.fas.fa-external-link-alt
-                      span.nav-text
-                        | Lihat Detail
-                - if @report.html?
-                  li.nav-item
-                    - report = Report.find_by(group: "#{@report.group}_xlsx")
-                    - path = admin_report_path(slug: current_company.slug, id: report.id, date: params[:date])
-                    - if report.balance_sheet_xlsx?
-                      - path = admin_report_financial_statement_path(group: :balance_sheet_xlsx, date: params[:date])
-                    - if report.income_statement_xlsx?
-                      - path = admin_report_financial_statement_path(group: :income_statement_xlsx, date: params[:date])
-                    a#profile-tab14a.nav-link[
-                      href="#{path}"
-                    ]
-                      span.nav-icon
-                        i.fas.fa-external-link-alt
-                      span.nav-text
-                        | Lihat PS
+                li.nav-item
+                  - report = Report.find_by(group: "#{@report_idr_version.group.remove('_xlsx')}")
+                  a#profile-tab14a.nav-link[
+                    href="#{admin_report_path(slug: current_company.slug, id: report.id, date: params[:date])}"
+                  ]
+                    span.nav-icon
+                      i.fas.fa-external-link-alt
+                    span.nav-text
+                      | Lihat Detail
         #myTabContent.tab-content.mt-5
           #reports.tab-pane.fade[
             role="tabpanel" aria-labelledby="documents"
-            class="#{'active show' unless params[:tag].to_s == 'configuration'}"
+            class="active show"
           ]
-            .card-body.pt-0[
+            .card-body.pt-0.d-flex[
               style="max-height:70vh;overflow:scroll;position:relative;"
             ]
-              - if @report.html?
-                = render partial: 'show_table_for_html'
-              - elsif @report.xlsx?
-                = render partial: 'show_table_for_xlsx'
-          #configurations.tab-pane.fade[
-            role="tabpanel" aria-labelledby="approval"
-            class="#{'active show' if params[:tag].to_s == 'configuration'}"
-          ]
-            .card-body.pt-0[
-              style="max-height:70vh;overflow:scroll;position:relative;"
-            ]
-              = render partial: 'admin/report_lines/edit'
               table.table.table-hover.table-bordered
                 thead
                   tr
                     th[
-                      style="width:50%;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
-                    ] 
-                    th.text-left[
+                      rowspan="2"
+                      style="position:sticky;top:-1px;background-color:#FFF;"
+                    ]
+                    th.text-center[
                       style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
                     ]
-                      | Acuan / Kode Akun
-                    th.text-left[
-                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
-                    ]
-                      | Formula
-                    th.text-left[
-                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
-                    ]
-                      | #
+                      | IDR
                 tbody
-                  - @report.report_lines.each.with_index(1) do |report_line,i|
+                  - @report_idr_version.report_lines.each.with_index(1) do |report_line,i|
                     - if report_line.title?
                       tr
                         td[
-                          style="#{report_line.style}position:sticky;top:23px;z-index:#{i};"
+                          style="#{report_line.style}position:sticky;top:25px;z-index:#{i};"
                           colspan="100%"
                         ]
                           = report_line.name
+                    - elsif report_line.break?
+                      tr
+                        td[colspan="100"]
+                          | &nbsp;
                     - else
                       tr
-                        - if report_line.accumulation?
-                          td[
-                            style="#{report_line.style}"
-                          ]
-                            = report_line.name
-                          td.text-left[
-                            style="#{report_line.style}"
-                            colspan="2"
-                          ]
-                            = report_line.formula
-                        - else
-                          td[
-                            style="#{report_line.style}"
-                          ]
-                            = report_line.name
-                          td.text-left[
-                            style="#{report_line.style}"
-                          ]
-                            b
-                              = report_line.codes.join(', ')
-                            - if report_line.codes_references.present?
-                              span.mx-1
-                                | /
-                              = report_line.codes_references.map{|x| "<span data-title='#{x}' data-content='#{Account.find_by(code: x).name}' data-base--popover-trigger='hover' data-controller='base--popover'>#{x}</span>"}.join(', ').html_safe
-                          td.text-left[
-                            style="#{report_line.style}"
-                          ]
-                            = report_line.formula
-                        td.text-left[
+                        td[
                           style="#{report_line.style}"
                         ]
-                          a.btn.btn-sm.btn-clean.btn-icon[
-                            href="javascript:void(0);"
-                            data-toggle="modal"
-                            data-target="#Edit"
-                            data-controller="admin--edit"
-                            data-action="click->admin--edit#handleClick"
-                            data-admin--edit-path="#{admin_edit_report_line_path(id: report_line.id)}"
-                          ]
-                            i.fas.fa-pencil-alt.text-warning
+                          = report_line.name
+                        td.text-center[
+                          style="#{report_line.style}"
+                        ]
+                          - if report_line.value?
+                            = print_money @show_facade_idr.calculate_value_idr_for(report_line).amount.floor.to_money, precision:0
+                          - elsif report_line.accumulation?
+                            = print_money @show_facade_idr.calculate_accumulation_idr_for(report_line).amount.floor.to_money, precision:0
+              table.table.table-hover.table-bordered
+                thead
+                  tr
+                    th[
+                      rowspan="2"
+                      style="position:sticky;top:-1px;background-color:#FFF;"
+                    ]
+                    th.text-center[
+                      style="width:150px;max-width:200px !important;position:sticky;top:-1px;background-color:#FFF;"
+                    ]
+                      | USD
+                tbody
+                  - @report_usd_version.report_lines.each.with_index(1) do |report_line,i|
+                    - if report_line.title?
+                      tr
+                        td[
+                          style="#{report_line.style}position:sticky;top:25px;z-index:#{i};"
+                          colspan="100%"
+                        ]
+                          = report_line.name
+                    - elsif report_line.break?
+                      tr
+                        td[colspan="100"]
+                          | &nbsp;
+                    - else
+                      tr
+                        td[
+                          style="#{report_line.style}"
+                        ]
+                          = report_line.name
+                        td.text-center[
+                          style="#{report_line.style}"
+                        ]
+                          - if report_line.value?
+                            = print_money @show_facade_usd.calculate_value_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd), precision:2
+                          - elsif report_line.accumulation?
+                            = print_money @show_facade_usd.calculate_accumulation_usd_for(report_line).amount.floor(2).to_money.with_currency(:usd), precision:2

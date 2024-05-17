@@ -31,7 +31,7 @@ module Reports
 
     def get_report name, sheet
       @report = Report.find_or_initialize_by(
-        name: name,
+        name: report_name(sheet),
         company_id: @company_id,
         group: report_group(sheet),
         display: report_display(sheet),
@@ -45,6 +45,9 @@ module Reports
     end
     def report_display sheet
       sheet.cell(1,4).to_s.strip.downcase
+    end
+    def report_name sheet
+      sheet.cell(1,5).to_s.strip
     end
 
     def parse_and_save row, i
@@ -85,7 +88,7 @@ module Reports
       # end
       # TODO NOTICE ONLY: comment to make sure that only 2022 data that needs adjusted, the rest is still in check the data.
       # 2. TODO NOTICE ONLY: after comment. data is still wrong, uncomment again and add to november 2023
-      2.times.each.with_index(1) do |_,i|
+      3.times.each.with_index(1) do |_,i|
         srl = SavedReportLine.find_or_initialize_by(
           report_line_id: report_line.id,
           month: i, year: 2024,

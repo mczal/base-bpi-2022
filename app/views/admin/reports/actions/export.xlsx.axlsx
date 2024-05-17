@@ -11,13 +11,13 @@ wb.styles do |styles|
     :alignment => { :vertical=> :center }
   )
   number_style = styles.add_style(
-    format_code: "#,##0.00",
+    format_code: "#,##0",
     :alignment => {
       :wrap_text=> true,
       :vertical=> :center }
   )
   number_style_bold = styles.add_style(
-    format_code: "#,##0.00",
+    format_code: "#,##0",
     :b => true,
     :alignment => {
       :wrap_text=> true,
@@ -79,12 +79,12 @@ wb.styles do |styles|
     @export_facade.report.report_lines.each.with_index(1) do |report_line, i|
       style = number_style_bold if i == 1
       if report_line.value?
-        value_idr = @export_facade.calculate_value_idr_for(report_line).amount.floor
-        value_usd = @export_facade.calculate_value_usd_for(report_line).amount.floor(2)
+        value_idr = @export_facade.calculate_value_idr_for(report_line).amount
+        value_usd = @export_facade.calculate_value_usd_for(report_line).amount
         style = number_style unless style.present?
       elsif report_line.accumulation?
-        value_idr = @export_facade.calculate_accumulation_idr_for(report_line).amount.floor
-        value_usd = @export_facade.calculate_accumulation_usd_for(report_line).amount.floor(2)
+        value_idr = @export_facade.calculate_accumulation_idr_for(report_line).amount
+        value_usd = @export_facade.calculate_accumulation_usd_for(report_line).amount
         style = number_style_bold
       else
         value_idr = ""
