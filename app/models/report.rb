@@ -68,6 +68,20 @@ class Report < ApplicationRecord
     @name_without_idr_or_usd ||= self.name.split('-').first.strip
   end
 
+  def name_for_worksheet
+    return @name_for_worksheet if @name_for_worksheet.present?
+
+    if self.income_statement_xlsx?
+      return @name_for_worksheet = 'IS PS'
+    end
+    if self.balance_sheet_xlsx?
+      return @name_for_worksheet = 'NERACA PS'
+    end
+    if self.cash_flow_xlsx?
+      return @name_for_worksheet = 'CF PS'
+    end
+  end
+
   def idr_version
     if self.balance_sheet_xlsx?
       return Report.balance_sheet_xlsx.find_by('name ILIKE ?', "%IDR%")
