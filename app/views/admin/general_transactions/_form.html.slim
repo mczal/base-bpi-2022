@@ -23,12 +23,14 @@
         .checkbox-inline
           label.checkbox
             = f.radio_button :location,
-              'jakarta', required: 1
+              'jakarta', required: 1,
+               disabled: (!current_user.has_role?(:super_admin) && !current_user.has_role?(:jakarta))
             span
             | Jakarta
           label.checkbox
             = f.radio_button :location,
-              'site',required: 1
+              'site',required: 1,
+               disabled: (!current_user.has_role?(:super_admin) && !current_user.has_role?(:site))
             span
             | Site
     .row
@@ -351,15 +353,25 @@
                         controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
                       },
                       id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-            .form-group[style="margin-bottom:15px;position:relative;"]
-              label
-                | Deskripsi
-                span.text-danger.ml-1 *
-              = text_area_tag 'general_transaction[general_transaction_lines_attributes][0][description]', '',
-                class: 'form-control',
-                data: {\
-                  target: 'base--dynamic-input.input'\
-                }, required: 1
+            .row
+              .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Nama Penerima
+                  span.text-danger.ml-1 *
+                = text_area_tag 'general_transaction[general_transaction_lines_attributes][0][recipient]', '',
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Deskripsi
+                  span.text-danger.ml-1 *
+                = text_area_tag 'general_transaction[general_transaction_lines_attributes][0][description]', '',
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
             .form-group[style="margin-bottom:5px;position:relative;"]
               label
                 | Nominal
@@ -518,15 +530,25 @@
                           controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
                         },
                         id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-              .form-group[style="margin-bottom:15px;position:relative;"]
-                label
-                  | Deskripsi
-                  span.text-danger.ml-1 *
-                = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
-                  class: 'form-control',
-                  data: {\
-                    target: 'base--dynamic-input.input'\
-                  }, required: 1
+              .row
+                .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                  label
+                    | Nama Penerima
+                    span.text-danger.ml-1 *
+                  = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][recipient]", line.recipient,
+                    class: 'form-control',
+                    data: {\
+                      target: 'base--dynamic-input.input'\
+                    }, required: 1
+                .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                  label
+                    | Deskripsi
+                    span.text-danger.ml-1 *
+                  = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
+                    class: 'form-control',
+                    data: {\
+                      target: 'base--dynamic-input.input'\
+                    }, required: 1
               .form-group[style="margin-bottom:5px;position:relative;"]
                 label
                   | Nominal
@@ -670,15 +692,25 @@
                         controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
                       },
                       id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-            .form-group[style="margin-bottom:15px;position:relative;"]
-              label
-                | Deskripsi
-                span.text-danger.ml-1 *
-              = text_area_tag 'general_transaction[general_transaction_lines_attributes][1][description]', '',
-                class: 'form-control',
-                data: {\
-                  target: 'base--dynamic-input.input'\
-                }, required: 1
+            .row
+              .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Nama Penerima
+                  span.text-danger.ml-1 *
+                = text_area_tag "general_transaction[general_transaction_lines_attributes][1][recipient]", '',
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
+              .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                label
+                  | Deskripsi
+                  span.text-danger.ml-1 *
+                = text_area_tag 'general_transaction[general_transaction_lines_attributes][1][description]', '',
+                  class: 'form-control',
+                  data: {\
+                    target: 'base--dynamic-input.input'\
+                  }, required: 1
             .form-group[style="margin-bottom:5px;position:relative;"]
               label
                 | Nominal
@@ -837,15 +869,25 @@
                           controller: 'select2 admin--general-transactions--master-business-unit-activity-change',\
                         },
                         id: "a#{SecureRandom.uuid}", required: 1, readonly: 1
-              .form-group[style="margin-bottom:15px;position:relative;"]
-                label
-                  | Deskripsi
-                  span.text-danger.ml-1 *
-                = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
-                  class: 'form-control',
-                  data: {\
-                    target: 'base--dynamic-input.input'\
-                  }, required: 1
+              .row
+                .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                  label
+                    | Nama Penerima
+                    span.text-danger.ml-1 *
+                  = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][recipient]", line.recipient,
+                    class: 'form-control',
+                    data: {\
+                      target: 'base--dynamic-input.input'\
+                    }, required: 1
+                .form-group.col-lg-6[style="margin-bottom:15px;position:relative;"]
+                  label
+                    | Deskripsi
+                    span.text-danger.ml-1 *
+                  = text_area_tag "general_transaction[general_transaction_lines_attributes][#{i}][description]", line.description,
+                    class: 'form-control',
+                    data: {\
+                      target: 'base--dynamic-input.input'\
+                    }, required: 1
               .form-group[style="margin-bottom:5px;position:relative;"]
                 label
                   | Nominal

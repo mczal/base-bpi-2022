@@ -65,17 +65,18 @@
                   path[d="M12,18 L7.91561963,20.1472858 C7.42677504,20.4042866 6.82214789,20.2163401 6.56514708,19.7274955 C6.46280801,19.5328351 6.42749334,19.309867 6.46467018,19.0931094 L7.24471742,14.545085 L3.94038429,11.3241562 C3.54490071,10.938655 3.5368084,10.3055417 3.92230962,9.91005817 C4.07581822,9.75257453 4.27696063,9.65008735 4.49459766,9.61846284 L9.06107374,8.95491503 L11.1032639,4.81698575 C11.3476862,4.32173209 11.9473121,4.11839309 12.4425657,4.36281539 C12.6397783,4.46014562 12.7994058,4.61977315 12.8967361,4.81698575 L14.9389263,8.95491503 L19.5054023,9.61846284 C20.0519472,9.69788046 20.4306287,10.2053233 20.351211,10.7518682 C20.3195865,10.9695052 20.2170993,11.1706476 20.0596157,11.3241562 L16.7552826,14.545085 L17.5353298,19.0931094 C17.6286908,19.6374458 17.263103,20.1544017 16.7187666,20.2477627 C16.5020089,20.2849396 16.2790408,20.2496249 16.0843804,20.1472858 L12,18 Z" fill="#000000"]
               /! end::Svg Icon
             span.menu-text Daftar Akun
-        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/clients\/?/)}") data-menu-toggle="hover" 
-          a.menu-link href=admin_clients_path(slug: current_company.slug) 
-            span.svg-icon.menu-icon
-              /! begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-left-panel-2.svg
-              svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
-                g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
-                  polygon[points="0 0 24 0 24 24 0 24"]
-                  path[d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
-                  path[d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero"]
-              /! end::Svg Icon
-            span.menu-text Daftar Client
+        - if current_user.has_role?(:super_admin)
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/clients\/?/)}") data-menu-toggle="hover" 
+            a.menu-link href=admin_clients_path(slug: current_company.slug) 
+              span.svg-icon.menu-icon
+                /! begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-left-panel-2.svg
+                svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                  g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                    polygon[points="0 0 24 0 24 24 0 24"]
+                    path[d="M12,11 C9.790861,11 8,9.209139 8,7 C8,4.790861 9.790861,3 12,3 C14.209139,3 16,4.790861 16,7 C16,9.209139 14.209139,11 12,11 Z" fill="#000000" fill-rule="nonzero" opacity="0.3"]
+                    path[d="M3.00065168,20.1992055 C3.38825852,15.4265159 7.26191235,13 11.9833413,13 C16.7712164,13 20.7048837,15.2931929 20.9979143,20.2 C21.0095879,20.3954741 20.9979143,21 20.2466999,21 C16.541124,21 11.0347247,21 3.72750223,21 C3.47671215,21 2.97953825,20.45918 3.00065168,20.1992055 Z" fill="#000000" fill-rule="nonzero"]
+                /! end::Svg Icon
+              span.menu-text Daftar Client
         li.menu-section.mt-1
           h5.menu-text Transactional
           i.menu-icon.ki.ki-bold-more-hor.icon-md
@@ -91,96 +92,97 @@
               /! end::Svg Icon
             span.menu-text Jurnal Transaksi
         / li.menu-item.menu-item-submenu[aria-haspopup="true" data-menu-toggle="hover"]
-        li.menu-item.menu-item-submenu[
-          aria-haspopup="true"
-          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/?/)}") 
-          data-menu-toggle="hover"
-        ]
-          a.menu-link.menu-toggle[href="javascript:;"]
-            span.svg-icon.menu-icon
-              svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
-                g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
-                  rect[x="0" y="0" width="24" height="24"]
-                  path[d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"]
-                  path[d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"]
-                  path[d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"]
-            span.menu-text
-              | Invoice Tracking
-            i.menu-arrow
-          .menu-submenu[kt-hidden-height="120" style=""]
-            i.menu-arrow
-            ul.menu-subnav
-              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/procurements\/contracts\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_inv_trackings_procurements_contracts_path(slug: current_company.slug)}"]
-                  i.menu-bullet.menu-bullet-dot
-                    span
-                  span.menu-text
-                    | Kontrak
-              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/accountings\/bas\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_inv_trackings_accountings_bas_path(slug: current_company.slug)}"]
-                  i.menu-bullet.menu-bullet-dot
-                    span
-                  span.menu-text
-                    | Berita Acara
-              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/finances\/invoices\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_inv_trackings_finances_invoices_path(slug: current_company.slug)}"]
-                  i.menu-bullet.menu-bullet-dot
-                    span
-                  span.menu-text
-                    | Invoices
-        li.menu-item.menu-item-submenu[
-          aria-haspopup="true"
-          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/(invoice_direct_externals|invoice_direct_internals)\/?/)}") 
-          data-menu-toggle="hover"
-        ]
-          a.menu-link.menu-toggle[href="javascript:void(0);"]
-            span.svg-icon.menu-icon
-              svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
-                g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
-                  rect[x="0" y="0" width="24" height="24"]
-                  path[d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"]
-                  path[d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"]
-                  path[d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"]
-            span.menu-text
-              | Invoice Direct
-            i.menu-arrow
-          .menu-submenu[kt-hidden-height="80" style=""]
-            i.menu-arrow
-            ul.menu-subnav
-              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoice_direct_externals\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_invoice_direct_externals_path(slug: current_company.slug)}"]
-                  i.menu-bullet.menu-bullet-dot
-                    span
-                  span.menu-text
-                    | External
-              li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoice_direct_internals\/?/)}") data-menu-toggle="hover"
-                a.menu-link[href="#{admin_invoice_direct_internals_path(slug: current_company.slug)}"]
-                  i.menu-bullet.menu-bullet-dot
-                    span
-                  span.menu-text
-                    | Internal
-        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/revals\/?/)}") data-menu-toggle="hover" 
-          a.menu-link href=admin_revals_path(slug: current_company.slug) 
-            span.svg-icon.menu-icon
-              /! begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-horizontal.svg
-              svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
-                  rect height="24" width="24" x="0" y="0" 
-                  rect fill="#000000" height="6" opacity="0.3" rx="1.5" width="16" x="4" y="5" 
-                  rect fill="#000000" height="6" rx="1.5" width="16" x="4" y="13" 
-              /! end::Svg Icon
-            span.menu-text Reval
-        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/audit_adjustments\/?/)}") data-menu-toggle="hover" 
-          a.menu-link href=admin_audit_adjustments_path(slug: current_company.slug) 
-            span.svg-icon.menu-icon
-              /! begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-horizontal.svg
-              svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
-                  rect height="24" width="24" x="0" y="0" 
-                  rect fill="#000000" height="6" opacity="0.3" rx="1.5" width="16" x="4" y="5" 
-                  rect fill="#000000" height="6" rx="1.5" width="16" x="4" y="13" 
-              /! end::Svg Icon
-            span.menu-text Adjustment Audit
+        - if current_user.has_role?(:super_admin)
+          li.menu-item.menu-item-submenu[
+            aria-haspopup="true"
+            class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/?/)}") 
+            data-menu-toggle="hover"
+          ]
+            a.menu-link.menu-toggle[href="javascript:;"]
+              span.svg-icon.menu-icon
+                svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                  g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                    rect[x="0" y="0" width="24" height="24"]
+                    path[d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"]
+                    path[d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"]
+                    path[d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"]
+              span.menu-text
+                | Invoice Tracking
+              i.menu-arrow
+            .menu-submenu[kt-hidden-height="120" style=""]
+              i.menu-arrow
+              ul.menu-subnav
+                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/procurements\/contracts\/?/)}") data-menu-toggle="hover"
+                  a.menu-link[href="#{admin_inv_trackings_procurements_contracts_path(slug: current_company.slug)}"]
+                    i.menu-bullet.menu-bullet-dot
+                      span
+                    span.menu-text
+                      | Kontrak
+                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/accountings\/bas\/?/)}") data-menu-toggle="hover"
+                  a.menu-link[href="#{admin_inv_trackings_accountings_bas_path(slug: current_company.slug)}"]
+                    i.menu-bullet.menu-bullet-dot
+                      span
+                    span.menu-text
+                      | Berita Acara
+                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/inv_trackings\/finances\/invoices\/?/)}") data-menu-toggle="hover"
+                  a.menu-link[href="#{admin_inv_trackings_finances_invoices_path(slug: current_company.slug)}"]
+                    i.menu-bullet.menu-bullet-dot
+                      span
+                    span.menu-text
+                      | Invoices
+          li.menu-item.menu-item-submenu[
+            aria-haspopup="true"
+            class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/(invoice_direct_externals|invoice_direct_internals)\/?/)}") 
+            data-menu-toggle="hover"
+          ]
+            a.menu-link.menu-toggle[href="javascript:void(0);"]
+              span.svg-icon.menu-icon
+                svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
+                  g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
+                    rect[x="0" y="0" width="24" height="24"]
+                    path[d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"]
+                    path[d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"]
+                    path[d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"]
+              span.menu-text
+                | Invoice Direct
+              i.menu-arrow
+            .menu-submenu[kt-hidden-height="80" style=""]
+              i.menu-arrow
+              ul.menu-subnav
+                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoice_direct_externals\/?/)}") data-menu-toggle="hover"
+                  a.menu-link[href="#{admin_invoice_direct_externals_path(slug: current_company.slug)}"]
+                    i.menu-bullet.menu-bullet-dot
+                      span
+                    span.menu-text
+                      | External
+                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/invoice_direct_internals\/?/)}") data-menu-toggle="hover"
+                  a.menu-link[href="#{admin_invoice_direct_internals_path(slug: current_company.slug)}"]
+                    i.menu-bullet.menu-bullet-dot
+                      span
+                    span.menu-text
+                      | Internal
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/revals\/?/)}") data-menu-toggle="hover" 
+            a.menu-link href=admin_revals_path(slug: current_company.slug) 
+              span.svg-icon.menu-icon
+                /! begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-horizontal.svg
+                svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                  g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
+                    rect height="24" width="24" x="0" y="0" 
+                    rect fill="#000000" height="6" opacity="0.3" rx="1.5" width="16" x="4" y="5" 
+                    rect fill="#000000" height="6" rx="1.5" width="16" x="4" y="13" 
+                /! end::Svg Icon
+              span.menu-text Reval
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/audit_adjustments\/?/)}") data-menu-toggle="hover" 
+            a.menu-link href=admin_audit_adjustments_path(slug: current_company.slug) 
+              span.svg-icon.menu-icon
+                /! begin::Svg Icon | path:assets/media/svg/icons/Layout/Layout-horizontal.svg
+                svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                  g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
+                    rect height="24" width="24" x="0" y="0" 
+                    rect fill="#000000" height="6" opacity="0.3" rx="1.5" width="16" x="4" y="5" 
+                    rect fill="#000000" height="6" rx="1.5" width="16" x="4" y="13" 
+                /! end::Svg Icon
+              span.menu-text Adjustment Audit
         li.menu-section.mt-1
           h5.menu-text Akuntansi
           i.menu-icon.ki.ki-bold-more-hor.icon-md
@@ -196,142 +198,52 @@
                   rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
               /! end::Svg Icon
             span.menu-text Jurnal Umum
-        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/trial_balances\/?/)}") data-menu-toggle="hover" 
-          a.menu-link href=admin_trial_balances_path(slug: current_company.slug) 
-            span.svg-icon.menu-icon
-              | TB
-              /! begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Home/Library.svg
-              / svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
-                  rect height="24" width="24" x="0" y="0" 
-                  path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" 
-                  rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
-              /! end::Svg Icon
-            span.menu-text
-              | Neraca Saldo
-        li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/general_ledgers\/?/)}") data-menu-toggle="hover" 
-          a.menu-link href=admin_general_ledgers_path(slug: current_company.slug) 
-            span.svg-icon.menu-icon
-              | GL
-              /! begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Home/Library.svg
-              / svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
-                g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
-                  rect height="24" width="24" x="0" y="0" 
-                  path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" 
-                  rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
-              /! end::Svg Icon
-            span.menu-text
-              | Buku Besar
-        li.menu-section.mt-1
-          h4.menu-text Laporan
-          i.menu-icon.ki.ki-bold-more-hor.icon-md
-        - Report.html.where(company: current_company).each do |report|
-          - is_active_official_fs = true if report.income_statement? && request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/financial_statement\/income_statement_xlsx\/?/)
-          - is_active_official_fs = true if report.balance_sheet? && request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/financial_statement\/balance_sheet_xlsx\/?/)
-          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/) || is_active_official_fs}") data-menu-toggle="hover"
-            a.menu-link[href="#{admin_report_path(id: report.id, slug: current_company.slug, type: :non_isak)}"]
+        - if current_user.has_role?(:super_admin)
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/trial_balances\/?/)}") data-menu-toggle="hover" 
+            a.menu-link href=admin_trial_balances_path(slug: current_company.slug) 
               span.svg-icon.menu-icon
-                | #{report.short_eng_name}
-              span.menu-text
-                | #{report.name_x}
-        - if Report.count > 0
-          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/equity\/?/)}") data-menu-toggle="hover"
-            a.menu-link[href="#{admin_report_equity_path(slug: current_company.slug, type: :non_isak)}"]
-              span.svg-icon.menu-icon
-                | EQ
-              span.menu-text
-                | Equity
-
-        / li.menu-item.menu-item-submenu[
-          aria-haspopup="true"
-          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/?/) && request.params[:type].to_s == 'non_isak'}") 
-          data-menu-toggle="hover"
-        / ]
-          a.menu-link.menu-toggle[href="javascript:;"]
-            span.svg-icon.menu-icon
-              svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
-                g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
-                  rect[x="0" y="0" width="24" height="24"]
-                  path[d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"]
-                  path[d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"]
-                  path[d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"]
-            span.menu-text
-              | NON-ISAK
-            i.menu-arrow
-          .menu-submenu[kt-hidden-height="120" style=""]
-            i.menu-arrow
-            ul.menu-subnav
-              - Report.xlsx.where(company: current_company).each do |report|
-                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/) && request.params[:type].to_s == 'non_isak'}") data-menu-toggle="hover"
-                  a.menu-link[href="#{admin_report_path(id: report.id, slug: current_company.slug, type: :non_isak)}"]
-                    i.menu-bullet.menu-bullet-dot
-                      span
-                    span.menu-text
-                      | #{report.name_x}
-              - if Report.count > 0
-                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/equity\/?/) && request.params[:type].to_s == 'non_isak'}") data-menu-toggle="hover"
-                  a.menu-link[href="#{admin_report_equity_path(slug: current_company.slug, type: :non_isak)}"]
-                    i.menu-bullet.menu-bullet-dot
-                      span
-                    span.menu-text
-                      | Equity
-        / li.menu-item.menu-item-submenu[
-          aria-haspopup="true"
-          class=("#{'menu-item-open' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/?/) && request.params[:type].to_s == 'isak'}") 
-          data-menu-toggle="hover"
-        / ]
-          a.menu-link.menu-toggle[href="javascript:;"]
-            span.svg-icon.menu-icon
-              svg[xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewbox="0 0 24 24" version="1.1"]
-                g[stroke="none" stroke-width="1" fill="none" fill-rule="evenodd"]
-                  rect[x="0" y="0" width="24" height="24"]
-                  path[d="M8,3 L8,3.5 C8,4.32842712 8.67157288,5 9.5,5 L14.5,5 C15.3284271,5 16,4.32842712 16,3.5 L16,3 L18,3 C19.1045695,3 20,3.8954305 20,5 L20,21 C20,22.1045695 19.1045695,23 18,23 L6,23 C4.8954305,23 4,22.1045695 4,21 L4,5 C4,3.8954305 4.8954305,3 6,3 L8,3 Z" fill="#000000" opacity="0.3"]
-                  path[d="M10.875,15.75 C10.6354167,15.75 10.3958333,15.6541667 10.2041667,15.4625 L8.2875,13.5458333 C7.90416667,13.1625 7.90416667,12.5875 8.2875,12.2041667 C8.67083333,11.8208333 9.29375,11.8208333 9.62916667,12.2041667 L10.875,13.45 L14.0375,10.2875 C14.4208333,9.90416667 14.9958333,9.90416667 15.3791667,10.2875 C15.7625,10.6708333 15.7625,11.2458333 15.3791667,11.6291667 L11.5458333,15.4625 C11.3541667,15.6541667 11.1145833,15.75 10.875,15.75 Z" fill="#000000"]
-                  path[d="M11,2 C11,1.44771525 11.4477153,1 12,1 C12.5522847,1 13,1.44771525 13,2 L14.5,2 C14.7761424,2 15,2.22385763 15,2.5 L15,3.5 C15,3.77614237 14.7761424,4 14.5,4 L9.5,4 C9.22385763,4 9,3.77614237 9,3.5 L9,2.5 C9,2.22385763 9.22385763,2 9.5,2 L11,2 Z" fill="#000000"]
-            span.menu-text
-              | ISAK
-            i.menu-arrow
-          .menu-submenu[kt-hidden-height="120" style=""]
-            i.menu-arrow
-            ul.menu-subnav
-              - Report.html.where(company: current_company).each do |report|
-                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/) && request.params[:type].to_s == 'isak'}") data-menu-toggle="hover"
-                  a.menu-link[href="#{admin_report_path(id: report.id, slug: current_company.slug, type: :isak)}"]
-                    i.menu-bullet.menu-bullet-dot
-                      span
-                    span.menu-text
-                      | #{report.name}
-              - if Report.count > 0
-                li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/equity\/?/) && request.params[:type].to_s == 'isak'}") data-menu-toggle="hover"
-                  a.menu-link[href="#{admin_report_equity_path(slug: current_company.slug, type: :isak)}"]
-                    i.menu-bullet.menu-bullet-dot
-                      span
-                    span.menu-text
-                      | Equity
-        / - Report.html.where(company: current_company).each do |report|
-          li aria-haspopup="true" class=("menu-item #{'menu-item-active' if current_page?(admin_report_path(id: report.id, slug: current_company.slug))}") data-menu-toggle="hover" 
-            a.menu-link.menu-toggle href=admin_report_path(id: report.id, slug: current_company.slug)
-              span.svg-icon.menu-icon
-                svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                | TB
+                /! begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Home/Library.svg
+                / svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                   g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
                     rect height="24" width="24" x="0" y="0" 
-                    rect fill="#000000" height="16" opacity="0.3" rx="1.5" width="3" x="13" y="4" 
-                    rect fill="#000000" height="11" rx="1.5" width="3" x="8" y="9" 
-                    rect fill="#000000" height="9" rx="1.5" width="3" x="18" y="11" 
-                    rect fill="#000000" height="7" rx="1.5" width="3" x="3" y="13" 
-              span.menu-text #{report.name}
-        / - if Report.count > 0
-          li aria-haspopup="true" class=("menu-item #{'menu-item-active' if current_page?(admin_report_equity_path(slug: current_company.slug))}") data-menu-toggle="hover" 
-            a.menu-link.menu-toggle href=admin_report_equity_path(slug: current_company.slug)
+                    path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" 
+                    rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
+                /! end::Svg Icon
+              span.menu-text
+                | Neraca Saldo
+          li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/general_ledgers\/?/)}") data-menu-toggle="hover" 
+            a.menu-link href=admin_general_ledgers_path(slug: current_company.slug) 
               span.svg-icon.menu-icon
-                svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+                | GL
+                /! begin::Svg Icon | path:/metronic/theme/html/demo1/dist/assets/media/svg/icons/Home/Library.svg
+                / svg height="24px" version="1.1" viewbox=("0 0 24 24") width="24px" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
                   g fill="none" fill-rule="evenodd" stroke="none" stroke-width="1" 
                     rect height="24" width="24" x="0" y="0" 
-                    rect fill="#000000" height="16" opacity="0.3" rx="1.5" width="3" x="13" y="4" 
-                    rect fill="#000000" height="11" rx="1.5" width="3" x="8" y="9" 
-                    rect fill="#000000" height="9" rx="1.5" width="3" x="18" y="11" 
-                    rect fill="#000000" height="7" rx="1.5" width="3" x="3" y="13" 
-              span.menu-text Equity
+                    path d="M5,3 L6,3 C6.55228475,3 7,3.44771525 7,4 L7,20 C7,20.5522847 6.55228475,21 6,21 L5,21 C4.44771525,21 4,20.5522847 4,20 L4,4 C4,3.44771525 4.44771525,3 5,3 Z M10,3 L11,3 C11.5522847,3 12,3.44771525 12,4 L12,20 C12,20.5522847 11.5522847,21 11,21 L10,21 C9.44771525,21 9,20.5522847 9,20 L9,4 C9,3.44771525 9.44771525,3 10,3 Z" fill="#000000" 
+                    rect fill="#000000" height="18" opacity="0.3" rx="1" transform="translate(17.825568, 11.945519) rotate(-19.000000) translate(-17.825568, -11.945519)" width="3" x="16.3255682" y="2.94551858" 
+                /! end::Svg Icon
+              span.menu-text
+                | Buku Besar
+          li.menu-section.mt-1
+            h4.menu-text Laporan
+            i.menu-icon.ki.ki-bold-more-hor.icon-md
+          - Report.html.where(company: current_company).each do |report|
+            - is_active_official_fs = true if report.income_statement? && request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/financial_statement\/income_statement_xlsx\/?/)
+            - is_active_official_fs = true if report.balance_sheet? && request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/financial_statement\/balance_sheet_xlsx\/?/)
+            li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/#{report.id}\/?/) || is_active_official_fs}") data-menu-toggle="hover"
+              a.menu-link[href="#{admin_report_path(id: report.id, slug: current_company.slug, type: :non_isak)}"]
+                span.svg-icon.menu-icon
+                  | #{report.short_eng_name}
+                span.menu-text
+                  | #{report.name_x}
+          - if Report.count > 0
+            li aria-haspopup="true" class=("menu-item menu-item-submenu #{'menu-item-active' if request.original_fullpath.match(/^\/#{current_company.slug}\/reports\/shows\/equity\/?/)}") data-menu-toggle="hover"
+              a.menu-link[href="#{admin_report_equity_path(slug: current_company.slug, type: :non_isak)}"]
+                span.svg-icon.menu-icon
+                  | EQ
+                span.menu-text
+                  | Equity
 
         - if current_user.has_role?(:super_admin)
           li.menu-section.mt-1

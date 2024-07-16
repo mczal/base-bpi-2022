@@ -50,10 +50,13 @@ export default class extends DatatablesController {
         overflow: 'visible',
         autoHide: false,
         template: function(data) {
-          return `
+          let result = `
             <a href="${data.show_path}" class="btn btn-sm btn-clean btn-icon" title="Detil">
               <i class="la la-eye text-primary"></i>
             </a>
+          `
+          if(data.is_super_admin){
+            result = `${result}
             <a href="javascript:void(0);" class="btn btn-sm btn-clean btn-icon"
               data-toggle="modal"
               data-target="#Edit"
@@ -66,7 +69,10 @@ export default class extends DatatablesController {
             <a href="${data.delete_path}" data-method="delete" data-confirm="Apakah anda yakin ingin menghapus akun ini?" class="btn btn-sm btn-clean btn-icon" title="Delete">
               <i class="la la-trash text-danger"></i>
             </a>
-          `;
+            `
+          }
+
+          return result;
         },
       }
     ]

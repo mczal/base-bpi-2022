@@ -11,6 +11,11 @@ export default class extends DatatablesController {
     super.connect();
     this.bindDateChange();
     this.bindFilter();
+    window.journalDatatable = this.datatable;
+  }
+
+  disconnect(){
+    window.journalDatatable = undefined;
   }
 
   bindFilter(){
@@ -131,7 +136,7 @@ export default class extends DatatablesController {
         sortable: false,
         width: '150',
         template: function(data) {
-          return `
+          let result = `
             <div>
               <span data-controller="base--popover" data-base--popover-html="1" data-base--popover-trigger="hover" data-content="<div><b>${data.account_category_description}</b></div><div>${data.account_category_range}</div>" data-title="Kategori" class="svg-icon svg-icon-light-dark" style="cursor:pointer;">
                 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
@@ -148,7 +153,28 @@ export default class extends DatatablesController {
             <div>
               ${data.account_name}
             </div>
-          `;
+          `
+          if(data.master_business_unit){
+            result = `${result}
+              <div>
+                <span
+                  class="text-muted font-weight-bolder text-hover-primary"
+                  data-base--popover-html="1"
+                  data-base--popover-trigger="hover"
+                  data-content="${data.master_business_units_for_popover}"
+                  data-controller="base--popover"
+                  data-title="Cost Center: ${data.master_business_unit}"
+                  data-original-title=""
+                  title=""
+                >
+                  ${data.master_business_unit}
+                  <i class="fas fa-question-circle"></i>
+                </span>
+              </div>
+            `
+          }
+
+          return result;
         }
       },
       {
@@ -159,6 +185,17 @@ export default class extends DatatablesController {
         textAlign: 'center',
         template: function(data) {
           return `${data.location}`;
+        }
+      },
+      {
+        field: 'recipient',
+        title: 'Nama Penerima',
+        autoHide: false,
+        overflow: 'visible',
+        sortable: false,
+        width: '150',
+        template: function(data) {
+          return `${data.recipient}`;
         }
       },
       {

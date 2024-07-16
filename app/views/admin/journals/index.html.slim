@@ -56,14 +56,16 @@ scss:
                   = radio_button_tag :location,
                     'jakarta', params[:location].to_s == 'jakarta',
                     required: 1,
-                    data: { 'admin--index-filter-target': 'location' }
+                    data: { 'admin--index-filter-target': 'location' },
+                    disabled: (!current_user.has_role?(:super_admin) && !current_user.has_role?(:jakarta))
                   span
                   | Jakarta
                 label.checkbox
                   = radio_button_tag :location,
                     'site', params[:location].to_s == 'site',
                     required: 1,
-                    data: { 'admin--index-filter-target': 'location' }
+                    data: { 'admin--index-filter-target': 'location' },
+                    disabled: (!current_user.has_role?(:super_admin) && !current_user.has_role?(:site))
                   span
                   | Site
             .form-group.ml-5
@@ -150,25 +152,28 @@ scss:
                 | Total #{Journal.count} Jurnal
           .card-toolbar.justify-content-end
             .dropdown.dropdown-inline.mr-2.mb-2
-              button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
+              button.btn.btn-light-warning.font-weight-bolder.dropdown-toggle[
                 aria-expanded="false"
                 aria-haspopup="true"
                 type="button"
                 data-toggle="dropdown"
               ]
                 i.la.la-download
-                | Import
+                | Export
               .dropdown-menu.dropdown-menu-sm.dropdown-menu-right
                 ul.nav.flex-column.nav-hover
-                  li.nav-header.font-weight-bolder.text-uppercase.text-primary.pb-2.px-4
+                  li.nav-header.font-weight-bolder.text-uppercase.text-warning.pb-2.px-4
                     | Pilih:
-                  / li.nav-item
+                  li.nav-item
                     = form_with url: admin_journals_action_export_path(\
                         slug: current_company.slug,\
                         format: "xlsx",\
-                      ), method: :post, local: true do |f|                        
-                        = f.text_field :start_date, class: "d-none", value: params[:start_date]
-                        = f.text_field :end_date, class: "d-none", value: params[:end_date]
+                      ),
+                      method: :post, local: true,
+                      data: {\
+                        controller: 'admin--journals--export'\
+                      } do |f|                        
+                        .js-param-container
                         button.nav-link.text-left[
                           style="border:none;background:none;"
                           type="submit"
@@ -177,20 +182,34 @@ scss:
                             style="padding-right:9px;"
                           ]
                           span.nav-text.ml-2 Export Data Jurnal
-                  li.nav-item
-                    = form_with method: :post,
-                      url: admin_journals_action_import_path(slug: current_company.slug),
-                      multipart: true,
-                      data: {controller: 'forms--autouploader-single-file'} do
-                      label.nav-link.cursor-pointer
-                        input[
-                          name="file"
-                          style="position:absolute;top:0;left:0;opacity:0;visibility:hidden;"
-                          type="file"
-                          data-forms--autouploader-single-file-target="file"
-                        ]
-                        i.nav-icon.la.la-file-excel-o
-                        span.nav-text.ml-2 Import Data Jurnal
+            - if current_user.has_role?(:super_admin)
+              .dropdown.dropdown-inline.mr-2.mb-2
+                button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  type="button"
+                  data-toggle="dropdown"
+                ]
+                  i.la.la-upload
+                  | Import
+                .dropdown-menu.dropdown-menu-sm.dropdown-menu-right
+                  ul.nav.flex-column.nav-hover
+                    li.nav-header.font-weight-bolder.text-uppercase.text-primary.pb-2.px-4
+                      | Pilih:
+                    li.nav-item
+                      = form_with method: :post,
+                        url: admin_journals_action_import_path(slug: current_company.slug),
+                        multipart: true,
+                        data: {controller: 'forms--autouploader-single-file'} do
+                        label.nav-link.cursor-pointer
+                          input[
+                            name="file"
+                            style="position:absolute;top:0;left:0;opacity:0;visibility:hidden;"
+                            type="file"
+                            data-forms--autouploader-single-file-target="file"
+                          ]
+                          i.nav-icon.la.la-file-excel-o
+                          span.nav-text.ml-2 Import Data Jurnal
         .card-body
           #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
             data-admin--journals--index-data-path="#{api_admin_journals_index_path(slug: current_company.slug, start_date: params[:start_date], end_date: params[:end_date])}"

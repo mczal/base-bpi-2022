@@ -28,14 +28,15 @@
               span.font-size-sm.text-dark-50.font-weight-bold
                 | Total #{AccountCategory.count} Kategori Akun
           .card-toolbar.justify-content-end
-            button.btn.btn-primary.font-weight-bolder.mb-2[
-              data-target="#add"
-              data-toggle="modal"
-              type="button"
-            ]
-              i.la.la-plus
-              | Tambah Kategori Akun
-            = render partial: 'new'
+            - if current_user.has_role?(:super_admin)
+              button.btn.btn-primary.font-weight-bolder.mb-2[
+                data-target="#add"
+                data-toggle="modal"
+                type="button"
+              ]
+                i.la.la-plus
+                | Tambah Kategori Akun
+              = render partial: 'new'
 
         .card-body
           = render partial: 'edit'

@@ -16,9 +16,10 @@
                 |  Disetujui 
       #kt_subheader_search.d-flex.align-items-center
         .ml-0.ml-sm-2
-          a.btn.btn-light-primary.font-weight-bold.ml-2[data-action="click->admin--edit#handleClick" data-admin--edit-path="/bpi/general_transactions/1374ecec-2c63-42ec-b649-9eb7b93e365d/edit" data-controller="admin--edit" data-target="#Edit" data-toggle="modal" href="javascript:void(0);"]
-            i.la.la-pencil-alt
-            |  Ubah 
+          - if current_user.has_role?(:super_admin)
+            a.btn.btn-light-primary.font-weight-bold.ml-2[data-action="click->admin--edit#handleClick" data-admin--edit-path="/bpi/general_transactions/1374ecec-2c63-42ec-b649-9eb7b93e365d/edit" data-controller="admin--edit" data-target="#Edit" data-toggle="modal" href="javascript:void(0);"]
+              i.la.la-pencil-alt
+              |  Ubah 
   .d-flex.flex-column-fluid.mb-3
     .container
       .d-flex.flex-row

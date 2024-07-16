@@ -23,32 +23,67 @@ scss:
             |  - #{@general_transaction.number_evidence}
             span.ml-2
               |  #{@general_transaction.status_for_html}
-            - if @general_transaction.accepted? && !@general_transaction.number_evidence.match(/bj/i)
+            / - if @general_transaction.accepted? && !@general_transaction.number_evidence.match(/bj/i)
               a.btn.btn-icon.btn-success.btn-circl.btn-sm.ml-1[
                 href="#{admin_general_transactions_printout_path(id: @general_transaction.id, format: :pdf)}"
                 target="_blank"
               ]
                 i.flaticon2-print
       #kt_subheader_search.d-flex.align-items-center
-        .ml-0.ml-sm-2
-          a.btn.btn-light-primary.font-weight-bold.ml-2[
-            href="javascript:void(0);"
-            data-toggle="modal"
-            data-target="#Edit"
-            data-controller="admin--edit"
-            data-action="click->admin--edit#handleClick"
-            data-admin--edit-path="#{admin_edit_general_transaction_path(id: @general_transaction.id)}"
-          ]
-            i.la.la-pencil-alt
-            |  Ubah 
-          a.btn.btn-light-danger.font-weight-bold.ml-2[
-            href="#{admin_general_transaction_path(id: @general_transaction.id)}"
-            data-method="delete"
-            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
-            title="Delete"
-          ]
-            i.la.la-trash
-            |  Hapus
+        - if current_user.has_role?(:super_admin)
+          .ml-0.ml-sm-2
+            a.btn.btn-light-primary.font-weight-bold.ml-2[
+              href="javascript:void(0);"
+              data-toggle="modal"
+              data-target="#Edit"
+              data-controller="admin--edit"
+              data-action="click->admin--edit#handleClick"
+              data-admin--edit-path="#{admin_edit_general_transaction_path(id: @general_transaction.id)}"
+            ]
+              i.la.la-pencil-alt
+              |  Ubah 
+            a.btn.btn-light-danger.font-weight-bold.ml-2[
+              href="#{admin_general_transaction_path(id: @general_transaction.id)}"
+              data-method="delete"
+              data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+              title="Delete"
+            ]
+              i.la.la-trash
+              |  Hapus
+        - else
+          - if @general_transaction.last_log.user_id == current_user.id
+            - if @general_transaction.accepted?
+              .ml-0.ml-sm-2
+                a.btn.btn-light-primary.font-weight-bold.ml-2[
+                  href="javascript:void(0);"
+                  data-toggle="modal"
+                  data-target="#Edit"
+                  data-controller="admin--edit"
+                  data-action="click->admin--edit#handleClick"
+                  data-admin--edit-path="#{admin_edit_general_transaction_path(id: @general_transaction.id)}"
+                ]
+                  i.la.la-pencil-alt
+                  |  Ubah 
+            - else
+              .ml-0.ml-sm-2
+                a.btn.btn-light-primary.font-weight-bold.ml-2[
+                  href="javascript:void(0);"
+                  data-toggle="modal"
+                  data-target="#Edit"
+                  data-controller="admin--edit"
+                  data-action="click->admin--edit#handleClick"
+                  data-admin--edit-path="#{admin_edit_general_transaction_path(id: @general_transaction.id)}"
+                ]
+                  i.la.la-pencil-alt
+                  |  Ubah 
+                a.btn.btn-light-danger.font-weight-bold.ml-2[
+                  href="#{admin_general_transaction_path(id: @general_transaction.id)}"
+                  data-method="delete"
+                  data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+                  title="Delete"
+                ]
+                  i.la.la-trash
+                  |  Hapus
 
   .d-flex.flex-column-fluid.mb-3
     = render partial: 'shared/resources/edit'
@@ -242,7 +277,7 @@ scss:
               ]
                 = render partial: 'journals'
       = render partial: 'lines'
-      / = render partial: 'shared/data_history',
+      = render partial: 'shared/data_history',
           locals: {\
             auditable_id: @general_transaction.id,\
             auditable_type: 'GeneralTransaction'\

@@ -81,6 +81,11 @@ module DateHelper
     I18n.l(date, format: '%d/%b/%Y - %H:%M WIB')
   end
 
+  def readable_timestamp_7 date
+    return "-" unless date.present?
+    I18n.l(date, format: '%d-%m-%Y_%H-%M-%S')
+  end
+
   def readable_hour date
     return "-" unless date.present?
     I18n.l(date, format: '%H:%M:%S')

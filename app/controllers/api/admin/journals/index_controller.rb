@@ -19,6 +19,16 @@ module Api
           def journals
             return @journals if @journals.present?
             @journals = Journal.where(company_id: current_company.id)
+            if !current_user.has_role?(:super_admin)
+              if current_user.has_role?(:jakarta) && !current_user.has_role?(:site)
+                @journals = @journals
+                  .where(location: :jakarta)
+              end
+              if !current_user.has_role?(:jakarta) && current_user.has_role?(:site)
+                @journals = @journals
+                  .where(location: :site)
+              end
+            end
 
             apply_query
             apply_sort
@@ -125,11 +135,14 @@ module Api
                 updated_at: helpers.readable_timestamp_4(journal.updated_at.localtime),
                 date: date,
                 code: journal.code,
+                master_business_unit: journal.master_business_unit,
+                master_business_units_for_popover: journal.master_business_units_for_popover,
                 location: journal.location.titlecase,
                 account_name: journal.account.name,
                 account_category_description: journal.account.account_category.description,
                 account_category_range: journal.account.account_category.code,
                 number_evidence: number_evidence,
+                recipient: journal.recipient || '',
                 description: journal.description,
                 debit_idr: (journal.debit_idr != 0 ? helpers.print_money(journal.debit_idr) : '-'),
                 credit_idr: (journal.credit_idr != 0 ? helpers.print_money(journal.credit_idr) : '-'),

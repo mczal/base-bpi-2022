@@ -138,7 +138,11 @@ export default class extends DatatablesController {
               <i class="la la-eye text-primary"></i>
             </a>
           `
-          if(!data.approver){
+          if(data.approver){
+            return res;
+          }
+
+          if(data.is_super_admin){
             res = `${res}
             <a href="javascript:void(0);" class="btn btn-sm btn-clean btn-icon"
               data-toggle="modal"
@@ -153,7 +157,40 @@ export default class extends DatatablesController {
               <i class="la la-trash text-danger"></i>
             </a>
             `;
+            return res;
           }
+
+          if(data.is_owner){
+            if(data.status === 'accepted'){
+              res = `${res}
+              <a href="javascript:void(0);" class="btn btn-sm btn-clean btn-icon"
+                data-toggle="modal"
+                data-target="#Edit"
+                data-controller="admin--edit"
+                data-action="click->admin--edit#handleClick"
+                data-admin--edit-path="${data.edit_path}"
+              >
+                <i class="la la-edit text-warning"></i>
+              </a>
+              `;
+            } else {
+              res = `${res}
+              <a href="javascript:void(0);" class="btn btn-sm btn-clean btn-icon"
+                data-toggle="modal"
+                data-target="#Edit"
+                data-controller="admin--edit"
+                data-action="click->admin--edit#handleClick"
+                data-admin--edit-path="${data.edit_path}"
+              >
+                <i class="la la-edit text-warning"></i>
+              </a>
+              <a href="${data.delete_path}" data-method="delete" data-confirm="Apakah anda yakin ingin menghapus akun ini?" class="btn btn-sm btn-clean btn-icon" title="Delete">
+                <i class="la la-trash text-danger"></i>
+              </a>
+              `;
+            }
+          }
+
           return res;
         },
       }

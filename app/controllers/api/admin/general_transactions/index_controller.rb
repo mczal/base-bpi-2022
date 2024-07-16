@@ -22,6 +22,17 @@ module Api
             @general_transactions = GeneralTransaction
               .where(company_id: current_company.id)
 
+            if !current_user.has_role?(:super_admin)
+              if current_user.has_role?(:jakarta) && !current_user.has_role?(:site)
+                @general_transactions = @general_transactions
+                  .where(location: :jakarta)
+              end
+              if !current_user.has_role?(:jakarta) && current_user.has_role?(:site)
+                @general_transactions = @general_transactions
+                  .where(location: :site)
+              end
+            end
+
             apply_query
             apply_sort
 
@@ -111,10 +122,13 @@ module Api
                 created_at: helpers.readable_timestamp_2(general_transaction.created_at.localtime),
                 updated_at: helpers.readable_timestamp_2(general_transaction.updated_at.localtime),
                 status_html: general_transaction.status_for_html,
+                status: general_transaction.status,
                 location: general_transaction.location.to_s.titlecase,
                 date: general_transaction.date.strftime("%d %b %Y"),
                 number_evidence: general_transaction.number_evidence || '-',
                 source: (general_transaction.source.present? ? I18n.t(general_transaction.source): '-'),
+                is_super_admin: current_user.has_role?(:super_admin),
+                is_owner: general_transaction.last_log.user_id == current_user.id,
                 show_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug),
                 edit_path: admin_edit_general_transaction_path(id: general_transaction.id,slug: current_company.slug),
                 delete_path: admin_general_transaction_path(id: general_transaction.id, slug: current_company.slug),

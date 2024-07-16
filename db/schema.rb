@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2023_06_08_000011) do
+ActiveRecord::Schema.define(version: 2024_07_16_151302) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -341,6 +341,7 @@ ActiveRecord::Schema.define(version: 2023_06_08_000011) do
     t.uuid "master_business_unit_activity_id"
     t.decimal "rate_cents", default: "0.0", null: false
     t.string "rate_currency", default: "IDR", null: false
+    t.string "recipient"
     t.index ["general_transaction_id"], name: "index_general_transaction_lines_on_general_transaction_id"
     t.index ["master_business_unit_activity_id"], name: "gtl_mbuact"
     t.index ["master_business_unit_area_id"], name: "gtl_mbuare"
@@ -508,6 +509,8 @@ ActiveRecord::Schema.define(version: 2023_06_08_000011) do
     t.string "credit_usd_currency", default: "USD", null: false
     t.json "rates_options", default: {}
     t.string "location"
+    t.string "master_business_unit"
+    t.string "recipient"
     t.index ["company_id"], name: "index_journals_on_company_id"
     t.index ["journalable_type", "journalable_id"], name: "index_journals_on_journalable"
   end

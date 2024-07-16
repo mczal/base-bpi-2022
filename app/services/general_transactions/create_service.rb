@@ -27,7 +27,7 @@ module GeneralTransactions
             :group, :code, :is_master_business_units_enabled,
             :master_business_unit_id, :master_business_unit_location_id,
             :master_business_unit_area_id, :master_business_unit_activity_id,
-            :description, :price_idr, :price_usd, :rate
+            :description, :price_idr, :price_usd, :rate, :recipient
           ]
         ).merge({company: @company})
       end

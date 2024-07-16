@@ -29,48 +29,50 @@
               span.font-size-sm.text-dark-50.font-weight-bold
                 | Total #{Account.count} Akun
           .card-toolbar.justify-content-end
-            .dropdown.dropdown-inline.mr-2.mb-2
-              button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
-                aria-expanded="false"
-                aria-haspopup="true"
-                type="button"
-                data-toggle="dropdown"
-              ]
-                i.la.la-download
-                | Export/Import
-              .dropdown-menu.dropdown-menu-sm.dropdown-menu-right
-                ul.nav.flex-column.nav-hover
-                  li.nav-header.font-weight-bolder.text-uppercase.text-primary.pb-2.px-4
-                    | Pilih:
-                  li.nav-item
-                    a.nav-link href="#{admin_accounts_download_template_path(slug: current_company.slug)}" target="_blank"
-                      i.nav-icon.la.la-file-excel-o
-                      span.nav-text.ml-2 Download Template Import
-                  li.nav-item
-                    = form_with method: :post,
-                      url: admin_accounts_action_import_path(slug: current_company.slug),
-                      multipart: true,
-                      data: {controller: 'forms--autouploader-single-file'} do
-                      label.nav-link.cursor-pointer
-                        input[
-                          name="file"
-                          style="position:absolute;top:0;left:0;opacity:0;visibility:hidden;"
-                          type="file"
-                          data-target="forms--autouploader-single-file.file"
-                        ]
+            - if current_user.has_role?(:super_admin)
+              .dropdown.dropdown-inline.mr-2.mb-2
+                button.btn.btn-light-primary.font-weight-bolder.dropdown-toggle[
+                  aria-expanded="false"
+                  aria-haspopup="true"
+                  type="button"
+                  data-toggle="dropdown"
+                ]
+                  i.la.la-download
+                  | Export/Import
+                .dropdown-menu.dropdown-menu-sm.dropdown-menu-right
+                  ul.nav.flex-column.nav-hover
+                    li.nav-header.font-weight-bolder.text-uppercase.text-primary.pb-2.px-4
+                      | Pilih:
+                    li.nav-item
+                      a.nav-link href="#{admin_accounts_download_template_path(slug: current_company.slug)}" target="_blank"
                         i.nav-icon.la.la-file-excel-o
-                        span.nav-text.ml-2 Import Data Akun Excel
-            button.btn.btn-primary.font-weight-bolder.mb-2[
-              data-target="#add"
-              data-toggle="modal"
-              type="button"
-            ]
-              i.la.la-plus
-              | Tambah Akun
-            = render partial: 'new'
+                        span.nav-text.ml-2 Download Template Import
+                    li.nav-item
+                      = form_with method: :post,
+                        url: admin_accounts_action_import_path(slug: current_company.slug),
+                        multipart: true,
+                        data: {controller: 'forms--autouploader-single-file'} do
+                        label.nav-link.cursor-pointer
+                          input[
+                            name="file"
+                            style="position:absolute;top:0;left:0;opacity:0;visibility:hidden;"
+                            type="file"
+                            data-target="forms--autouploader-single-file.file"
+                          ]
+                          i.nav-icon.la.la-file-excel-o
+                          span.nav-text.ml-2 Import Data Akun Excel
+              button.btn.btn-primary.font-weight-bolder.mb-2[
+                data-target="#add"
+                data-toggle="modal"
+                type="button"
+              ]
+                i.la.la-plus
+                | Tambah Akun
+              = render partial: 'new'
 
         .card-body
-          = render partial: 'edit'
+          - if current_user.has_role?(:super_admin)
+            = render partial: 'edit'
           #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
             data-admin--accounts--index-data-path=api_admin_accounts_index_path(slug: current_company.slug)
             data-controller="admin--accounts--index"

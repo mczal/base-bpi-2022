@@ -1,23 +1,179 @@
 wb = xlsx_package.workbook
 
-wb.add_worksheet(name: "Journal") do |sheet|
-  sheet.add_row([
-    "Tanggal",
-    "Nomor Bukti",
-    "Kode Akun",
-    "Deskripsi",
-    "Debit",
-    "Credit"
-  ])
-  
-  @journals.each do |journal|  
-    sheet.add_row([
-      journal.date.strftime("%F"),
-      journal.number_evidence,
-      journal.code,
-      journal.description,
-      journal.debit_idr,
-      journal.credit_idr
-    ])
+wb.styles do |styles|
+  wb.add_worksheet(name: "Journal") do |sheet|
+    bold_center_and_wrap_border = styles.add_style(
+      :b => true,
+      :border => Axlsx::STYLE_THIN_BORDER,
+      :alignment => {
+        :wrap_text=> true,
+        :horizontal=> :center, :vertical=> :center }
+    )
+    number_style = styles.add_style(
+      format_code: "#,##0",
+      :alignment => {
+        :wrap_text=> true,
+        :vertical=> :center },
+      :locked => false
+    )
+    center_style = styles.add_style(
+      :alignment => {
+        :horizontal=> :center, :vertical=> :center },
+      :locked => false
+    )
+    left_style = styles.add_style(:locked => false)
+    sheet.sheet_protection.password = '4dmin*456#'
+
+    row_styles = [
+      center_style,
+      center_style,
+      center_style,
+      left_style,
+      left_style,
+      center_style,
+      center_style,
+      number_style,
+      number_style,
+      number_style,
+      number_style,
+      number_style,
+    ]
+
+    sheet.add_row(
+      [
+        "[SIAP] Exported Journal",
+        "",
+        "#{readable_timestamp(DateTime.now.localtime)}",
+        "",
+        "Oleh: #{current_user.email}",
+      ],
+      style: bold_center_and_wrap_border
+    )
+    sheet.merge_cells("A1:B1")
+    sheet.merge_cells("C1:D1")
+
+    sheet.add_row(
+      [
+        "Applied Filters",
+        "",
+        "1. Tanggal",
+        "#{params[:date] || '-'}",
+      ]
+    )
+    sheet.merge_cells("A2:B2")
+    sheet.add_row(
+      [
+        "",
+        "",
+        "2. Query",
+        "#{params[:search] || '-'}",
+      ]
+    )
+    sheet.add_row(
+      [
+        "",
+        "",
+        "3. Kode Akun",
+        "#{params[:code] || '-'}",
+      ]
+    )
+    sheet.add_row(
+      [
+        "",
+        "",
+        "4. Nomor Bukti",
+        "#{params[:number_evidence] || '-'}",
+      ]
+    )
+    sheet.add_row(
+      [
+        "",
+        "",
+        "5. Lokasi",
+        "#{params[:location] || '-'}",
+      ]
+    )
+    sheet.add_row(
+      [
+        "",
+        "",
+        "6. Deskripsi",
+        "#{params[:description] || '-'}",
+      ]
+    )
+    sheet.add_row()
+
+    sheet.add_row(
+      [
+        "No",
+        "Tanggal",
+        "Nomor Bukti",
+        "Nama Penerima",
+        "Uraian",
+        "Kode Akun",
+        "Cost Center",
+        "IDR",
+        "",
+        "KURS",
+        "USD",
+        "",
+      ],
+      style: bold_center_and_wrap_border
+    )
+    sheet.add_row(
+      [
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "",
+        "Debit",
+        "Kredit",
+        "",
+        "Debit",
+        "Kredit",
+      ],
+      style: bold_center_and_wrap_border
+    )
+    sheet.merge_cells("A9:A10")
+    sheet.merge_cells("B9:B10")
+    sheet.merge_cells("C9:C10")
+    sheet.merge_cells("D9:D10")
+    sheet.merge_cells("E9:E10")
+    sheet.merge_cells("F9:F10")
+    sheet.merge_cells("G9:G10")
+    sheet.merge_cells("J9:J10")
+    sheet.merge_cells("H9:I9")
+    sheet.merge_cells("K9:L9")
+
+
+    @journals.each.with_index(1) do |journal,i|  
+      sheet.add_row(
+        [
+          "#{i}.",
+          readable_date_8(journal.date),
+          journal.number_evidence,
+          journal.recipient,
+          journal.description,
+          journal.code,
+          journal.master_business_unit,
+          journal.debit_idr.amount,
+          journal.credit_idr.amount,
+          journal.rates_options['price'],
+          journal.debit_usd.amount,
+          journal.credit_usd.amount,
+        ],
+        style: row_styles
+      )
+    end
+
+    sheet.column_widths(6,18,20,30,50,15,20,30,30,15,30,30)
+    # sheet.col_style(7,number_style)
+    # sheet.col_style(8,number_style)
+    # sheet.col_style(9,number_style)
+    # sheet.col_style(10,number_style)
+    # sheet.col_style(11,number_style)
   end
 end

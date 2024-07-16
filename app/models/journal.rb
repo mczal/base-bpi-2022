@@ -2,6 +2,7 @@ class Journal < ApplicationRecord
   include PgSearch::Model
   include Journals::Helpers
   include Journals::AssignDefaultValues
+  include Journals::MasterBusinessUnits
 
   belongs_to :company
   belongs_to :journalable, polymorphic: true

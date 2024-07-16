@@ -75,6 +75,7 @@ module Api
               code: account_category.code,
               description: account_category.description,
               accounts_count: account_category.accounts.count,
+              is_super_admin: current_user.has_role?(:super_admin),
               show_path: admin_account_category_path(id: account_category.id,slug: current_company.slug),
               edit_path: admin_edit_account_category_path(id: account_category.id,slug: current_company.slug),
               delete_path: admin_account_category_path(id: account_category.id, slug: current_company.slug)

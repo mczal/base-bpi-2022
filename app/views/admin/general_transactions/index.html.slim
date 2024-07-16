@@ -35,14 +35,16 @@
                   = radio_button_tag :location,
                     'jakarta', params[:location].to_s == 'jakarta',
                     required: 1,
-                    data: { 'admin--index-filter-target': 'location' }
+                    data: { 'admin--index-filter-target': 'location' },
+                    disabled: (!current_user.has_role?(:super_admin) && !current_user.has_role?(:jakarta))
                   span
                   | Jakarta
                 label.checkbox
                   = radio_button_tag :location,
                     'site', params[:location].to_s == 'site',
                     required: 1,
-                    data: { 'admin--index-filter-target': 'location' }
+                    data: { 'admin--index-filter-target': 'location' },
+                    disabled: (!current_user.has_role?(:super_admin) && !current_user.has_role?(:site))
                   span
                   | Site
             .form-group.ml-5

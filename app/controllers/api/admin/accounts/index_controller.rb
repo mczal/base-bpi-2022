@@ -83,6 +83,7 @@ module Api
                 moneter: account.moneter?,
                 report_categories: account.report_categories_for_checkbox,
                 account_category: account.account_category.description,
+                is_super_admin: current_user.has_role?(:super_admin),
                 edit_path: admin_edit_account_path(id: account.id,slug: current_company.slug),
                 delete_path: admin_account_path(id: account.id, slug: current_company.slug)
               }

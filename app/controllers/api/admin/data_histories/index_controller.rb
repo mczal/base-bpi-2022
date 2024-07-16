@@ -18,13 +18,13 @@ module Api
 
           def audits
             return @audits if @audits.present?
-            @audits = Audit
+            @audits = ::Audited::Audit
               .where(
                 auditable_id: params[:auditable_id],
                 auditable_type: params[:auditable_type]
               )
               .or(
-                Audit.where(
+                ::Audited::Audit.where(
                   associated_id: params[:auditable_id],
                   associated_type: params[:auditable_type]
                 )
@@ -73,15 +73,13 @@ module Api
               i = index + start_index
               @data[i] = {
                 index: i,
-                user: {
-                  name: (audit.user&.name || '-')
-                },
+                user: audit.user&.name || '-',
                 created_at: helpers.readable_timestamp_2(audit.created_at.localtime),
                 version: audit.version,
                 action: audit.action,
                 comment: (audit.comment || '-'),
-                audited_changes: audit.readable_changes_html,
-                type: audit.auditable_type,
+                audited_changes: audit.audited_changes.map{|k,v|"#{k}: #{v}"}.join("; ").html_safe,
+                action: audit.action,
               }
             end
 

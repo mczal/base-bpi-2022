@@ -20,6 +20,7 @@ module GeneralTransactionLines
         location: self.general_transaction.location,
         company_id: self.general_transaction.company_id,
         description: self.description,
+        recipient: self.recipient,
         debit_idr: (self.debit? ? self.idr : 0),
         credit_idr: (self.credit? ? self.idr : 0),
         debit_usd: (self.debit? ? self.usd : 0),
@@ -29,6 +30,9 @@ module GeneralTransactionLines
           price: self.rate.amount
         },
       )
+      if self.is_master_business_units_enabled?
+        journal.master_business_unit = self.master_business_units_string
+      end
       journal.save! if journal.new_record? || journal.changed?
     end
   end

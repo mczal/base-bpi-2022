@@ -29,22 +29,24 @@
               br
               span.font-size-sm.text-dark-50.font-weight-bold
                 | Total #{MasterBusinessUnit.count} Master Business Unit
-          .card-toolbar.justify-content-end
-            button.btn.btn-primary.font-weight-bolder.mb-2[
-              data-target="#add"
-              data-toggle="modal"
-              type="button"
-            ]
-              i.la.la-plus
-              | Tambah Master Business Unit
-            = render partial: 'new'
+          - if current_user.has_role?(:super_admin)
+            .card-toolbar.justify-content-end
+              button.btn.btn-primary.font-weight-bolder.mb-2[
+                data-target="#add"
+                data-toggle="modal"
+                type="button"
+              ]
+                i.la.la-plus
+                | Tambah Master Business Unit
+              = render partial: 'new'
 
         .card-body.position-relative.pt-15
           span.position-absolute[
             style="top:12px;font-size:12px;font-style:italic;left:38px;"
           ]
             | * Baca: (Kode) (Deskripsi)
-          = render partial: 'edit'
+          - if current_user.has_role?(:super_admin)
+            = render partial: 'edit'
           / #kt_datatable.datatable.datatable-bordered.datatable-head-custom[
             / data-admin--master-business-units--index-data-path=api_admin_master_business_units_index_path(slug: current_company.slug)
             / data-controller="admin--master-business-units--index"
@@ -63,23 +65,24 @@
                           b = x.code
                         td.pl-2 = x.description
                         td
-                          a.btn.btn-sm.btn-clean.btn-icon[
-                            href="javascript:void(0);"
-                            data-toggle="modal"
-                            data-target="#Edit"
-                            data-controller="admin--edit"
-                            data-action="click->admin--edit#handleClick"
-                            data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
-                          ]
-                            i.la.la-edit.text-warning
-                          a[
-                            href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
-                            data-method="delete"
-                            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
-                            class="btn btn-sm btn-clean btn-icon"
-                            title="Delete"
-                          ]
-                            i.la.la-trash.text-danger
+                          - if current_user.has_role?(:super_admin)
+                            a.btn.btn-sm.btn-clean.btn-icon[
+                              href="javascript:void(0);"
+                              data-toggle="modal"
+                              data-target="#Edit"
+                              data-controller="admin--edit"
+                              data-action="click->admin--edit#handleClick"
+                              data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
+                            ]
+                              i.la.la-edit.text-warning
+                            a[
+                              href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
+                              data-method="delete"
+                              data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+                              class="btn btn-sm btn-clean btn-icon"
+                              title="Delete"
+                            ]
+                              i.la.la-trash.text-danger
               .px-5.mx-5.pb-5.mb-5
                 h5 Business Unit Location
                 table
@@ -90,23 +93,24 @@
                           b = x.code
                         td.pl-2 = x.description
                         td
-                          a.btn.btn-sm.btn-clean.btn-icon[
-                            href="javascript:void(0);"
-                            data-toggle="modal"
-                            data-target="#Edit"
-                            data-controller="admin--edit"
-                            data-action="click->admin--edit#handleClick"
-                            data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
-                          ]
-                            i.la.la-edit.text-warning
-                          a[
-                            href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
-                            data-method="delete"
-                            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
-                            class="btn btn-sm btn-clean btn-icon"
-                            title="Delete"
-                          ]
-                            i.la.la-trash.text-danger
+                          - if current_user.has_role?(:super_admin)
+                            a.btn.btn-sm.btn-clean.btn-icon[
+                              href="javascript:void(0);"
+                              data-toggle="modal"
+                              data-target="#Edit"
+                              data-controller="admin--edit"
+                              data-action="click->admin--edit#handleClick"
+                              data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
+                            ]
+                              i.la.la-edit.text-warning
+                            a[
+                              href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
+                              data-method="delete"
+                              data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+                              class="btn btn-sm btn-clean btn-icon"
+                              title="Delete"
+                            ]
+                              i.la.la-trash.text-danger
             .d-flex.align-items-start.justify-content-start[
               style="flex-flow:wrap;"
             ]
@@ -120,23 +124,24 @@
                           b = x.code
                         td.pl-2 = x.description
                         td
-                          a.btn.btn-sm.btn-clean.btn-icon[
-                            href="javascript:void(0);"
-                            data-toggle="modal"
-                            data-target="#Edit"
-                            data-controller="admin--edit"
-                            data-action="click->admin--edit#handleClick"
-                            data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
-                          ]
-                            i.la.la-edit.text-warning
-                          a[
-                            href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
-                            data-method="delete"
-                            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
-                            class="btn btn-sm btn-clean btn-icon"
-                            title="Delete"
-                          ]
-                            i.la.la-trash.text-danger
+                          - if current_user.has_role?(:super_admin)
+                            a.btn.btn-sm.btn-clean.btn-icon[
+                              href="javascript:void(0);"
+                              data-toggle="modal"
+                              data-target="#Edit"
+                              data-controller="admin--edit"
+                              data-action="click->admin--edit#handleClick"
+                              data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
+                            ]
+                              i.la.la-edit.text-warning
+                            a[
+                              href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
+                              data-method="delete"
+                              data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+                              class="btn btn-sm btn-clean btn-icon"
+                              title="Delete"
+                            ]
+                              i.la.la-trash.text-danger
               .px-5.mx-5.pb-5.mb-5
                 h5 Business Unit Activity
                 table
@@ -147,20 +152,21 @@
                           b = x.code
                         td.pl-2 = x.description
                         td
-                          a.btn.btn-sm.btn-clean.btn-icon[
-                            href="javascript:void(0);"
-                            data-toggle="modal"
-                            data-target="#Edit"
-                            data-controller="admin--edit"
-                            data-action="click->admin--edit#handleClick"
-                            data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
-                          ]
-                            i.la.la-edit.text-warning
-                          a[
-                            href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
-                            data-method="delete"
-                            data-confirm="Apakah anda yakin ingin menghapus akun ini?"
-                            class="btn btn-sm btn-clean btn-icon"
-                            title="Delete"
-                          ]
-                            i.la.la-trash.text-danger
+                          - if current_user.has_role?(:super_admin)
+                            a.btn.btn-sm.btn-clean.btn-icon[
+                              href="javascript:void(0);"
+                              data-toggle="modal"
+                              data-target="#Edit"
+                              data-controller="admin--edit"
+                              data-action="click->admin--edit#handleClick"
+                              data-admin--edit-path="#{admin_edit_master_business_unit_path(id: x.id,slug: current_company.slug)}"
+                            ]
+                              i.la.la-edit.text-warning
+                            a[
+                              href="#{admin_master_business_unit_path(id: x.id, slug: current_company.slug)}"
+                              data-method="delete"
+                              data-confirm="Apakah anda yakin ingin menghapus akun ini?"
+                              class="btn btn-sm btn-clean btn-icon"
+                              title="Delete"
+                            ]
+                              i.la.la-trash.text-danger

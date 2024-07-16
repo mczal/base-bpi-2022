@@ -28,6 +28,12 @@
                   rowspan="2"
                 ]
                   span.text-dark.font-weight-bolder.font-size-lg
+                    | Nama Penerima
+                th.pl-7[
+                  style="min-width: 100px"
+                  rowspan="2"
+                ]
+                  span.text-dark.font-weight-bolder.font-size-lg
                     | Deskripsi
                 th.text-center[
                   style=""
@@ -87,6 +93,8 @@
                     div
                       | #{line.account.name}
                   td.pl-4.py-4
+                    | #{line.recipient}
+                  td.pl-4.py-4
                     | #{line.description}
                   - if line.debit?
                     td.text-right
@@ -124,7 +132,7 @@
               ]
                 tr
                   td.text-right.font-weight-bolder[
-                    colspan="3"
+                    colspan="4"
                   ]
                     | TOTAL
                   td.font-weight-bolder.text-right[
@@ -144,21 +152,21 @@
                     | #{print_money @general_transaction.total_credit_usd}
                 tr
                   td.text-right.font-weight-bolder[
-                    colspan="3"
+                    colspan="4"
                   ]
                     | Balance IDR Check
                   td.font-weight-bold.font-weight-bolder[
-                    colspan="4"
+                    colspan="5"
                     class="#{@general_transaction.idr_balance_check == 0 ? 'text-success':'text-danger'}"
                   ]
                     | #{print_money @general_transaction.idr_balance_check}
                 tr
                   td.text-right.font-weight-bolder[
-                    colspan="3"
+                    colspan="4"
                   ]
                     | Balance USD Check
                   td.font-weight-bold.font-weight-bolder[
-                    colspan="4"
+                    colspan="5"
                     class="#{@general_transaction.usd_balance_check == 0 ? 'text-success':'text-danger'}"
                   ]
                     | #{print_money @general_transaction.usd_balance_check}
