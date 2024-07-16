@@ -88,7 +88,7 @@ module Reports
       # end
       # TODO NOTICE ONLY: comment to make sure that only 2022 data that needs adjusted, the rest is still in check the data.
       # 2. TODO NOTICE ONLY: after comment. data is still wrong, uncomment again and add to november 2023
-      4.times.each.with_index(1) do |_,i|
+      5.times.each.with_index(1) do |_,i|
         srl = SavedReportLine.find_or_initialize_by(
           report_line_id: report_line.id,
           month: i, year: 2024,

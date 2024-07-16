@@ -2,6 +2,94 @@ module Admin
   module Reports
     module Shows
       class CashFlowFacade < ::Admin::Reports::Shows::BaseFacade
+        def calculate_value_idr_for report_line
+          saved = report_line.saved_report_lines.find_by(month: start_date.month, year: start_date.year)
+          if saved.present?
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_idr] = saved.price_idr
+            else
+              @results[report_line.name] = {
+                price_idr: saved.price_idr
+              }
+            end
+
+            return @results[report_line.name][:price_idr]
+          end
+
+          if !report_line.codes_references.present?
+            @results[report_line.name] = {
+              price_idr: 0.to_money,
+              price_usd: 0.to_money.with_currency(:usd)
+            }
+            return @results[report_line.name][:price_idr]
+          end
+
+          if report_line.name.match(/penyesuaian akibat exchange rate adjustment/i)
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_idr] = balance_idr(report_line.codes_references, report_line.formula, is_exchange_rate:true)
+            else
+              @results[report_line.name] = {
+                price_idr: balance_idr(report_line.codes_references, report_line.formula, is_exchange_rate:true)
+              }
+            end
+          else
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_idr] = balance_idr(report_line.codes_references, report_line.formula)
+            else
+              @results[report_line.name] = {
+                price_idr: balance_idr(report_line.codes_references, report_line.formula)
+              }
+            end
+          end
+
+
+          @results[report_line.name][:price_idr]
+        end
+        def calculate_value_usd_for report_line
+          saved = report_line.saved_report_lines.find_by(month: start_date.month, year: start_date.year)
+          if saved.present?
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_usd] = saved.price_usd
+            else
+              @results[report_line.name] = {
+                price_usd: saved.price_usd
+              }
+            end
+
+            return @results[report_line.name][:price_usd]
+          end
+
+          if !report_line.codes_references.present?
+            @results[report_line.name] = {
+              price_idr: 0.to_money,
+              price_usd: 0.to_money.with_currency(:usd)
+            }
+            return @results[report_line.name][:price_usd]
+          end
+
+
+          if report_line.name.match(/penyesuaian akibat exchange rate adjustment/i)
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_usd] = balance_usd(report_line.codes_references, report_line.formula, is_exchange_rate:true)
+            else
+              @results[report_line.name] = {
+                price_usd: balance_usd(report_line.codes_references, report_line.formula, is_exchange_rate:true)
+              }
+            end
+          else
+            if @results[report_line.name].present?
+              @results[report_line.name][:price_usd] = balance_usd(report_line.codes_references, report_line.formula)
+            else
+              @results[report_line.name] = {
+                price_usd: balance_usd(report_line.codes_references, report_line.formula)
+              }
+            end
+          end
+
+          @results[report_line.name][:price_usd]
+        end
+
+
         def calculate_accumulation_idr_for report_line
           saved = report_line.saved_report_lines.find_by(month: start_date.month, year: start_date.year)
           if saved.present?
@@ -85,65 +173,65 @@ module Admin
         end
 
         private
-          def balance_idr codes, formula
+          def balance_idr codes, formula, is_exchange_rate:false
             script = formula.dup
             script = script
-              .gsub('${debit}', debit_balance_idr(codes).amount.to_s)
-              .gsub('${credit}', credit_balance_idr(codes).amount.to_s)
+              .gsub('${debit}', debit_balance_idr(codes, is_exchange_rate: is_exchange_rate).amount.to_s)
+              .gsub('${credit}', credit_balance_idr(codes, is_exchange_rate: is_exchange_rate).amount.to_s)
             @balance_idr = eval(script).to_money
           end
-          def debit_balance_idr codes
+          def debit_balance_idr codes, is_exchange_rate:false
             @debit_balance_idr = Journal.find_by_sql(
               <<-EOS
                 SELECT SUM(debit_idr_cents) as debit_idr_cents, debit_idr_currency
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
+                  #{is_exchange_rate ? "AND description ILIKE '%reval%'" : "AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')"}
                 GROUP BY debit_idr_currency
               EOS
             ).first&.debit_idr.to_money
           end
-          def credit_balance_idr codes
+          def credit_balance_idr codes, is_exchange_rate:false
             @credit_balance_idr = Journal.find_by_sql(
               <<-EOS
                 SELECT SUM(credit_idr_cents) as credit_idr_cents, credit_idr_currency
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
+                  #{is_exchange_rate ? "AND description ILIKE '%reval%'" : "AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')"}
                 GROUP BY credit_idr_currency
               EOS
             ).first&.credit_idr.to_money
           end
 
-          def balance_usd codes, formula
+          def balance_usd codes, formula, is_exchange_rate:false
             script = formula.dup
             script = script
-              .gsub('${debit}', debit_balance_usd(codes).amount.to_s)
-              .gsub('${credit}', credit_balance_usd(codes).amount.to_s)
+              .gsub('${debit}', debit_balance_usd(codes, is_exchange_rate: is_exchange_rate).amount.to_s)
+              .gsub('${credit}', credit_balance_usd(codes, is_exchange_rate: is_exchange_rate).amount.to_s)
             @balance_usd = eval(script).to_money.with_currency(:usd)
           end
-          def debit_balance_usd codes
+          def debit_balance_usd codes, is_exchange_rate:false
             @debit_balance_usd = Journal.find_by_sql(
               <<-EOS
                 SELECT SUM(debit_usd_cents) as debit_usd_cents, debit_usd_currency
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
+                  #{is_exchange_rate ? "AND description ILIKE '%reval%'" : "AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')"}
                 GROUP BY debit_usd_currency
               EOS
             ).first&.debit_usd.to_money.with_currency(:usd)
           end
-          def credit_balance_usd codes
+          def credit_balance_usd codes, is_exchange_rate:false
             @credit_balance_usd = Journal.find_by_sql(
               <<-EOS
                 SELECT SUM(credit_usd_cents) as credit_usd_cents, credit_usd_currency
                 FROM journals
                 WHERE code IN (#{codes.map{|x|"'#{x}'"}.join(',')}) AND
                   date BETWEEN '#{start_date}' AND '#{end_date}'
-                  AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')
+                  #{is_exchange_rate ? "AND description ILIKE '%reval%'" : "AND (number_evidence ILIKE '%BNI%' OR number_evidence ILIKE '%BM%')"}
                 GROUP BY credit_usd_currency
               EOS
             ).first&.credit_usd.to_money.with_currency(:usd)
@@ -152,4 +240,3 @@ module Admin
     end
   end
 end
-

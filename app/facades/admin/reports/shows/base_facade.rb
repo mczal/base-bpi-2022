@@ -75,7 +75,7 @@ module Admin
             formula = formula.gsub("${#{k}}", v[:price_usd]&.amount.to_s)
           end
           if report_line.name == 'Pajak Penghasilan Badan'
-            rate = Rate
+            rate = Rate.bank_of_indonesia
               .where('published_date <= ?', end_date)
               .reorder(published_date: :desc)
               .limit(1)
