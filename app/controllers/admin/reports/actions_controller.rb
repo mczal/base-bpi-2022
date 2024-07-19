@@ -107,7 +107,13 @@ module Admin
         def report
           return @report if @report.present?
           report_s = Report.find_by(id: params[:id])
-          @report = Report.find_by(display: :xlsx, group: "#{report_s.group}_xlsx")
+          # @report = Report.find_by(display: :xlsx, group: "#{report_s.group}_xlsx")
+          group_token = report_s.group
+          if !group_token.match(/xlsx/i)
+            group_token = "#{group_token}_xlsx"
+          end
+
+          @report = Report.xlsx.send(group_token).first
         end
 
         def export_facade
@@ -122,9 +128,19 @@ module Admin
             return @export_facade = Admin::Reports::Shows::CashFlowXlsxFacade.new(params)
           end
           if report.income_statement_xlsx?
+            report_idr_version = report.idr_version
+            report_usd_version = report.usd_version
+
+            @export_facade_idr_version = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params, report_idr_version)
+            @export_facade_usd_version = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params, report_usd_version)
             return @export_facade = Admin::Reports::Shows::IncomeStatementXlsxFacade.new(params)
           end
           if report.balance_sheet_xlsx?
+            report_idr_version = report.idr_version
+            report_usd_version = report.usd_version
+
+            @export_facade_idr_version = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params, report_idr_version)
+            @export_facade_usd_version = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params, report_usd_version)
             return @export_facade = Admin::Reports::Shows::BalanceSheetXlsxFacade.new(params)
           end
         end

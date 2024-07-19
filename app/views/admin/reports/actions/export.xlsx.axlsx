@@ -43,10 +43,10 @@ wb.styles do |styles|
     sheet.add_row(
       [
         "",
-        "#{@export_facade.report.name.upcase}",
+        "#{@export_facade.report.name.split('-')[0].strip.upcase}",
         "",
         "",
-        "#{@export_facade.report.name.upcase}",
+        "#{@export_facade.report.name.split('-')[0].strip.upcase}",
       ],
       types: %i[string],
       style: bold_style
@@ -76,32 +76,46 @@ wb.styles do |styles|
     sheet.add_row()
     sheet.add_row()
 
-    @export_facade.report.report_lines.each.with_index(1) do |report_line, i|
-      style = number_style_bold if i == 1
-      if report_line.value?
-        value_idr = @export_facade.calculate_value_idr_for(report_line).amount
-        value_usd = @export_facade.calculate_value_usd_for(report_line).amount
-        style = number_style unless style.present?
-      elsif report_line.accumulation?
-        value_idr = @export_facade.calculate_accumulation_idr_for(report_line).amount
-        value_usd = @export_facade.calculate_accumulation_usd_for(report_line).amount
-        style = number_style_bold
+    report_idr_version = @export_facade_idr_version.report
+    report_usd_version = @export_facade_usd_version.report
+
+    report_idr_version.report_lines.each.with_index(0) do |report_line_idr_version, i|
+      style_idr_version = number_style_bold if i == 0
+      if report_line_idr_version.value?
+        value_idr = @export_facade_idr_version.calculate_value_idr_for(report_line_idr_version).amount
+        style_idr_version = number_style unless style_idr_version.present?
+      elsif report_line_idr_version.accumulation?
+        value_idr = @export_facade_idr_version.calculate_accumulation_idr_for(report_line_idr_version).amount
+        style_idr_version = number_style_bold
       else
         value_idr = ""
+        style_idr_version = bold_style
+      end
+
+      report_line_usd_version = report_usd_version.report_lines[i]
+      style_usd_version = number_style_bold if i == 0
+      if report_line_usd_version.value?
+        value_usd = @export_facade_usd_version.calculate_value_usd_for(report_line_usd_version).amount
+        style_usd_version = number_style unless style_usd_version.present?
+      elsif report_line_usd_version.accumulation?
+        value_usd = @export_facade_usd_version.calculate_accumulation_usd_for(report_line_usd_version).amount
+        style_usd_version = number_style_bold
+      else
         value_usd = ""
-        style = bold_style
+        style_usd_version = bold_style
       end
 
       sheet.add_row(
         [
           "",
-          report_line.name,
+          report_line_idr_version.name,
           value_idr,
           "",
-          report_line.name,
+          report_line_usd_version.name,
           value_usd,
         ],
-        style: style
+        style: [style_idr_version,style_idr_version,style_idr_version,
+                style_usd_version,style_usd_version,style_usd_version]
       )
     end
 

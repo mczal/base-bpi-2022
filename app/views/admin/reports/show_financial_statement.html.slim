@@ -80,7 +80,7 @@ scss:
                           slug: current_company.slug,\
                           format: "xlsx",\
                         ), method: :post, local: true, html: { target: "_blank" } do |f|
-                          = f.hidden_field :id, value: params[:id]
+                          = f.hidden_field :id, value: @report.id
                           = f.hidden_field :date, value: params[:date]
                           / = f.text_field :id, class: "d-none", value: params[:id]
                           / = f.text_field :date, class: "d-none", value: params[:date].to_date if params[:date].present?
