@@ -24,6 +24,12 @@ module Admin
                 price_idr: saved.price_idr,
                 price_usd: saved.price_usd
               }
+            else
+              bsf_result = balance_sheet_facade.results['Modal Saham']
+              return result[x][y] = {
+                price_idr: bsf_result[:price_idr],
+                price_usd: bsf_result[:price_usd]
+              }
             end
             return result[x][y] = {
               price_idr: 0.to_money,
@@ -43,6 +49,12 @@ module Admin
               return result[x][y] = {
                 price_idr: saved.price_idr,
                 price_usd: saved.price_usd
+              }
+            else
+              bsf_result = balance_sheet_facade.results['Laba (Rugi) Tahun Lalu']
+              return result[x][y] = {
+                price_idr: bsf_result[:price_idr],
+                price_usd: bsf_result[:price_usd]
               }
             end
             return result[x][y] = {
@@ -64,6 +76,12 @@ module Admin
                 price_idr: saved.price_idr,
                 price_usd: saved.price_usd
               }
+            else
+              bsf_result = balance_sheet_facade.results['Laba (Rugi) Tahun Berjalan']
+              return result[x][y] = {
+                price_idr: bsf_result[:price_idr],
+                price_usd: bsf_result[:price_usd]
+              }
             end
             return result[x][y] = {
               price_idr: 0.to_money,
@@ -83,6 +101,12 @@ module Admin
               return result[x][y] = {
                 price_idr: saved.price_idr,
                 price_usd: saved.price_usd
+              }
+            else
+              bsf_result = balance_sheet_facade.results['Other Comprehensive Income']
+              return result[x][y] = {
+                price_idr: bsf_result[:price_idr],
+                price_usd: bsf_result[:price_usd]
               }
             end
             return result[x][y] = {
@@ -186,8 +210,26 @@ module Admin
         def end_date
           @end_date ||= start_date.end_of_month
         end
+
+        private
+          def balance_sheet_facade
+            return @balance_sheet_facade if @balance_sheet_facade.present?
+            @balance_sheet_facade = Admin::Reports::Shows::BalanceSheetFacade.new(@params)
+            report = Report.html.balance_sheet.first
+            report.report_lines.each.with_index(1) do |report_line,i|
+              next if report_line.title?
+              if report_line.value?
+                @balance_sheet_facade.calculate_value_idr_for(report_line)
+                @balance_sheet_facade.calculate_value_usd_for(report_line)
+              elsif report_line.accumulation?
+                @balance_sheet_facade.calculate_accumulation_idr_for(report_line)
+                @balance_sheet_facade.calculate_accumulation_usd_for(report_line)
+              end
+            end
+
+            @balance_sheet_facade
+          end
       end
     end
   end
 end
-
