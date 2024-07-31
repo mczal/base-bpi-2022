@@ -23,7 +23,20 @@
       .card.card-custom
         .card-body
           .container
-            = form_with url: admin_settings_approvals_path,
+            ol[style="padding-left:12px;"]
+              li
+                | Approval Matrix untuk kode bukti
+                |  dengan awalan 
+                b
+                  |  “BJ*”
+                |  : (1) Manager Finance dan (2) EVP Finance
+              li
+                | Approval Matrix untuk kode bukti
+                |  dengan awalan
+                b
+                  | selain “BJ*” (BNI*, BM*, dll.)
+                |  : (1) Manager Finance
+            / = form_with url: admin_settings_approvals_path,
               method: :post, id: 'kt_content',
               class: 'content d-flex flex-column flex-column-fluid pt-0 pb-0 modal position-static' do |f|
               - ac_1 = ApprovalConfiguration.find_by(bottom_treshold_cents: 0, upper_treshold_cents: 0)
