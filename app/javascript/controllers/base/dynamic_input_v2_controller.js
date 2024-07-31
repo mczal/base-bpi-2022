@@ -13,6 +13,9 @@ export default class extends Controller {
 
     this.element.insertAdjacentElement('beforeend', node);
     this.reassignIndex();
+
+    const event = new Event('base--dynamic-input-v2:add');
+    this.element.dispatchEvent(event);
   }
 
   remove(e){

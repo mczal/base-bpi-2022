@@ -22,7 +22,8 @@ class GeneralTransaction < ApplicationRecord
 
   enum rates_source: {
     bank_of_indonesia: 'bank_of_indonesia',
-    ministry_of_finance: 'ministry_of_finance'
+    ministry_of_finance: 'ministry_of_finance',
+    custom: 'custom'
   }
   enum rates_group: {
     fixed_rates: 'fixed_rates',

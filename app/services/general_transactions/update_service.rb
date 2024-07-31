@@ -20,6 +20,11 @@ module GeneralTransactions
 
         general_transaction.revoke_journals
         general_transaction.revoke_all_approvals
+
+        general_transaction.general_transaction_lines.each do |line|
+          line.reassign_rate_if_changes
+          line.save! if line.changed?
+        end
       end
 
       def handle_status_change_if_from_draft

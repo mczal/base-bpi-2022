@@ -158,8 +158,8 @@
               label.checkbox
                 = f.radio_button :rates_source, r,
                   data: {\
-                    controller: 'admin--general-transactions--rates-filter',\
-                    action: 'change->admin--general-transactions--rates-filter#handleChange',\
+                    controller: 'admin--general-transactions--rates-filter admin--general-transactions--rates-filter-custom',\
+                    action: 'change->admin--general-transactions--rates-filter#handleChange change->admin--general-transactions--rates-filter-custom#handleChange',\
                     'admin--general-transactions--rates-filter-path': "#{admin_rates_get_select_options_path(slug: params[:slug], origin: '-1')}"\
                   }, required: 1
                 span
@@ -202,9 +202,10 @@
           options_from_collection_for_select(rates, :id, :readable_name, @general_transaction.fixed_rates_options&.dig('id')),
           include_blank: '== Pilih ==',
           class: 'form-control js-fixed-rates-options',
+          jd: "W-#{SecureRandom.uuid}",
           data: {\
             controller: 'select2'\
-          }, required: 1
+          }, disabled: (@general_transaction.custom?), required: (!@general_transaction.custom?)
       .form-group.js-end-of-period-rates-options-container.d-none[
         style="margin-bottom:5px;position:relative;"
       ]
@@ -376,6 +377,15 @@
               label
                 | Nominal
                 span.text-danger.ml-1 *
+            .form-group.js-custom-rate-container.d-none[style="margin-bottom:5px;position:relative;"]
+              .position-absolute.p-3
+                b KURS
+                |  (IDR)
+              = text_field_tag 'general_transaction[general_transaction_lines_attributes][0][rate]', nil,
+                class: 'form-control pl-25 js-nominal',
+                data: {\
+                  controller: "base--input-price"\
+                }, disabled: 1
             .row.js-general-transactions-nominal-idr-usd
               .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                 .position-absolute.p-3 IDR
@@ -553,6 +563,18 @@
                 label
                   | Nominal
                   span.text-danger.ml-1 *
+              .form-group.js-custom-rate-container[
+                style="margin-bottom:5px;position:relative;"
+                class="#{!@general_transaction.custom? ? 'd-none' : ''}"
+              ]
+                .position-absolute.p-3
+                  b KURS
+                  |  (IDR)
+                = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][rate]", line.rate.amount,
+                  class: 'form-control pl-25 js-nominal',
+                  data: {\
+                    controller: "base--input-price"\
+                  }, disabled: (!@general_transaction.custom?), required: (@general_transaction.custom?)
               .row.js-general-transactions-nominal-idr-usd
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 IDR
@@ -715,6 +737,15 @@
               label
                 | Nominal
                 span.text-danger.ml-1 *
+            .form-group.js-custom-rate-container.d-none[style="margin-bottom:5px;position:relative;"]
+              .position-absolute.p-3
+                b KURS
+                |  (IDR)
+              = text_field_tag 'general_transaction[general_transaction_lines_attributes][1][rate]', nil,
+                class: 'form-control pl-25 js-nominal',
+                data: {\
+                  controller: "base--input-price"\
+                }, disabled: 1
             .row.js-general-transactions-nominal-idr-usd
               .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                 .position-absolute.p-3 IDR
@@ -892,6 +923,18 @@
                 label
                   | Nominal
                   span.text-danger.ml-1 *
+              .form-group.js-custom-rate-container[
+                style="margin-bottom:5px;position:relative;"
+                class="#{!@general_transaction.custom? ? 'd-none' : ''}"
+              ]
+                .position-absolute.p-3
+                  b KURS
+                  |  (IDR)
+                = text_field_tag "general_transaction[general_transaction_lines_attributes][#{i}][rate]", line.rate.amount,
+                  class: 'form-control pl-25 js-nominal',
+                  data: {\
+                    controller: "base--input-price"\
+                  }, disabled: (!@general_transaction.custom?), required: (@general_transaction.custom?)
               .row.js-general-transactions-nominal-idr-usd
                 .col-lg-6.form-group[style="margin-bottom:5px;position:relative;"]
                   .position-absolute.p-3 IDR
