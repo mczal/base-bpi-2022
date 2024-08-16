@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 namespace :adjustments do
-  namespace :approval_jul312024 do
-    desc 'Run Adjust Approval'
+  namespace :approval_240816 do
+    desc 'Run Adjust Approval per update dated: 240816'
     task run: :environment do
       GeneralTransaction.original.each do |general_transaction|
         next if general_transaction.accepted?

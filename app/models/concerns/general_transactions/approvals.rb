@@ -51,21 +51,28 @@ module GeneralTransactions
       # end
       # END: COMMENTED PER 31 Jul 2024. Phase manual input based from client's request
 
-      if self.number_evidence.match(/bj/i)
-        @approval_lines << {
-          name: 'manager_finance'.titlecase,
-          role: 'manager_finance',
-        }
-        @approval_lines << {
-          name: 'evp_finance'.titlecase,
-          role: 'evp_finance',
-        }
-      else # BNI, BM, *ETC.
-        @approval_lines << {
-          name: 'manager_finance'.titlecase,
-          role: 'manager_finance',
-        }
-      end
+      # BEGIN: COMMENTED PER 16 Aug 2024. Phase manual input based from clien's request #2
+      # if self.number_evidence.match(/bj/i)
+        # @approval_lines << {
+          # name: 'manager_finance'.titlecase,
+          # role: 'manager_finance',
+        # }
+        # @approval_lines << {
+          # name: 'evp_finance'.titlecase,
+          # role: 'evp_finance',
+        # }
+      # else # BNI, BM, *ETC.
+        # @approval_lines << {
+          # name: 'manager_finance'.titlecase,
+          # role: 'manager_finance',
+        # }
+      # end
+      # END: COMMENTED PER 16 Aug 2024. Phase manual input based from clien's request #2
+
+      @approval_lines << {
+        name: 'manager_finance'.titlecase,
+        role: 'manager_finance',
+      }
 
       @approval_lines
     end
