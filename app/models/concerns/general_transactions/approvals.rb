@@ -70,8 +70,8 @@ module GeneralTransactions
       # END: COMMENTED PER 16 Aug 2024. Phase manual input based from clien's request #2
 
       @approval_lines << {
-        name: 'manager_finance'.titlecase,
-        role: 'manager_finance',
+        name: 'manager_accounting'.titlecase,
+        role: 'manager_accounting',
       }
 
       @approval_lines
