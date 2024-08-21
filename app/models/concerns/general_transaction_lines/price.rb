@@ -7,7 +7,7 @@ module GeneralTransactionLines
         return price_idr.to_money
       end
 
-      if self.general_transaction.idr? # input_option
+      if self.general_transaction.idr? || self.general_transaction.no_automatic_rates_adjustment? # input_option
         return price_idr.to_money
       end
       return (price_usd.to_money * self.general_transaction.rate_money.amount).with_currency(:idr)
@@ -18,7 +18,7 @@ module GeneralTransactionLines
         return price_usd.to_money
       end
 
-      if self.general_transaction.usd? # input_option
+      if self.general_transaction.usd? || self.general_transaction.no_automatic_rates_adjustment? # input_option
         return price_usd.to_money
       end
       return (price_idr.to_money / self.general_transaction.rate_money.amount).with_currency(:usd)

@@ -13,6 +13,10 @@ export default class extends Controller {
 
   handleInput(e){
     let rate;
+    if(this.isInputOptionCustom()){
+      return;
+    }
+
     if(this.isRateCustom()){
       rate = this.inputCustomRate.value.replaceAll(/\./g,'').replace(/\,/, '.');
     } else {
@@ -31,6 +35,10 @@ export default class extends Controller {
     if(!this.selectedInputRatesSource){ return false; }
     return this.selectedInputRatesSource.value === 'custom'
   }
+  isInputOptionCustom(){
+    if(!this.selectedInputOption){ return false; }
+    return this.selectedInputOption.value === 'no_automatic_rates_adjustment'
+  }
 
   get nominalContainer(){
     if(this._nominalContainer){
@@ -45,6 +53,16 @@ export default class extends Controller {
     this._nominalContainer = result;
     return this._nominalContainer;
   }
+
+  get selectedInputOption(){
+    return this.inputOptionElements.filter((x) => {return x.checked})[0];
+  }
+  get inputOptionElements(){
+    return Array.prototype.slice.call(
+      this.element.closest('form').querySelectorAll('input[type="radio"][name="general_transaction[input_option]"]')
+    );
+  }
+
   get selectedInputRatesSource(){
     return this.inputRatesSourceElements.filter((x) => {return x.checked})[0];
   }

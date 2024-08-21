@@ -31,7 +31,8 @@ class GeneralTransaction < ApplicationRecord
   }
   enum input_option: {
     idr: 'idr',
-    usd: 'usd'
+    usd: 'usd',
+    no_automatic_rates_adjustment: 'no_automatic_rates_adjustment' # new per 240821: input custom usd ataupun idr tanpa di convert secara otomatis
   }
   enum status: {
     draft: 'draft',

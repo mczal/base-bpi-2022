@@ -17,5 +17,3 @@ namespace :adjustments do
     end
   end
 end
-
-

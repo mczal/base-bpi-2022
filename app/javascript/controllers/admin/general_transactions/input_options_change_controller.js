@@ -31,5 +31,15 @@ export default class extends Controller {
         element.classList.remove('form-control-solid');
       })
     }
+    if(this.element.value === 'no_automatic_rates_adjustment'){
+      this.idrInputElements.forEach((element) => {
+        element.removeAttribute('readonly');
+        element.classList.remove('form-control-solid');
+      })
+      this.usdInputElements.forEach((element) => {
+        element.removeAttribute('readonly');
+        element.classList.remove('form-control-solid');
+      })
+    }
   }
 }

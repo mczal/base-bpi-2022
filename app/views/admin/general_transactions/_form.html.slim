@@ -55,6 +55,14 @@
               }, required: 1
             span
             | USD
+          label.checkbox
+            = f.radio_button :input_option, 'no_automatic_rates_adjustment',
+              data: {\
+                controller: 'admin--general-transactions--input-options-change',\
+                action: 'change->admin--general-transactions--input-options-change#handleChange'\
+              }, required: 1
+            span
+            | Custom
       .form-group.col-lg-6
         label
           | Nomor Bukti
