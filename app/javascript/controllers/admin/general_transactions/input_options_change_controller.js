@@ -2,12 +2,6 @@ import { Controller } from '@hotwired/stimulus';
 
 export default class extends Controller {
   initialize(){
-    this.idrInputElements = Array.prototype.slice.call(
-      document.querySelectorAll('input[name*="price_idr"]')
-    );
-    this.usdInputElements = Array.prototype.slice.call(
-      document.querySelectorAll('input[name*="price_usd"]')
-    );
   }
 
   handleChange(){
@@ -41,5 +35,17 @@ export default class extends Controller {
         element.classList.remove('form-control-solid');
       })
     }
+  }
+
+  get usdInputElements(){
+    return Array.prototype.slice.call(
+      document.querySelectorAll('input[name*="price_usd"]')
+    );
+  }
+
+  get idrInputElements(){
+    return Array.prototype.slice.call(
+      document.querySelectorAll('input[name*="price_idr"]')
+    );
   }
 }
