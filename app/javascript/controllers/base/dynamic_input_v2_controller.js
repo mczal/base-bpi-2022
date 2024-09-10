@@ -6,7 +6,7 @@ export default class extends Controller {
   initialize(){
     this.firstClonedNode = this.element.querySelector('.js-item-container').cloneNode(true);
     // this.clonedItem = this.element.querySelector('.js-item-container').cloneNode(true);
-    this.clonedItem;
+    // this.clonedItem;
   }
 
   get clonedItem(){
@@ -62,6 +62,10 @@ export default class extends Controller {
       x.classList.remove('select2-hidden-accessible');
       x.removeAttribute('data-select2-id');
       x.setAttribute('id', `A-${window.Util.uuidv4()}`);
+
+      Array.prototype.slice.call(x.querySelectorAll('option')).forEach((opt) => {
+        opt.removeAttribute('data-select2-id');
+      });
     });
   }
 
