@@ -4,18 +4,25 @@ export default class extends Controller {
   static targets = [ 'element', 'input', 'markdownIndex' ];
 
   initialize(){
-    // this.firstClonedNode = this.element.querySelector('.js-item-container').cloneNode(true);
-    this.clonedItem = this.element.querySelector('.js-item-container').cloneNode(true);
+    this.firstClonedNode = this.element.querySelector('.js-item-container').cloneNode(true);
+    // this.clonedItem = this.element.querySelector('.js-item-container').cloneNode(true);
+    this.clonedItem;
   }
 
-  // get clonedItem(){
-    // let targetContainer = this.element.querySelector('.js-item-container')
-    // if(targetContainer){
-      // return targetContainer.cloneNode(true);
-    // }
+  get clonedItem(){
+    if(this._cloned_item){
+      return this._cloned_item;
+    }
 
-    // return this.firstClonedNode;
-  // }
+    let targetContainer = this.element.querySelector('.js-item-container')
+    if(targetContainer){
+      this._cloned_item = targetContainer.cloneNode(true);
+      return this._cloned_item;
+    }
+
+    this._cloned_item = this.firstClonedNode;
+    return this._cloned_item;
+  }
 
   add(){
     const node = this.clonedItem.cloneNode(true);
