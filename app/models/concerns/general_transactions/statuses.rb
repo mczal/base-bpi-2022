@@ -14,6 +14,10 @@ module GeneralTransactions
       EOS
     end
 
+    def status_translate
+      I18n.t(self.status).titlecase
+    end
+
     def status_icon_html
       return @status_icon_html if @status_icon_html.present?
 

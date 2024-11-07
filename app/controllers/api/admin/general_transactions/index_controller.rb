@@ -123,6 +123,8 @@ module Api
                 updated_at: helpers.readable_timestamp_2(general_transaction.updated_at.localtime),
                 status_html: general_transaction.status_for_html,
                 status: general_transaction.status,
+                status_label_html_class: general_transaction.status_label_html_class,
+                status_translate: general_transaction.status_translate,
                 location: general_transaction.location.to_s.titlecase,
                 date: general_transaction.date.strftime("%d %b %Y"),
                 number_evidence: general_transaction.number_evidence || '-',

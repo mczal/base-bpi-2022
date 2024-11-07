@@ -153,6 +153,11 @@ Rails.application.routes.draw do
     post 'approvals/:id/send_notification/:approver_id',
       to: 'approvals#send_notification',
       as: :approval_send_notification
+    namespace :approvals do
+      post 'actions/bulk_approve',
+        to: 'actions#bulk_approve',
+        as: :actions_bulk_approve
+    end
 
     namespace :inv_trackings do
       namespace :procurements do

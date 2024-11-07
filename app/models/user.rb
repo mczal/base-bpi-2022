@@ -32,4 +32,14 @@ class User < ApplicationRecord
   def readable_name
     @readable_name ||= "#{self.name} (#{self.email})"
   end
+
+  def has_any_role_in_approval_configuration?
+    res = false
+    ApprovalConfiguration.select(:roles).pluck(:roles).flatten.each do |role|
+      if self.has_role?(role)
+        res = true
+      end
+    end
+    res
+  end
 end

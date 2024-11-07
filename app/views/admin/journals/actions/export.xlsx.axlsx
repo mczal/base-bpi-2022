@@ -111,12 +111,12 @@ wb.styles do |styles|
         "Nama Penerima",
         "Uraian",
         "Kode Akun",
-        "Cost Center",
         "IDR",
         "",
         "KURS",
         "USD",
         "",
+        "Cost Center",
       ],
       style: bold_center_and_wrap_border
     )
@@ -128,12 +128,12 @@ wb.styles do |styles|
         "",
         "",
         "",
-        "",
         "Debit",
         "Kredit",
         "",
         "Debit",
         "Kredit",
+        "",
       ],
       style: bold_center_and_wrap_border
     )
@@ -143,10 +143,14 @@ wb.styles do |styles|
     sheet.merge_cells("D9:D10")
     sheet.merge_cells("E9:E10")
     sheet.merge_cells("F9:F10")
-    sheet.merge_cells("G9:G10")
-    sheet.merge_cells("J9:J10")
-    sheet.merge_cells("H9:I9")
-    sheet.merge_cells("K9:L9")
+    # sheet.merge_cells("G9:G10")
+    # sheet.merge_cells("J9:J10")
+    sheet.merge_cells("I9:I10")
+
+    # sheet.merge_cells("H9:I9")
+    sheet.merge_cells("G9:H9")
+    # sheet.merge_cells("K9:L9")
+    sheet.merge_cells("J9:K9")
 
 
     @journals.each.with_index(1) do |journal,i|  
@@ -158,18 +162,18 @@ wb.styles do |styles|
           journal.recipient,
           journal.description,
           journal.code,
-          journal.master_business_unit,
           journal.debit_idr.amount,
           journal.credit_idr.amount,
           journal.rates_options['price'],
           journal.debit_usd.amount,
           journal.credit_usd.amount,
+          journal.master_business_unit,
         ],
         style: row_styles
       )
     end
 
-    sheet.column_widths(6,18,20,30,50,15,20,30,30,15,30,30)
+    sheet.column_widths(6,18,20,30,50,15,30,30,15,30,30,20)
     # sheet.col_style(7,number_style)
     # sheet.col_style(8,number_style)
     # sheet.col_style(9,number_style)

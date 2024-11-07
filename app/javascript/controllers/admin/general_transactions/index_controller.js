@@ -9,8 +9,51 @@ export default class extends DatatablesController {
 
   connect(){
     super.connect();
+    //debugger;
+    window.generalTransactionDatatable = this.datatable;
+
     this.bindChangeDateFilter();
     this.bindFilter();
+    this.bindOnClickCheckbox();
+
+  }
+
+  //debugger;
+  disconnect(){
+    //debugger;
+    window.generalTransactionDatatable = null;
+  }
+
+  bindOnClickCheckbox(){
+    this.datatable.on(
+      // 'datatable-on-check datatable-on-uncheck',
+      'datatable-on-click-checkbox',
+      this.handleOnClickCheckbox.bind(this)
+    );
+  }
+  handleOnClickCheckbox(e){
+    // datatable.checkbox() access to extension methods
+    let ids = [...new Set(this.datatable.checkbox().getSelectedId())];
+    let count = ids.length;
+    if(this.datatable.checkbox().selectedAllRows){
+      const token = $('.datatable-pager-detail').text().split('of');
+      count = parseInt(token[token.length-1]);
+    }
+
+    $('#kt_datatable_selected_records_2').html(count);
+
+    if (count > 0) {
+      $('#kt_datatable_group_action_form_2').collapse('show');
+    } else {
+      $('#kt_datatable_group_action_form_2').collapse('hide');
+    }
+
+    const event = new CustomEvent('datatable:checkbox-updated', {detail: {
+      ids: ids,
+      count: count,
+      selectedAllRows: this.datatable.checkbox().selectedAllRows,
+    }});
+    this.element.dispatchEvent(event);
   }
 
   bindFilter(){
@@ -62,20 +105,34 @@ export default class extends DatatablesController {
     }.bind(this));
   }
 
+  datatableExtensions(){
+    return {
+      checkbox: true
+    };
+  }
+
   datatableColumns(){
     return [
       {
-        field: 'index',
+        field: 'id',
         title: '#',
         sortable: false,
         width: 40,
-        type: 'number',
-        selector: false,
-        textAlign: 'left',
-        template: function(data) {
-          return `<span class="font-weight-bolder">${data.index}</span>`;
-        }
+        selector: true,
+        textAlign: 'center',
       },
+      // {
+        // field: 'index',
+        // title: '#',
+        // sortable: false,
+        // width: 40,
+        // type: 'number',
+        // selector: false,
+        // textAlign: 'left',
+        // template: function(data) {
+          // return `<span class="font-weight-bolder">${data.index}</span>`;
+        // }
+      // },
       {
         field: 'date',
         title: 'Tanggal',
@@ -99,8 +156,19 @@ export default class extends DatatablesController {
       {
         field: 'number_evidence',
         title: 'Nomor Bukti',
+        width: 120,
         template: function(data) {
-          return `<span class="font-weight-bolder">${data.number_evidence}</span>`;
+          return `
+            <div class="font-weight-bolder position-relative">
+              <span
+                class="label label-${data.status_label_html_class} mr-1" style="vertical-align:middle;"
+                title="Status: ${data.status_translate}"
+                data-controller="base--tooltip"
+              >
+              </span>
+              <span>${data.number_evidence}</span>
+            </div>
+          `;
         }
       },
       {
@@ -190,7 +258,6 @@ export default class extends DatatablesController {
               `;
             }
           }
-
           return res;
         },
       }

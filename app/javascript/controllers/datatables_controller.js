@@ -17,7 +17,8 @@ export default class extends Controller {
       sortable: this.datatableSortable(),
       pagination: this.datatablePagination(),
       search: this.datatableSearch(),
-      columns: this.datatableColumns()
+      columns: this.datatableColumns(),
+      extensions: this.datatableExtensions(),
     }
   }
 
@@ -61,5 +62,9 @@ export default class extends Controller {
       delay: 400,
       key: 'search'
     }
+  }
+
+  datatableExtensions(){
+    return {};
   }
 }
