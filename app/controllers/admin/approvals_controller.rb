@@ -1,7 +1,7 @@
 module Admin
   class ApprovalsController < AdminController
     layout 'approval'
-    include Approvals::RedirectHandlers
+    include ::Approvals::RedirectHandlers
 
     before_action :approval, except: %i[index]
     before_action :pending_approvals, only: %i[index show update]
