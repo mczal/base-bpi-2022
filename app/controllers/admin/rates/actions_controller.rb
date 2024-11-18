@@ -9,7 +9,7 @@ module Admin
 
       private
         def rates
-          @rates ||= Rate.where(origin: params[:origin]).limit(31)
+          @rates ||= Rate.where(origin: params[:origin]).limit(31*4)
         end
     end
   end
