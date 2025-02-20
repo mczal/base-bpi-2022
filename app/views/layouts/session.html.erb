@@ -1,40 +1,107 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full" data-theme="true" data-theme-mode="light" dir="ltr" lang="en">
   <head>
-    <title><%= '[DEV]' if Rails.env.development? %> LOGIN Accounting & Finance Information System | PT BPI | Bukit Pembangkit Innovative</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta charset="UTF-8">
-    <!-- External CSS libraries -->
-    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/css/bootstrap.min.css">
-    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/fonts/font-awesome/css/font-awesome.min.css">
-    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/fonts/flaticon/font/flaticon.css">
+    <title>
+      <%- if Rails.env.development? %>
+        [DEV]
+      <%- end %>
+        LOGIN Accounting & Finance Information System | PT BPI | Bukit Pembangkit Innovative
+    </title>
 
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <link href="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets" rel="dns-prefetch" />
+    <link href="//fonts.googleapis.com" rel="dns-prefetch" />
+
+    <meta charset="utf-8"/>
+    <meta content="follow, index" name="robots"/>
+    <!-- <link href="https://keenthemes.com/metronic/tailwind/demo4/" rel="canonical"/> -->
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport"/>
+    <meta content="Admin Taxbase v2.0 | Taxsam.Co" name="description"/>
+    <meta content="@wellcode_io" name="twitter:site"/>
+    <meta content="@wellcode_io" name="twitter:creator"/>
+    <meta content="summary_large_image" name="twitter:card"/>
+    <meta content="Admin Taxbase v2.0 | Taxsam.Co" name="twitter:title"/>
+    <meta content="Admin Taxbase v2.0 | Taxsam.Co" name="twitter:description"/>
+    <meta content="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/media/app/og-image.png" name="twitter:image"/>
+    <!-- <meta content="https://keenthemes.com/metronic/tailwind/demo4/" property="og:url"/> -->
+    <meta content="en_US" property="og:locale"/>
+    <meta content="website" property="og:type"/>
+    <meta content="@wellcode_io" property="og:site_name"/>
+    <meta content="Admin Taxbase v2.0 | Taxsam.Co" property="og:title"/>
+    <meta content="Admin Taxbase v2.0 | Taxsam.Co" property="og:description"/>
+    <meta content="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/media/app/og-image.png" property="og:image"/>
     <%= favicon_link_tag %>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap" rel="stylesheet"/>
+    <link href="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/vendors/apexcharts/apexcharts.css" rel="stylesheet"/>
+    <link href="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/vendors/keenicons/styles.bundle.css" rel="stylesheet"/>
+    <link href="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/css/styles.css" rel="stylesheet"/>
+    <%# <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> %>
 
-    <!-- Google fonts -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800%7CPoppins:400,500,700,800,900%7CRoboto:100,300,400,400i,500,700">
-    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <%= stylesheet_link_tag "session", "data-turbo-track": "reload" %>
 
-    <!-- Custom Stylesheet -->
-    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/css/style.css">
-    <link rel="stylesheet" type="text/css" id="style_sheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/css/skins/default.css">
-
+    <!-- Scripts -->
+    <%# <script src="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/js/core.bundle.js"></script> %>
+    <script src="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/js/wgi-core.bundle.js" defer="defer" data-turbo-track="reload"></script>
+    <script src="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/vendors/apexcharts/apexcharts.min.js" defer="defer" data-turbo-track="reload"></script>
+    <script src="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/js/widgets/general.js" defer="defer" data-turbo-track="reload"></script>
+    <!-- End of Scripts -->
+    <%#= javascript_importmap_tags %>
   </head>
-  <body id="top">
-    <div class="page_loader"></div>
+  <body class="antialiased flex h-full text-base text-gray-700 dark:bg-coal-500">
+    <%- if flash.present? %>
+      <%= render 'shared/flash_custom' %>
+    <%- end %>
+    <!-- Theme Mode -->
+    <script>
+      const defaultThemeMode = 'light'; // light|dark|system
+      let themeMode;
 
-    <!-- Login 1 start -->
-    <div class="login-1">
-      <div class="container">
-        <%= yield %>
+      if ( document.documentElement ) {
+      if ( localStorage.getItem('theme')) {
+          themeMode = localStorage.getItem('theme');
+      } else if ( document.documentElement.hasAttribute('data-theme-mode')) {
+        themeMode = document.documentElement.getAttribute('data-theme-mode');
+      } else {
+        themeMode = defaultThemeMode;
+      }
+
+      if (themeMode === 'system') {
+        themeMode = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+
+      document.documentElement.classList.add(themeMode);
+      }
+    </script>
+    <!-- End of Theme Mode -->
+    <!-- Page -->
+    <style>
+      .branded-bg {
+      background-image:url('https://d3fqce1j16tgc9.cloudfront.net/bpi-login-page.png');
+      }
+      .dark .branded-bg {
+      background-image: url('https://d3fqce1j16tgc9.cloudfront.net/bpi-login-page.png');
+      }
+    </style>
+    <div class="grid lg:grid-cols-2 grow">
+      <div class="flex justify-center items-center p-8 lg:p-10 order-2 lg:order-1">
+        <div class="card max-w-[370px] w-full">
+          <%= yield %>
+        </div>
+      </div>
+      <div class="lg:rounded-xl lg:border lg:border-gray-200 lg:m-5 order-1 lg:order-2 bg-top xxl:bg-center xl:bg-cover bg-no-repeat branded-bg">
+        <div class="flex flex-col p-8 lg:p-16 gap-4">
+          <a href="javascript:void(0);">
+            <img class="" style="height:unset;width:256px;margin:auto;" src="<%= image_url('SIAPLogo.png') %>">
+          </a>
+        </div>
       </div>
     </div>
-    <!-- Login 1 end -->
-
-    <!-- External JS libraries -->
-    <script src="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/js/jquery.min.js"></script>
-    <script src="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/js/popper.min.js"></script>
-    <script src="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/js/bootstrap.bundle.min.js"></script>
-    <!-- Custom JS Script -->
+    <!-- End of Page -->
+    <!-- Scripts -->
+    <script src="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/js/core.bundle.js"></script>
+    <script src="https://wgi25.s3.ap-southeast-1.amazonaws.com/mtr-tailwind-dist-assets/vendors/apexcharts/apexcharts.min.js"></script>
+    <!-- End of Scripts -->
   </body>
 </html>

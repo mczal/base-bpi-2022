@@ -1,0 +1,73 @@
+- text = 'undefined flash'
+- colors = { "success"=>"#C9F7F5","danger"=>"#FFE2E5","warning"=>"#FFF4DE" }
+- punchline_colors = { "success"=>"#1BC5BD","danger"=>"#F64E5F","warning"=>"#FFA800" }
+- if flash[:success].present?
+  - text = flash[:success].html_safe
+  - group = "success"
+- if flash[:danger].present?
+  - text = flash[:danger].html_safe
+  - group = "danger"
+- if flash[:warning].present?
+  - text = flash[:warning].html_safe
+  - group = "warning"
+- if flash[:primary].present?
+  - text = flash[:primary].html_safe
+  - group = "warning"
+- if flash[:secondary].present?
+  - text = flash[:secondary].html_safe
+  - group = "warning"
+- if flash[:alert].present?
+  - text = flash[:alert].html_safe
+  - group = "warning"
+- if flash[:notice].present?
+  - text = flash[:notice].html_safe
+  - group = "warning"
+- if flash[:light].present?
+  - text = flash[:light].html_safe
+  - group = "warning"
+- if flash[:dark].present?
+  - text = flash[:dark].html_safe
+  - group = "warning"
+
+div#myCustomAlertXyz[
+  style="position:fixed;top:0;left:0;z-index:100;width:98%;background-color:#{colors[group]};margin:1% 0 1% 1%;border-left:4px solid #{punchline_colors[group]};transition: opacity .5s;"
+]
+  div[
+    style="display:flex;margin:13px 10px;align-items:center;justify-content:space-between;"
+  ]
+    div[
+      style="display:flex;align-items:start;justify-content:start;"
+    ]
+      i.ki-filled.ki-information-4[
+        style="color:#{punchline_colors[group]};"
+      ]
+      span[
+        style="margin-left:6px;color:#{punchline_colors[group]};"
+      ]
+        = text
+    div.myCustomAlertXyz-close[
+      style=""
+    ]
+      i.ki-filled.ki-cross-square[
+        style="color:#{punchline_colors[group]};font-weight:bold;"
+      ]
+
+javascript:
+  function myCustomAlertXyzListenClose(){
+    var b = document.querySelector('#myCustomAlertXyz .myCustomAlertXyz-close');
+
+    b.addEventListener('click', function(){
+      var c = document.querySelector('#myCustomAlertXyz');
+      var pc = c.parentElement;
+
+      c.style.opacity = '0';
+      window.setTimeout(function(){
+        var c = document.querySelector('#myCustomAlertXyz');
+        var pc = c.parentElement;
+        pc.removeChild(c);
+      }, 500);
+    });
+  }
+
+  myCustomAlertXyzListenClose();
+

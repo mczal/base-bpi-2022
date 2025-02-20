@@ -1,0 +1,27 @@
+.popover-header {
+  padding: 0.5rem 0.75rem;
+  font-size: .875rem;
+  line-height: 1.25rem;
+  font-weight: 500;
+  color: var(--tw-gray-900);
+  border-bottom: 1px solid var(--tw-gray-200);
+  background-color: #fff3e5;
+}
+.popover-body {
+  padding: 0.75rem;
+  font-size: .8125rem;
+  line-height: 1.125rem;
+  font-weight: 400;
+  color: var(--tw-gray-700);
+  background-color: #fffbf4;
+}
+
+label.badge {
+}
+
+select:not(.my-select-not-100) ~ .select2.select2-container{
+  width:100% !important;
+}
+select.my-select-not-100 ~ .select2.select2-container{
+  min-width: 350px;
+}

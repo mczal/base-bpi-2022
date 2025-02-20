@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= '[DEV]' if Rails.env.development? %> LOGIN Accounting & Finance Information System | PT BPI | Bukit Pembangkit Innovative</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8">
+    <!-- External CSS libraries -->
+    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/css/bootstrap.min.css">
+    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/fonts/font-awesome/css/font-awesome.min.css">
+    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/fonts/flaticon/font/flaticon.css">
+
+    <%= favicon_link_tag %>
+
+    <!-- Google fonts -->
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700,800%7CPoppins:400,500,700,800,900%7CRoboto:100,300,400,400i,500,700">
+    <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Custom Stylesheet -->
+    <link type="text/css" rel="stylesheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/css/style.css">
+    <link rel="stylesheet" type="text/css" id="style_sheet" href="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/css/skins/default.css">
+
+  </head>
+  <body id="top">
+    <div class="page_loader"></div>
+
+    <!-- Login 1 start -->
+    <div class="login-1">
+      <div class="container">
+        <%= yield %>
+      </div>
+    </div>
+    <!-- Login 1 end -->
+
+    <!-- External JS libraries -->
+    <script src="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/js/jquery.min.js"></script>
+    <script src="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/js/popper.min.js"></script>
+    <script src="https://mczal-personal.s3.ap-southeast-1.amazonaws.com/assets/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS Script -->
+  </body>
+</html>
